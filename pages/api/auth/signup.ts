@@ -1,36 +1,74 @@
+import { SESSION_PROVIDERS } from '@constant/auth';
 import { COMMON_ERROR_TYPES, USER_ERROR_TYPES } from '@constant/error';
-import { ForbiddenError, handleError } from '@lib/classes';
+import { AUTH_ROUTES } from '@constant/route';
+import AccountService from '@lib/services/account';
+import EmailService from '@lib/services/email';
 import UserService from '@lib/services/user';
-import { dbMiddleware } from 'middlewares';
+import VerificationTokenService from '@lib/services/verificationToken';
+import {
+    ForbiddenError,
+    InternalServerError,
+    handleError,
+} from '@utils/error-handler';
+import { validateRequest } from '@utils/helper';
+import { AuthTypes, authValidationSchema } from 'common/validation/auth';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
-import { validateRequest } from 'utils';
-import { AuthData, authValidationSchema } from './auth.validator';
+import { IUserResponse } from 'types';
 
-const router = createRouter();
+const router = createRouter<NextApiRequest, NextApiResponse>();
 
-router.use(dbMiddleware);
-
-router.post(
-    validateRequest(authValidationSchema),
-    async (req: NextApiRequest, res: NextApiResponse) => {
-        try {
-            const { email, password }: AuthData = req.body;
-            const user = new UserService();
-            const isEmailExists = await user.getByEmail(email);
-            if (isEmailExists) {
-                throw new ForbiddenError(
-                    USER_ERROR_TYPES.EMAIL_EXISTS.msg,
-                    USER_ERROR_TYPES.EMAIL_EXISTS.status
-                );
-            }
-            await user.createUser({ email, password });
-            res.status(201).json({ message: 'success' });
-        } catch (error) {
-            handleError(error, res);
+router.post(validateRequest(authValidationSchema), async (req, res) => {
+    try {
+        const { email, password }: AuthTypes = req.body;
+        const userService = new UserService();
+        const isEmailExists = await userService.getByEmail(email);
+        if (isEmailExists) {
+            throw new ForbiddenError(
+                USER_ERROR_TYPES.EMAIL_EXISTS.msg,
+                USER_ERROR_TYPES.EMAIL_EXISTS.status
+            );
         }
+        const newUser: IUserResponse = await userService.createUser({
+            email,
+            password,
+        });
+        if (!newUser) {
+            throw new InternalServerError();
+        }
+        const emailToken: string = userService.generateToken(newUser.id);
+        if (!emailToken) {
+            throw new InternalServerError();
+        }
+        const verificationToken = new VerificationTokenService();
+        const storedTokenData = await verificationToken.storeVerificationToken(
+            newUser.id,
+            emailToken
+        );
+        if (!storedTokenData) {
+            throw new InternalServerError();
+        }
+        const emailService = new EmailService();
+        await emailService.sendVerificationRequest(newUser.email, emailToken);
+
+        const accountService = new AccountService();
+
+        const newAccount = accountService.createAccount({
+            userId: newUser.id,
+            type: SESSION_PROVIDERS.CREDENTIALS,
+            provider: SESSION_PROVIDERS.CREDENTIALS,
+            providerAccountId: newUser.id,
+        });
+
+        if (!newAccount) {
+            throw new InternalServerError();
+        }
+        
+        return res.redirect(AUTH_ROUTES.BASE);
+    } catch (error) {
+        handleError(error, res);
     }
-);
+});
 
 const noMatchHandler = (req: NextApiRequest, res: NextApiResponse) => {
     res.status(COMMON_ERROR_TYPES.NOT_FOUND.status).json({

@@ -1,21 +1,13 @@
-import Joi, { Schema as JoiSchema } from 'joi';
-
-import { emailSchema, passwordSchema } from 'utils';
-
-export interface AuthData {
-    email: string;
-    password: string;
-}
-
-export const authValidationSchema: JoiSchema = Joi.object({
-    password: passwordSchema,
-    email: emailSchema,
-});
-
-export const validateAuthData = <T extends JoiSchema>(
-    schema: JoiSchema<T>,
-    data: T
+import { AuthTypes } from 'common/validation/auth';
+import { ZodSchema } from 'zod';
+export const validateAuthData = <T extends AuthTypes>(
+    schema: ZodSchema<T>,
+    data: AuthTypes
 ): boolean => {
-    const { error } = schema.validate(data);
-    return !!error;
+    try {
+        schema.parse(data);
+        return false;
+    } catch (error) {
+        return true;
+    }
 };

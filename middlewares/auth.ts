@@ -1,5 +1,5 @@
 import { AUTH_ERRORS_MESSAGES } from '@constant/error';
-import { ForbiddenError, handleError } from '@lib/classes';
+import { ForbiddenError, handleError } from '@utils/error-handler';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getToken } from 'next-auth/jwt';
 

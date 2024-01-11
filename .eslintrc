@@ -29,8 +29,7 @@
             "error",
             {
                 "props": "never",
-                "children": "never",
-                "propElementValues": "never"
+                "children": "never"
             }
         ],
         "quotes": [

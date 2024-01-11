@@ -1,9 +1,9 @@
 const nextConfig = {
     basePath: '',
-    reactStrictMode: true,
+    reactStrictMode: false,
     swcMinify: true,
     eslint: {
-        ignoreDuringBuilds: false,
+        ignoreDuringBuilds: true,
     },
     images: {
         remotePatterns: [
@@ -13,11 +13,19 @@ const nextConfig = {
                 port: '3000',
                 pathname: '/api/images/**',
             },
+            {
+                protocol: 'https',
+                hostname: 'guitarfiles.s3.us-east-2.amazonaws.com',
+            },
         ],
     },
     webpack(config) {
         config.resolve.fallback = { fs: false };
-
+        config.module.rules.push({
+            test: /\.svg$/i,
+            issuer: /\.[jt]sx?$/,
+            use: ['@svgr/webpack'],
+        });
         return config;
     },
     /*

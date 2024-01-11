@@ -1,29 +1,37 @@
-import { ChakraProvider, CSSReset } from '@chakra-ui/react';
-import { AuthProvider } from '@components/auth-provider';
+import { ChakraProvider } from '@chakra-ui/react';
+import Notification from '@components/Notification';
+import MainLayout from '@components/layout';
+import { PageGuard } from '@components/pageGuard';
 import { wrapper } from '@store/create-store';
 import { SessionProvider } from 'next-auth/react';
 import { Provider } from 'react-redux';
-import { theme } from 'styles/theme';
+import 'react-toastify/dist/ReactToastify.css';
+import theme from 'styles/theme';
 import { IAppProps } from 'types';
-import '../styles/globals.css';
 
-const MyApp = ({ Component, session, ...rest }: IAppProps) => {
+const MyApp = ({ Component, pageProps: { session, ...rest } }: IAppProps) => {
     const { store, props } = wrapper.useWrappedStore(rest);
+    const LayoutComponent = Component.layout || MainLayout;
     return (
-        <ChakraProvider theme={theme}>
-            <CSSReset />
-            <Provider store={store}>
-                <SessionProvider session={session}>
+        <Provider store={store}>
+            <SessionProvider session={session}>
+                <ChakraProvider theme={theme}>
                     {Component.requiredAuth ? (
-                        <AuthProvider>
-                            <Component {...props.pageProps} />
-                        </AuthProvider>
+                        <PageGuard>
+                            <LayoutComponent>
+                                <Component {...props} />
+                            </LayoutComponent>
+                        </PageGuard>
                     ) : (
-                        <Component {...props.pageProps} />
+                        <LayoutComponent>
+                            <Component {...props} />
+                        </LayoutComponent>
                     )}
-                </SessionProvider>
-            </Provider>
-        </ChakraProvider>
+                </ChakraProvider>
+                <Notification />
+            </SessionProvider>
+        </Provider>
     );
 };
+
 export default MyApp;

@@ -60,6 +60,11 @@ export const COMMON_ERROR_TYPES = {
         status: 400,
         name: 'ValidationError',
         title: 'Validation Error',
+        types: {
+            zod: {
+                name: 'ZodError',
+            },
+        },
     },
     INTERNAL_SERVER_ERROR: {
         msg: 'Oops! Something went wrong. Please try again later.',
@@ -123,12 +128,37 @@ export const FILE_ERROR_TYPES = {
     },
 };
 
+export const SCHEMA_VALIDATION_ERRORS = {
+    REQUIRED: {
+        USER: {
+            verified: 'Verified Is Required.',
+            lastName: 'Last Name Is Required.',
+            firstName: 'First Name Is Required.',
+        },
+        PRODUCT: {
+            price: 'Price Is Required.',
+            available: 'Available Is Required.',
+            description: 'Description Is Required.',
+            frets: 'Frets Is Required.',
+            woodType: 'Wood Type Is Required.',
+            brandId: 'Brand Id Is Required.',
+            model: 'Model Is Required.',
+        },
+    },
+};
+
 export const DEFAULT_VALIDATION_ERRORS = {
-    'any.required': 'Is a required field',
-    'string.base': 'Should be a type of text',
-    'string.empty': 'Is a required field',
-    'string.min': 'Minimum length is required',
-    'string.email': 'Invalid email address',
-    'string.pattern.base':
-        'Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character.',
+    required: 'Is a Required Field',
+    string: 'Should be a type of text',
+    empty_string: 'Is a required field',
+    min_string: 'Minimum length is required',
+    email: 'Invalid email address',
+    pattern_password:
+        'Password should include uppercase letter, lowercase letter, digit, and special character.',
+};
+
+export const VALIDATION_ERRORS = {
+    PROFILE: {
+        UNION: 'Either first name or last name should be filled in.',
+    },
 };

@@ -1,94 +1,101 @@
-import { Input, chakra } from '@chakra-ui/react';
-import Select from 'react-select';
+import {
+    FormControl,
+    FormLabel,
+    Input,
+    Select,
+    chakra,
+} from '@chakra-ui/react';
 
 export const StyledSelect = chakra(Select, {
-    baseStyle: ({ theme }) => ({
-        '& textarea': {
-            resize: 'none',
-        },
-        '& label.Mui-focused': {
-            color: theme.palette.primary.darker,
-        },
-        '& label': {
-            color: theme.palette.primary.main,
-        },
-        '&:hover label': {
-            color: theme.palette.primary.main,
-        },
-        '& .MuiOutlinedInput-root': {
-            '& fieldset': {
-                borderColor: theme.palette.primary.main,
-            },
-            '&:hover fieldset': {
-                borderColor: theme.palette.primary.main,
-            },
-            '&.Mui-focused fieldset': {
-                borderColor: theme.palette.primary.darker,
-            },
-        },
-    }),
+    baseStyle: {
+        mb: 2,
+    },
+});
+
+export const StyledFormLabel = chakra(FormLabel, {
+    baseStyle: {
+        position: 'absolute',
+        top: '50%',
+        zIndex: 1,
+        marginInline: '3',
+        paddingInline: '1',
+        transform: 'translateY(-50%)',
+        fontSize: 'md',
+        color: 'black',
+        pointerEvents: 'none',
+        transition: '0.5s ease',
+    },
+});
+
+export const StyledLabel = chakra(FormLabel, {
+    baseStyle: {
+        position: 'absolute',
+        top: '15%',
+        zIndex: 1,
+        marginInline: '3',
+        paddingInline: '1',
+        transform: 'translateY(-50%)',
+        fontSize: 'md',
+        color: 'black',
+        pointerEvents: 'none',
+        transition: '0.5s ease',
+    },
 });
 
 export const StyledInput = chakra(Input, {
-    baseStyle: ({ theme }) => ({
-        '& textarea': {
-            resize: 'none',
+    baseStyle: {
+        border: '1px solid',
+        width: 'full',
+        color: 'brand.primary.darken',
+        borderColor: 'brand.primary.main',
+        '&:focus ~ label, &:not(:placeholder-shown) ~ label': {
+            top: 0,
+            backgroundColor: 'brand.common.white',
+            fontSize: 'sm',
         },
-        '& label.Mui-focused': {
-            color: theme.palette.primary.darker,
+        _focus: {
+            border: '2px solid',
+            boxShadow: 'none',
+            borderColor: 'brand.primary.darken',
         },
-        '& label': {
-            color: theme.palette.primary.main,
-        },
-        '&:hover label': {
-            color: theme.palette.primary.main,
-        },
-        '& .MuiOutlinedInput-root': {
-            '& fieldset': {
-                borderColor: theme.palette.primary.main,
-            },
-            '&:hover fieldset': {
-                borderColor: theme.palette.primary.main,
-            },
-            '&.Mui-focused fieldset': {
-                borderColor: theme.palette.primary.darker,
-            },
-        },
-    }),
+    },
+});
+
+export const StyledFormControl = chakra(FormControl, {
+    baseStyle: {
+        mb: 3,
+        position: 'relative',
+    },
 });
 
 export const StyledFileInput = chakra('input', {
-    baseStyle: ({ theme }) => ({
-        '& textarea': {
-            resize: 'none',
+    baseStyle: {
+        width: 'full',
+        '&::file-selector-button': {
+            display: 'flex',
+            width: 'full',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: `2`,
+            backgroundColor: 'brand.secondary.main',
+            color: '#fff',
+            borderRadius: 1,
+            cursor: 'pointer',
+            transition: 'background-color 0.3s',
+            border: 'none',
+            outline: 'none',
         },
-        '& label.Mui-focused': {
-            color: theme.palette.primary.darker,
+        '&::file-selector-button-text': {
+            pointerEvents: 'none',
         },
-        '& label': {
-            color: theme.palette.primary.main,
-        },
-        '&:hover label': {
-            color: theme.palette.primary.main,
-        },
-        '& .MuiOutlinedInput-root': {
-            '& fieldset': {
-                borderColor: theme.palette.primary.main,
-            },
-            '&:hover fieldset': {
-                borderColor: theme.palette.primary.main,
-            },
-            '&.Mui-focused fieldset': {
-                borderColor: theme.palette.primary.darker,
-            },
-        },
-    }),
+    },
 });
 
 export const StyledErrorText = chakra('span', {
-    baseStyle: ({ theme }) => ({
-        color: theme.palette.error,
-        mb: theme.spacing(0.5),
-        mr: theme.spacing(0.5),
-    }),
+    baseStyle: {
+        display: 'inline-flex',
+        color: 'brand.error.main',
+        fontSize: 'xs',
+        ml: '2',
+    },
 });

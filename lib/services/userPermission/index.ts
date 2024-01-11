@@ -1,34 +1,50 @@
-import MongoDb from '@lib/classes/database';
-import UserPermission from '@lib/classes/models/userPermission';
-import mongoose from 'mongoose';
+import prismaAdapter from '@lib/db';
+import { PrismaClient, UserRole } from '@prisma/client';
 import {
-    IUserPermission,
     IUserPermissionService,
-    UserPermissionModel,
+    UserPermissionResourcesTypes,
+    UserPermissionsResponseTypes,
 } from 'types';
-import IDbConnection from 'types/database';
 
 class UserPermissionService implements IUserPermissionService {
-    private userPermissionModel: UserPermissionModel;
-    private dbConnection: IDbConnection;
+    private prisma: PrismaClient;
 
-    constructor(
-        userPermissionModel: UserPermissionModel = UserPermission,
-        dbConnection: IDbConnection = new MongoDb()
-    ) {
-        this.userPermissionModel = userPermissionModel;
-        this.dbConnection = dbConnection;
+    constructor(prisma: PrismaClient = prismaAdapter) {
+        this.prisma = prisma;
     }
 
-    async getPermissionsByRoleAndResource(
-        roles: mongoose.Schema.Types.ObjectId[],
-        resource: string
-    ): Promise<IUserPermission[]> {
-        const userPermissionActions = await UserPermission.find({
-            role_id: { $in: roles },
-            resource,
-        }).populate('permissions');
+    async getPermissionsByResource(
+        role: UserRole,
+        resource: UserPermissionResourcesTypes
+    ): Promise<UserPermissionsResponseTypes> {
+        const userPermissionActions =
+            (await this.prisma.userPermission.findFirst({
+                where: {
+                    role,
+                    ...(resource && { resource }),
+                },
+                select: {
+                    resource: true,
+                    actions: true,
+                },
+            })) as UserPermissionsResponseTypes;
+        return userPermissionActions;
+    }
 
+    async getPermissions(
+        role: UserRole
+    ): Promise<UserPermissionsResponseTypes[]> {
+        const userPermissionActions =
+            (await this.prisma.userPermission.findMany({
+                where: {
+                    role,
+                },
+                select: {
+                    resource: true,
+                    actions: true,
+                },
+            })) as UserPermissionsResponseTypes[];
+        console.log(userPermissionActions);
         return userPermissionActions;
     }
 }

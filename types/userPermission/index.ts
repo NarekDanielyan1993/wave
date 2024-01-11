@@ -1,16 +1,50 @@
-import mongoose, { Document, Model } from 'mongoose';
+import { UserRole } from '@prisma/client';
+import { GET_USER_PERMISSIONS } from '@store/userPermission/action';
 
-export interface IUserPermission extends Document {
-    resource: string;
-    role_id: mongoose.Schema.Types.ObjectId;
-    permission_id: mongoose.Schema.Types.ObjectId;
-}
+export type UserPermissions = Record<
+    UserPermissionResourcesTypes,
+    UserPermissionActionsTypes
+>;
+
+export type UserPermissionActionTypesUnion =
+    | 'read'
+    | 'update'
+    | 'delete'
+    | 'create';
+
+export type UserPermissionActionsTypes = {
+    read: boolean;
+    create: boolean;
+    update: boolean;
+    delete: boolean;
+};
+
+export type UserPermissionResourcesTypes = 'adminPage' | 'profile';
+
+export type GET_USER_PERMISSIONS_TYPES = typeof GET_USER_PERMISSIONS;
+
+export type GetUserPermissionActionTypes = {
+    type: GET_USER_PERMISSIONS_TYPES;
+    payload: GetUserPermissionsPayloadType;
+};
+
+export type GetUserPermissionsPayloadType = {
+    role: UserRole;
+};
+
+export type GetUserPermissionsQueryBody = {
+    role: UserRole;
+};
+
+export type UserPermissionsResponseTypes = {
+    resource: UserPermissionResourcesTypes;
+    actions: UserPermissionActionTypesUnion[];
+};
 
 export interface IUserPermissionService {
-    getPermissionsByRoleAndResource(
-        roles: mongoose.Schema.Types.ObjectId[],
-        resource: string
-    ): Promise<IUserPermission[]>;
+    getPermissions(role: UserRole): Promise<UserPermissionsResponseTypes[]>;
+    getPermissionsByResource: (
+        role: UserRole,
+        resource: UserPermissionResourcesTypes
+    ) => Promise<UserPermissionsResponseTypes>;
 }
-
-export type UserPermissionModel = Model<IUserPermission>;

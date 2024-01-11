@@ -1,23 +1,15 @@
-import { InternalServerError } from '@lib/classes/error-handler';
-import mongoose from 'mongoose';
-import MongoDb from './classes/database';
+import { PrismaClient } from '@prisma/client';
+import { config } from '../utils/config';
 
-const connect: typeof mongoose | null = null;
+let prismaAdapter: PrismaClient;
 
-export const connectDB = async (): Promise<typeof mongoose> => {
-    // delete mongoose.models.User;
-    // mongoose.deleteModel('User');
-    if (connect) {
-        console.log('Successfully connected to db.');
-        return connect;
+if (!config.isDev) {
+    prismaAdapter = new PrismaClient();
+} else {
+    if (!global.prisma) {
+        global.prisma = new PrismaClient();
     }
-    try {
-        const mongoDb = new MongoDb();
-        mongoDb.connectToDb();
-        console.log('Successfully connected to db.');
-        return connect;
-    } catch (error) {
-        const newError = new InternalServerError();
-        throw newError;
-    }
-};
+    prismaAdapter = global.prisma;
+}
+
+export default prismaAdapter;

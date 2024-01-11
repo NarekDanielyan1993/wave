@@ -1,33 +1,41 @@
-import { Store, configureStore } from '@reduxjs/toolkit';
+import { configureStore, type Store } from '@reduxjs/toolkit';
 import rootReducer from '@store/root-reducer';
 import rootSaga from '@store/root-saga';
+import { promiseMiddleware } from '@teroneko/redux-saga-promise';
+import { config } from '@utils/config';
 import { createWrapper } from 'next-redux-wrapper';
-import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
-import createSagaMiddleware, { Task } from 'redux-saga';
+import {
+    useDispatch,
+    useSelector,
+    type TypedUseSelectorHook,
+} from 'react-redux';
+import 'react-toastify/dist/ReactToastify.css';
+import createSagaMiddleware, { type Task } from 'redux-saga';
 
 export interface SagaStore extends Store {
     sagaTask?: Task;
 }
 
-const sagaMiddleware = createSagaMiddleware();
-const store = configureStore({
-    reducer: rootReducer,
-    middleware: getDefaultMiddleware =>
-        getDefaultMiddleware().concat(sagaMiddleware),
-});
+export const createStore = () => {
+    const sagaMiddleware = createSagaMiddleware();
+    const store = configureStore({
+        reducer: rootReducer,
+        devTools: config.isDev,
+        middleware: [promiseMiddleware, sagaMiddleware],
+    });
+    (store as SagaStore).sagaTask = sagaMiddleware.run(rootSaga);
+    return store;
+};
 
-(store as SagaStore).sagaTask = sagaMiddleware.run(rootSaga);
-
-export type AppStore = typeof store;
-export type RootState = ReturnType<typeof rootReducer>;
+export type AppStore = ReturnType<typeof createStore>;
 export type AppState = ReturnType<AppStore['getState']>;
-export type AppDispatch = AppStore['dispatch'];
+type AppDispatch = AppStore['dispatch'];
 
 export const useAppDispatch = () => useDispatch<AppDispatch>();
-export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
+export const useAppSelector: TypedUseSelectorHook<AppState> = useSelector;
 
-const makeStore = () => store;
-
-export const wrapper = createWrapper<Store<AppState>>(makeStore, {
-    debug: true,
+export const wrapper = createWrapper<AppStore>(createStore, {
+    debug: config.isDev,
+    serializeState: state => JSON.stringify(state),
+    deserializeState: state => JSON.parse(state),
 });

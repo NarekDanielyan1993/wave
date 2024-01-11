@@ -1,19 +1,19 @@
-import { Checkbox, Switch, useTheme } from '@chakra-ui/react';
-import { ALLOWED_FILE_TYPES } from 'constant';
-import { FC } from 'react';
-import ReactDatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { Controller } from 'react-hook-form';
+import { Controller, FieldValues } from 'react-hook-form';
 
-import { IFormInputProps } from 'types';
+import { Box, Checkbox } from '@chakra-ui/react';
+import { ChakraFieldDefaultOptions, IFormInputProps } from 'types';
+import FileSelect from './fileSelect';
 import {
     StyledErrorText,
-    StyledFileInput,
+    StyledFormControl,
+    StyledFormLabel,
     StyledInput,
+    StyledLabel,
     StyledSelect,
 } from './style';
 
-const FormInput: FC<IFormInputProps> = ({
+const FormInput = <T extends FieldValues>({
     control,
     name,
     label,
@@ -22,32 +22,22 @@ const FormInput: FC<IFormInputProps> = ({
     defaultValue,
     options,
     views,
+    disabled,
+    clearErrors,
+    eraseFieldsOnChange,
     format: dateFormat,
-}): JSX.Element => {
-    const theme = useTheme();
-    const defaultOptions: Omit<IFormInputProps, 'name'> = {
-        defaultValue,
+}: IFormInputProps<T>): JSX.Element => {
+    const defaultOptions: ChakraFieldDefaultOptions<T> = {
         isInvalid: !!error,
-        size: 'sm',
+        size: 'md',
         type,
         label,
+        views,
+        disabled,
+        name,
     };
 
     switch (type) {
-        case 'switch':
-            return (
-                <Controller
-                    control={control}
-                    name={name}
-                    render={({ field: { value, onChange } }) => (
-                        <Switch
-                            isChecked={value}
-                            {...defaultOptions}
-                            onChange={onChange}
-                        />
-                    )}
-                />
-            );
         case 'select':
             return (
                 <Controller
@@ -55,62 +45,66 @@ const FormInput: FC<IFormInputProps> = ({
                     name={name}
                     render={({ field: { value, onChange } }) => (
                         <StyledSelect
-                            onChange={onChange}
-                            options={options}
-                            value={value}
-                        />
+                            onChange={val => onChange(val)}
+                            {...defaultOptions}
+                        >
+                            {options?.map(option => (
+                                <option key={option.id} value={option.id}>
+                                    {option.name}
+                                </option>
+                            ))}
+                        </StyledSelect>
                     )}
                 />
             );
-        case 'multiple-select':
-            return (
-                <Controller
-                    control={control}
-                    defaultValue={defaultValue}
-                    name={name}
-                    render={({ field: { onChange, value } }) => (
-                        <StyledSelect
-                            isMulti
-                            onChange={onChange}
-                            options={options}
-                            value={value}
-                        />
-                    )}
-                />
-            );
-        case 'custom-date':
-            return (
-                <Controller
-                    control={control}
-                    name={name}
-                    render={({ field: { value, onChange } }) => (
-                        <ReactDatePicker
-                            className="date-picker"
-                            dateFormat={dateFormat}
-                            onChange={onChange}
-                            selected={value}
-                            wrapperClassName="date-picker-wrapper"
-                        />
-                    )}
-                />
-            );
+        // case 'multiple-select':
+        //     return (
+        //         <Controller
+        //             control={control}
+        //             defaultValue={defaultValue}
+        //             name={name}
+        //             render={({ field: { onChange, value } }) => (
+        //                 <StyledSelect
+        //                     isMulti
+        //                     onChange={val =>
+        //                         onChange(val as ChangeEvent<HTMLInputElement>)
+        //                     }
+        //                     options={options}
+        //                     value={value}
+        //                 />
+        //             )}
+        //         />
+        //     );
+        // case 'custom-date':
+        //     return (
+        //         <Controller
+        //             control={control}
+        //             name={name}
+        //             render={({ field: { value, onChange } }) => (
+        //                 <ReactDatePicker
+        //                     className="date-picker"
+        //                     dateFormat={dateFormat}
+        //                     onChange={(date, event) => {
+        //                         console.log(event, date);
+        //                         onChange(
+        //                             event as ChangeEvent<HTMLInputElement>
+        //                         );
+        //                     }}
+        //                     selected={value}
+        //                     wrapperClassName="date-picker-wrapper"
+        //                 />
+        //             )}
+        //         />
+        //     );
         case 'file':
             return (
                 <Controller
                     control={control}
                     name={name}
-                    render={({ field: { onChange } }) => (
-                        <>
-                            <StyledFileInput
-                                accept={ALLOWED_FILE_TYPES}
-                                onChange={e => {
-                                    const target = e.target as HTMLInputElement;
-                                    const file = (target.files as FileList)[0];
-                                    onChange(file);
-                                }}
-                            />
-                            {error && <p color="red">{error}</p>}
-                        </>
+                    render={({ field: { onChange, name } }) => (
+                        <FileSelect
+                            onChange={e => onChange(e.target?.result)}
+                        />
                     )}
                 />
             );
@@ -120,12 +114,26 @@ const FormInput: FC<IFormInputProps> = ({
                     control={control}
                     name={name}
                     render={({ field: { value, onChange } }) => (
-                        <StyledInput
-                            as="textarea"
-                            onChange={onChange}
-                            value={value}
-                            {...defaultOptions}
-                        />
+                        <>
+                            <StyledFormControl>
+                                <StyledInput
+                                    as="textarea"
+                                    onChange={onChange}
+                                    p={4}
+                                    placeholder=" "
+                                    resize="none"
+                                    rows={4}
+                                    value={value}
+                                    {...defaultOptions}
+                                />
+                                <StyledLabel htmlFor={name}>
+                                    {defaultOptions.label}
+                                </StyledLabel>
+                                <StyledErrorText>
+                                    {defaultOptions.isInvalid && error}
+                                </StyledErrorText>
+                            </StyledFormControl>
+                        </>
                     )}
                 />
             );
@@ -135,13 +143,19 @@ const FormInput: FC<IFormInputProps> = ({
                     control={control}
                     name={name}
                     render={({ field: { value, onChange } }) => (
-                        <Checkbox
-                            isChecked={value}
-                            onChange={onChange}
-                            {...defaultOptions}
-                        >
-                            {label}
-                        </Checkbox>
+                        <>
+                            <Checkbox
+                                colorScheme="blue"
+                                isChecked={value}
+                                onChange={onChange}
+                                {...defaultOptions}
+                            >
+                                {label}
+                            </Checkbox>
+                            <StyledErrorText>
+                                {defaultOptions.isInvalid && error}
+                            </StyledErrorText>
+                        </>
                     )}
                 />
             );
@@ -152,15 +166,16 @@ const FormInput: FC<IFormInputProps> = ({
                     name={name}
                     render={({ field: { onChange, value } }) => (
                         <>
-                            <StyledInput
-                                onChange={onChange}
-                                type="password"
-                                value={value}
-                                {...defaultOptions}
-                            />
-                            <StyledErrorText>
-                                {defaultOptions.isInvalid && error}
-                            </StyledErrorText>
+                            <StyledFormControl>
+                                <StyledInput
+                                    onChange={onChange}
+                                    value={value}
+                                    {...defaultOptions}
+                                />
+                                <StyledErrorText>
+                                    {defaultOptions.isInvalid && error}
+                                </StyledErrorText>
+                            </StyledFormControl>
                         </>
                     )}
                 />
@@ -171,13 +186,30 @@ const FormInput: FC<IFormInputProps> = ({
                 <Controller
                     control={control}
                     name={name}
-                    render={({ field: { onChange, value } }) => (
-                        <StyledInput
-                            errorBorderColor={theme.palette.error}
-                            onChange={onChange}
-                            value={value}
-                            {...defaultOptions}
-                        />
+                    render={({ field: { onChange, value }, formState }) => (
+                        <>
+                            <StyledFormControl>
+                                <Box pos="relative">
+                                    <StyledInput
+                                        onChange={e => {
+                                            onChange(e);
+                                            !formState.isValid &&
+                                                eraseFieldsOnChange &&
+                                                clearErrors();
+                                        }}
+                                        placeholder=" "
+                                        value={value}
+                                        {...defaultOptions}
+                                    />
+                                    <StyledFormLabel htmlFor={name}>
+                                        {defaultOptions.label}
+                                    </StyledFormLabel>
+                                </Box>
+                                <StyledErrorText>
+                                    {defaultOptions.isInvalid && error}
+                                </StyledErrorText>
+                            </StyledFormControl>
+                        </>
                     )}
                 />
             );

@@ -1,42 +1,48 @@
-import { ForbiddenError, NotFoundError, handleError } from '@lib/classes';
-import UserService from '@lib/services/user';
+import { authOptions } from '@api/auth/[...nextauth]';
 import UserPermissionService from '@lib/services/userPermission';
+import {
+    ForbiddenError,
+    UnauthorizedError,
+    handleError,
+} from '@utils/error-handler';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getSession } from 'next-auth/react';
+import { Session, getServerSession } from 'next-auth';
+import {
+    IUserPermissionService,
+    PermissionOptions,
+    UserPermissionsResponseTypes,
+} from 'types';
 
 const permissionMiddleware =
-    options => async (req: NextApiRequest, res: NextApiResponse, next) => {
+    (options: PermissionOptions) =>
+    async (req: NextApiRequest, res: NextApiResponse, next: () => void) => {
         try {
             const { resource, permissions } = options;
-            const session = await getSession({ req });
-
+            const session: Session | null = await getServerSession(
+                req,
+                res,
+                authOptions(req, res)
+            );
+            console.log(session);
             if (!session) {
                 throw new ForbiddenError();
             }
-
-            const userService = new UserService();
-
-            const user = await userService.getByEmail(session.user.email);
-
-            if (!user) {
-                throw new NotFoundError('User not found');
-            }
-
-            const userRoles = user.roles;
-
-            const userPermissionService = new UserPermissionService();
-            const userPermissions =
-                await userPermissionService.getPermissionsByRoleAndResource(
-                    userRoles,
+            const userPermissionService: IUserPermissionService =
+                new UserPermissionService();
+            const userPermissions: UserPermissionsResponseTypes =
+                await userPermissionService.getPermissionsByResource(
+                    session.user.role,
                     resource
                 );
-            const hasPermission = userPermissions.some(permission =>
+            console.log(userPermissions);
+            const hasPermission = userPermissions.actions.some(permission =>
                 permissions.includes(permission)
             );
 
             if (!hasPermission) {
-                throw new ForbiddenError('Permission denied');
+                throw new UnauthorizedError();
             }
+
             return next();
         } catch (error) {
             handleError(error, res);

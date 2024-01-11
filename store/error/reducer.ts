@@ -1,16 +1,16 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { ErrorObject } from 'types';
 
-interface ErrorState {
+interface IErrorState {
     errors: ErrorObject[];
 }
 
-const initialState: ErrorState = {
+const initialState: IErrorState = {
     errors: [],
 };
 
 const errorSlice = createSlice({
-    name: 'error',
+    name: 'errors',
     initialState,
     reducers: {
         setError(state, action: PayloadAction<string>) {
@@ -22,6 +22,14 @@ const errorSlice = createSlice({
             );
         },
     },
+    // extraReducers: {
+    //     [HYDRATE]: (state, action) => {
+    //         return {
+    //             ...state,
+    //             ...action.payload.errors,
+    //         };
+    //     },
+    // },
 });
 
 export const { setError, clearError } = errorSlice.actions;
