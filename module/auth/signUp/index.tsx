@@ -47,7 +47,7 @@ const SignUpModule = ({
                     variant="primary"
                     width="full"
                 >
-                    sign in
+                    sign up
                 </Button>
                 <SwitchSignUpSignIn
                     redirectLink={AUTH_ROUTES.BASE}

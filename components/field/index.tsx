@@ -167,11 +167,17 @@ const FormInput = <T extends FieldValues>({
                     render={({ field: { onChange, value } }) => (
                         <>
                             <StyledFormControl>
-                                <StyledInput
-                                    onChange={onChange}
-                                    value={value}
-                                    {...defaultOptions}
-                                />
+                                <Box pos="relative">
+                                    <StyledInput
+                                        onChange={onChange}
+                                        placeholder=" "
+                                        value={value}
+                                        {...defaultOptions}
+                                    />
+                                    <StyledFormLabel htmlFor={name}>
+                                        {defaultOptions.label}
+                                    </StyledFormLabel>
+                                </Box>
                                 <StyledErrorText>
                                     {defaultOptions.isInvalid && error}
                                 </StyledErrorText>
