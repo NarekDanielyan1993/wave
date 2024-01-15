@@ -8,6 +8,7 @@ import { getSession } from 'next-auth/react';
 import type { CustomNextPage } from 'types';
 
 const SignInPage: CustomNextPage = () => {
+    console.log(487878);
     const dispatch = useAppDispatch();
     const { isLoading } = useAppSelector(authSelector);
 
