@@ -1,3 +1,4 @@
+import { HamburgerIcon } from '@chakra-ui/icons';
 import { IconButton as ChakraIconButton, Tooltip } from '@chakra-ui/react';
 import ShoppingCart from 'public/shopping.svg';
 import { IconButtonTypes, IconsTypes } from 'types';
@@ -10,6 +11,7 @@ export const IconButton = ({
 }: IconButtonTypes) => {
     const icons: IconsTypes = {
         shop: ShoppingCart,
+        burger: HamburgerIcon,
     };
     const Icon = icons[iconName];
     return (

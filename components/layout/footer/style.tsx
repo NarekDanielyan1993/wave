@@ -34,6 +34,7 @@ export const StyledContentWrapper = chakra('div', {
     baseStyle: {
         display: 'flex',
         gap: '4',
+        p: '4',
     },
 });
 

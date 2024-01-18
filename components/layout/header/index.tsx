@@ -1,14 +1,21 @@
+import { useMediaQuery } from '@chakra-ui/react';
 import HeaderLogo from './headerLogo';
+import Menu from './menu';
 import Navigation from './navigationBar';
 import { StyledHeader, StyledHeaderWrapper } from './style';
 // TODO Move div to style.js file
-const Header = () => (
-    <StyledHeader>
-        <StyledHeaderWrapper>
-            <HeaderLogo />
-            <Navigation />
-        </StyledHeaderWrapper>
-    </StyledHeader>
-);
+const Header = () => {
+    const [isLargerThan700] = useMediaQuery('(min-width: 700px)');
+    const [isLargerThan800] = useMediaQuery('(max-width: 700px)');
+    return (
+        <StyledHeader>
+            <StyledHeaderWrapper>
+                <HeaderLogo />
+                {isLargerThan700 && <Navigation />}
+                {isLargerThan800 && <Menu />}
+            </StyledHeaderWrapper>
+        </StyledHeader>
+    );
+};
 
 export default Header;

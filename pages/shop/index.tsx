@@ -5,6 +5,7 @@ import {
     getPaginatedProducts,
     getProducts,
 } from '@store/products/action';
+import { getSite } from '@store/site/action';
 import { getUser } from '@store/user/action';
 import Shop from 'module/shop';
 import type { GetServerSidePropsContext } from 'next';
@@ -35,6 +36,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
                     },
                 };
             }
+            store.dispatch(getSite());
             store.dispatch(getBrands());
             store.dispatch(getUser({ email: session.user.email }));
             store.dispatch(

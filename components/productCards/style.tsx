@@ -14,6 +14,7 @@ export const StyledProductCardsWrapper = chakra('div', {
     baseStyle: {
         display: 'flex',
         justifyContent: 'center',
+        flexWrap: 'wrap',
         width: '100%',
         alignItems: 'center',
         maxWidth: '6xl',

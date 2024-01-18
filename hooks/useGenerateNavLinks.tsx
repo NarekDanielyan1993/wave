@@ -7,6 +7,38 @@ import type { NavLinkTypes } from 'types';
 const useGenerateNavLinks = () => {
     const { status, data: session } = useSession();
     const router = useRouter();
+    const links = [
+        {
+            text: 'MY Cart',
+            url: '/dashboard/cart',
+            type: 'link',
+        },
+        {
+            text: 'MY Account',
+            url: '/dashboard/account',
+            type: 'link',
+        },
+        {
+            text: 'Home',
+            url: '/',
+            type: 'link',
+        },
+        {
+            text: 'Guitars',
+            url: '/shop',
+            type: 'link',
+        },
+        {
+            text: 'LOG OUT',
+            url: '/',
+            type: 'button',
+            renderAs: 'text',
+            click: () =>
+                signOut({ redirect: false }).then(() => {
+                    router.push(AUTH_ROUTES.BASE);
+                }),
+        },
+    ];
     const navLinksUpperWithSignIn: NavLinkTypes[] = [
         {
             text: 'MY Cart',
@@ -56,7 +88,7 @@ const useGenerateNavLinks = () => {
         navLinksUpper = navLinksUpperWithSignIn;
     }
 
-    return [navLinksUpper, navLinksBottom];
+    return [navLinksUpper, navLinksBottom, links];
 };
 
 export default useGenerateNavLinks;
