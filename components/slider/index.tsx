@@ -1,6 +1,6 @@
-import ImageComponent from '@components/image';
 import Promotion from '@components/promotion';
 import useGeneratePromotion from '@hooks/useGenerateSliderPromotion';
+import Image from 'next/image';
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { SliderPromotionTypes } from 'types';
@@ -24,7 +24,7 @@ const SliderComponent = () => {
                         height: '100dvh',
                     }}
                 >
-                    <ImageComponent layout="fill" src={item.imageUrl} />
+                    <Image alt="" layout="fill" src={item.imageUrl} />
                     <StyledPromotionContainer>
                         <Promotion
                             lineOneText={item.lineOneText}

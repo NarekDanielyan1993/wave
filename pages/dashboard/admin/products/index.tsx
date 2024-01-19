@@ -1,6 +1,7 @@
 import { AUTH_ROUTES } from '@constant/route';
 import { wrapper, type SagaStore } from '@store/create-store';
 import { getBrands, getPaginatedProducts } from '@store/products/action';
+import { getSite } from '@store/site/action';
 import { getUser } from '@store/user/action';
 import { getUserPermissions } from '@store/userPermission/action';
 import AdminProducts from 'module/dashboard/admin/products';
@@ -37,6 +38,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
                     role: session.user.role,
                 })
             );
+            store.dispatch(getSite());
             store.dispatch(
                 getPaginatedProducts({
                     limit: 10,

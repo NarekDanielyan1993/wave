@@ -1,5 +1,6 @@
 import { AUTH_ROUTES } from '@constant/route';
 import { SagaStore, wrapper } from '@store/create-store';
+import { getSite } from '@store/site/action';
 import { getUser } from '@store/user/action';
 import { getUserPermissions } from '@store/userPermission/action';
 import Account from 'module/dashboard/account';
@@ -30,6 +31,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
                     },
                 };
             }
+            store.dispatch(getSite());
             store.dispatch(getUser({ email: session.user.email }));
             store.dispatch(
                 getUserPermissions({

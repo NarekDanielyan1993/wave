@@ -5,15 +5,13 @@ import {
     DrawerContent,
     DrawerOverlay,
 } from '@chakra-ui/react';
-import ShopSideBar from 'module/shop/shopSideBar';
-import { GetPaginatedProductsActionPayload } from 'types';
 
 const Drawer = ({
     isOpen,
     onClose,
-    filterProducts,
+    children,
 }: {
-    filterProducts: (data: GetPaginatedProductsActionPayload) => void;
+    children: React.ReactNode;
     isOpen: boolean;
     onClose: () => void;
 }) => (
@@ -22,7 +20,8 @@ const Drawer = ({
         <DrawerContent>
             <DrawerCloseButton />
             <DrawerBody>
-                <ShopSideBar filterProducts={filterProducts} />
+                {children}
+                {/* <ShopSideBar filterProducts={filterProducts} /> */}
             </DrawerBody>
         </DrawerContent>
     </ChakraDrawer>

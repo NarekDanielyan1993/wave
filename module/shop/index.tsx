@@ -20,25 +20,23 @@ const Shop = ({
     const [isLargerThan700] = useMediaQuery('(min-width: 700px)');
     return (
         <StyledShopWrapper>
-            <StyledShopLeftSide>
-                {isLargerThan700 && (
+            {isLargerThan700 && (
+                <StyledShopLeftSide>
                     <ShopSideBar filterProducts={filterProducts} />
-                )}
-                {isLargerThan800 && (
-                    <>
-                        <IconButton
-                            color="gray"
-                            iconName="burger"
-                            onClick={onOpen}
-                        />
-                        <Drawer
-                            filterProducts={filterProducts}
-                            isOpen={isOpen}
-                            onClose={onClose}
-                        />
-                    </>
-                )}
-            </StyledShopLeftSide>
+                </StyledShopLeftSide>
+            )}
+            {isLargerThan800 && (
+                <>
+                    <IconButton
+                        color="gray"
+                        iconName="burger"
+                        onClick={onOpen}
+                    />
+                    <Drawer isOpen={isOpen} onClose={onClose}>
+                        <ShopSideBar filterProducts={filterProducts} />
+                    </Drawer>
+                </>
+            )}
             <StyledShopRightSide>
                 <Products />
             </StyledShopRightSide>

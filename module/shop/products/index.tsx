@@ -43,8 +43,14 @@ const Products = () => {
     return (
         <>
             <Box display="flex" gap={2} justifyContent="right" py={2}>
-                <MdOutlineGridOff onClick={() => setGrid('home')} />
-                <MdOutlineGridOn onClick={() => setGrid('shop')} />
+                <MdOutlineGridOff
+                    onClick={() => setGrid('home')}
+                    style={{ cursor: 'pointer' }}
+                />
+                <MdOutlineGridOn
+                    onClick={() => setGrid('shop')}
+                    style={{ cursor: 'pointer' }}
+                />
             </Box>
             <StyledSectionWrapper>
                 <CardList
