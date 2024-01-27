@@ -22,7 +22,9 @@ export const AUTH_API = {
 export const USER_API = {
     GET_USER: '/api/user/profile',
     ADD_TO_CART: '/api/user/profile/cart',
+    ADD_TO_HISTORY: '/api/user/profile/history',
     GET_CARTS: '/api/user/profile/cart',
+    GET_HISTORY: '/api/user/profile/history',
     REMOVE_CART: '/api/user/profile/cart',
     UPDATE_USER: '/api/user/profile',
     UPDATE_USER_EMAIL: '/api/user/profile/email',
@@ -36,4 +38,9 @@ export const SITE_API = {
 
 export const USER_PERMISSIONS_API = {
     GET_USER_PERMISSIONS: '/api/userPermissions',
+};
+
+export const PAYMENT_API = {
+    payment: '/api/payment',
+    SIGN_IN: '/api/auth/callback/credentials',
 };

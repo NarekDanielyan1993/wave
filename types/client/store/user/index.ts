@@ -1,6 +1,8 @@
 import {
     ADD_TO_CART,
+    ADD_TO_HISTORY,
     GET_CART,
+    GET_HISTORY,
     GET_USER_PROFILE,
     REMOVE_CART,
     UPDATE_USER,
@@ -13,7 +15,9 @@ export type GET_USER_PROFILE_TYPE = typeof GET_USER_PROFILE;
 export type UPDATE_USER_EMAIL_TYPE = typeof UPDATE_USER_EMAIL;
 export type UPDATE_USER_TYPE = typeof UPDATE_USER;
 export type ADD_TO_CART_TYPE = typeof ADD_TO_CART;
+export type ADD_TO_HISTORY_TYPE = typeof ADD_TO_HISTORY;
 export type GET_CART_TYPE = typeof GET_CART;
+export type GET_HISTORY_TYPE = typeof GET_HISTORY;
 export type REMOVE_CART_TYPE = typeof REMOVE_CART;
 
 export type GetUserProfilesActionTypes = {
@@ -35,6 +39,17 @@ export type AddToCartPayloadType = {
     userId: string;
 };
 
+export type AddToHistoryActionTypes = {
+    type: ADD_TO_HISTORY_TYPE;
+    payload: AddToHistoryPayloadType[];
+};
+
+export type AddToHistoryPayloadType = {
+    product: string;
+    userId: string;
+    amount: number;
+};
+
 export type GetCartsActionTypes = {
     type: GET_CART_TYPE;
     payload: GetCartsPayloadType;
@@ -44,13 +59,22 @@ export type GetCartsPayloadType = {
     id: string;
 };
 
+export type GetHistoryActionTypes = {
+    type: GET_HISTORY_TYPE;
+    payload: GetHistoryPayloadType;
+};
+
+export type GetHistoryPayloadType = {
+    id: string;
+};
+
 export type RemoveCartActionTypes = {
     type: REMOVE_CART_TYPE;
     payload: RemoveCartPayloadType;
 };
 
 export type RemoveCartPayloadType = {
-    id: string;
+    id: string[];
 };
 
 export type UpdateUserPayloadType = {

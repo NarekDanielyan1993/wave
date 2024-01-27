@@ -3,6 +3,8 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { apiRequest } from '@utils/apiRequest';
 import { call, put, takeLatest } from 'redux-saga/effects';
 import {
+    AddToHistoryPayloadType,
+    GetHistoryPayloadType,
     GetUserProfilePayloadType,
     UpdateUserEmailPayloadType,
     UpdateUserPayloadType,
@@ -12,7 +14,9 @@ import {
 } from 'types';
 import {
     ADD_TO_CART,
+    ADD_TO_HISTORY,
     GET_CART,
+    GET_HISTORY,
     GET_USER_PROFILE,
     REMOVE_CART,
     UPDATE_USER,
@@ -21,6 +25,7 @@ import {
 import {
     addToCartSuccess,
     getCartsSuccess,
+    getHistorySuccess,
     getUserInit,
     getUserSuccess,
     isUserEmailLoading,
@@ -84,6 +89,33 @@ function* removeCartGenerator(action: PayloadAction<RemoveCartPayloadType>) {
     }
 }
 
+function* addToHistoryGenerator(
+    action: PayloadAction<AddToHistoryPayloadType>
+) {
+    try {
+        const { data } = yield call(apiRequest.post, USER_API.ADD_TO_HISTORY, {
+            history: action.payload,
+        });
+        console.log(data);
+        // yield put(removeCartSuccess(id));
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+function* getHistoryGenerator(action: PayloadAction<GetHistoryPayloadType>) {
+    const { id } = action.payload;
+    try {
+        const { data } = yield call(apiRequest.get, USER_API.GET_HISTORY, {
+            params: { userId: id },
+        });
+        console.log(data);
+        yield put(getHistorySuccess(data));
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 function* updateUserEmailGenerator(
     action: PayloadAction<UpdateUserEmailPayloadType>
 ) {
@@ -125,4 +157,6 @@ export function* watchUserSaga() {
     yield takeLatest(ADD_TO_CART, addToCartGenerator);
     yield takeLatest(GET_CART, getCartsGenerator);
     yield takeLatest(REMOVE_CART, removeCartGenerator);
+    yield takeLatest(ADD_TO_HISTORY, addToHistoryGenerator);
+    yield takeLatest(GET_HISTORY, getHistoryGenerator);
 }

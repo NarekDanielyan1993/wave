@@ -51,9 +51,21 @@ export interface ICartsResponse {
     product: IProduct;
 }
 
+export interface IHistoryResponse {
+    userId: string;
+    amount: number;
+    product: string;
+}
+
 export interface ICart {
     userId: string;
     productId: string;
+}
+
+export interface IHistory {
+    userId: string;
+    product: string;
+    amount: number;
 }
 
 export type UserGetQueryParams = {
@@ -75,7 +87,9 @@ export interface IUserService {
     getByEmail: (email: string) => Promise<IUserResponse | null>;
     createUser: (user: AuthTypes) => Promise<IUserResponse>;
     addToCart: ({ id, productId }: ICart) => Promise<ICart>;
-    removeCart: (id: string) => Promise<ICart>;
+    addToHistory(history: IHistory[]): Promise<IHistory>;
+    getHistory(userId: string): Promise<IHistory[] | null>;
+    removeCart: (id: string[]) => Promise<ICart>;
     getCarts: (userId: string) => Promise<ICartsResponse[] | null>;
     verifyPassword: (
         currentPassword: string,

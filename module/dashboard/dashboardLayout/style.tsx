@@ -6,10 +6,16 @@ export const StyledDashboardWrapper = chakra('div', {
         gap: '12',
         flexGrow: 1,
         width: '100%',
-        maxWidth: '5xl',
-        mx: `auto`,
+        maxWidth: '6xl',
+        ml: 'auto',
         my: '8',
         px: '4',
+    },
+});
+
+export const StyledDashboardContainer = chakra('div', {
+    baseStyle: {
+        display: 'flex',
     },
 });
 

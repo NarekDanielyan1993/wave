@@ -1,22 +1,12 @@
-import { Box } from '@chakra-ui/react';
-import { useAppDispatch, useAppSelector } from '@store/create-store';
-import { removeCart } from '@store/user/action';
-import { usersSelector } from '@store/user/selectors';
-import { calculateTotal } from '@utils/helper';
-import CartList from './cartList';
+import Carts from './carts';
+import Payment from './payment';
+import { StyledCart } from './style';
 
-const Cart = () => {
-    const dispatch = useAppDispatch();
-    const removeCartHandler = (id: string) => {
-        dispatch(removeCart({ id }));
-    };
-    const { cart } = useAppSelector(usersSelector);
-    return (
-        <>
-            <CartList cart={cart} removeCartHandler={removeCartHandler} />
-            <Box>{`Total Amount: $${calculateTotal(cart)}`}</Box>
-        </>
-    );
-};
+const Cart = () => (
+    <StyledCart>
+        <Carts />
+        <Payment />
+    </StyledCart>
+);
 
 export default Cart;

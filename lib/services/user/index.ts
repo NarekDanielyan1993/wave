@@ -13,6 +13,7 @@ import { DATABASE_MODELS, USER_MODEL_FIELDS } from '@constant/db';
 import { config } from '@utils/config';
 import { AuthTypes } from 'common/validation/auth';
 import {
+    IHistory,
     IUserProfile,
     IUserResponse,
     IUserResponseWIthPassword,
@@ -73,10 +74,26 @@ class UserService implements IUserService {
         return user;
     }
 
-    async removeCart(id: string): Promise<ICart> {
-        const user = await this.prisma.cart.delete({
+    async addToHistory(history: IHistory[]): Promise<IHistory> {
+        const user = await this.prisma.history.createMany({
+            data: history,
+        });
+
+        return user;
+    }
+
+    async getHistory(userId: string): Promise<IHistory[] | null> {
+        return await this.prisma.history.findMany({
             where: {
-                id,
+                userId,
+            },
+        });
+    }
+
+    async removeCart(id: string[]): Promise<ICart> {
+        const user = await this.prisma.cart.deleteMany({
+            where: {
+                id: { in: id },
             },
         });
 

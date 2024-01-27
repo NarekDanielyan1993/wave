@@ -1,11 +1,10 @@
-import { Box, Button, Center, Checkbox } from '@chakra-ui/react';
+import { Box, Checkbox } from '@chakra-ui/react';
 import Loader from '@components/loader';
 import useDidUpdate from '@hooks/useDidUpdate';
 import usePagination from '@hooks/usePagination';
 import { type AnyAction } from '@reduxjs/toolkit';
 import { useAppDispatch } from '@store/create-store';
-import { deleteProduct } from '@store/products/action';
-import type { DeepKeys, TableState } from '@tanstack/react-table';
+import type { DeepKeys } from '@tanstack/react-table';
 import {
     createColumnHelper,
     flexRender,
@@ -88,19 +87,6 @@ export function Table<T>({
 
     const { limit, totalItems, page } = paginationData;
 
-    const getInitialTableState = useCallback(() => {
-        const columnVisibility = cols.reduce(
-            (acc, item: TableColumn<T>) => {
-                acc[item.id] = item.isVisible;
-                return acc;
-            },
-            {} as Record<keyof T, boolean>
-        );
-        return {
-            columnVisibility,
-        } as Partial<TableState>;
-    }, []);
-
     const dispatch = useAppDispatch();
 
     const table = useReactTable({
@@ -112,11 +98,17 @@ export function Table<T>({
                 pageIndex: 0,
                 pageSize: limit,
             },
+            columnVisibility: cols.reduce(
+                (acc: Record<string, boolean>, item) => {
+                    if (!item.isVisible) {
+                        acc[item.headerName] = false;
+                    }
+                    return acc;
+                },
+                {}
+            ),
         },
         pageCount: Math.ceil(totalItems / limit),
-        state: {
-            ...getInitialTableState(),
-        },
         getCoreRowModel: getCoreRowModel(),
         ...(paginationData && {
             getPaginationRowModel: getPaginationRowModel(),
@@ -172,13 +164,6 @@ export function Table<T>({
                                     </StyledTdText>
                                 </StyledTh>
                             ))}
-                            {paginationData && (
-                                <StyledTh colSpan={2}>
-                                    <Center>
-                                        <StyledTdText>Actions</StyledTdText>
-                                    </Center>
-                                </StyledTh>
-                            )}
                         </StyledTheadTr>
                     ))}
                 </StyledTHead>
@@ -198,39 +183,6 @@ export function Table<T>({
                                         </StyledTd>
                                     </>
                                 ))}
-                                {paginationData && (
-                                    <>
-                                        <StyledTd>
-                                            <Button
-                                                height="auto"
-                                                onClick={() => {
-                                                    dispatch(
-                                                        deleteProduct({
-                                                            id: row.original.id,
-                                                        })
-                                                    );
-                                                    table.setPageIndex(0);
-                                                }}
-                                                variant="delete"
-                                                width="full"
-                                            >
-                                                delete
-                                            </Button>
-                                        </StyledTd>
-                                        <StyledTd>
-                                            <Button
-                                                height="auto"
-                                                onClick={() =>
-                                                    setIsDialogOpen(row)
-                                                }
-                                                variant="primaryLight"
-                                                width="full"
-                                            >
-                                                edit
-                                            </Button>
-                                        </StyledTd>
-                                    </>
-                                )}
                             </StyledTbodyTr>
                         </>
                     ))}

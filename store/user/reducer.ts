@@ -1,5 +1,6 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import {
+    IHistoryResponse,
     IUserResponse,
     SingleUserState,
     type AddToCartPayloadType,
@@ -12,6 +13,7 @@ interface IUsersState {
     isEmailLoading: boolean;
     user: SingleUserState;
     cart: AddToCartPayloadType[];
+    history: IHistoryResponse[];
 }
 
 const initialState: IUsersState = {
@@ -23,6 +25,7 @@ const initialState: IUsersState = {
         data: {} as IUserResponse,
         isFetched: false,
     },
+    history: [],
 };
 
 const userSlice = createSlice({
@@ -46,11 +49,19 @@ const userSlice = createSlice({
         ) => {
             state.cart = action.payload;
         },
+        getHistorySuccess: (
+            state: IUsersState,
+            action: PayloadAction<IHistoryResponse[]>
+        ) => {
+            state.history = action.payload;
+        },
         removeCartSuccess: (
             state: IUsersState,
-            action: PayloadAction<string>
+            action: PayloadAction<string[]>
         ) => {
-            state.cart = state.cart.filter(cart => cart.id !== action.payload);
+            state.cart = state.cart.filter(
+                cart => !action.payload.some(c => c === cart.id)
+            );
         },
         isUserLoading: (state: IUsersState, action: PayloadAction<boolean>) => {
             state.user.isLoading = action.payload;
@@ -90,6 +101,7 @@ export const {
     getCartsSuccess,
     removeCartSuccess,
     getUserSuccess,
+    getHistorySuccess,
     isUserLoading,
     updateUserEmailSuccess,
     updateUserSuccess,

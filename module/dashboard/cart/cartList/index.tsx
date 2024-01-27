@@ -6,7 +6,7 @@ const CartList = ({
     cart,
 }: {
     cart: ICartsResponse[];
-    removeCartHandler: (id: string) => void;
+    removeCartHandler: (id: string[]) => void;
 }) =>
     cart.map(c => (
         <CartItem

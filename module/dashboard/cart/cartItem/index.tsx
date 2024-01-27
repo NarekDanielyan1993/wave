@@ -6,7 +6,7 @@ const CartItem = ({
     cart,
     removeCartHandler,
 }: {
-    removeCartHandler: (id: string) => void;
+    removeCartHandler: (id: string[]) => void;
     cart: ICartsResponse;
 }) => (
     <StyledCartWrapper>
@@ -24,7 +24,7 @@ const CartItem = ({
         </Box>
         <Button
             alignSelf="center"
-            onClick={() => removeCartHandler(cart.id)}
+            onClick={() => removeCartHandler([cart.id])}
             variant="delete"
         >
             Remove
