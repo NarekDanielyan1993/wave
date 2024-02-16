@@ -14,36 +14,51 @@ const ProductSearchForm = () => {
 
     const dispatch = useAppDispatch();
 
-    const { FormSearchField } = useForm<productSearchValidationTypes>({
-        defaultValues,
-        validationSchema: productsSearchValidationSchema,
-    });
+    const { FormSearchField, watch, reset } =
+        useForm<productSearchValidationTypes>({
+            defaultValues,
+            validationSchema: productsSearchValidationSchema,
+        });
 
-    const formSubmitHandler = data => {
-        dispatch(
-            getPaginatedProducts({
-                filters: {
-                    baseFilters: {
-                        search: [
-                            {
-                                name: 'model',
-                                value: data.target.value,
-                                keyword: 'contains',
-                            },
-                        ],
+    const search = watch('search');
+
+    const formSubmitHandler = (data?: productSearchValidationTypes) => {
+        if (data) {
+            dispatch(
+                getPaginatedProducts({
+                    filters: {
+                        baseFilters: {
+                            search: [
+                                {
+                                    name: 'model',
+                                    value: data.target.value,
+                                    keyword: 'contains',
+                                },
+                            ],
+                        },
                     },
-                },
-            })
-        );
+                })
+            );
+        } else {
+            dispatch(getPaginatedProducts({ limit: 10, page: 0 }));
+            reset();
+        }
     };
 
     return (
         <Box>
             {FormSearchField({
+                label: 'Search',
                 name: 'search',
                 fn: formSubmitHandler,
             })}
-            <Button variant="primary">reset field</Button>
+            <Button
+                isDisabled={!search}
+                onClick={() => formSubmitHandler()}
+                variant="primary"
+            >
+                reset field
+            </Button>
         </Box>
     );
 };

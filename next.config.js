@@ -1,3 +1,9 @@
+import withBundleAnalyzer from '@next/bundle-analyzer';
+
+const bundleAnanlizer = withBundleAnalyzer({
+    enabled: process.env.ANALYZE === 'true',
+});
+
 const nextConfig = {
     basePath: '',
     reactStrictMode: false,
@@ -19,6 +25,10 @@ const nextConfig = {
             {
                 protocol: 'https',
                 hostname: 'guitarfiles.s3.us-east-2.amazonaws.com',
+            },
+            {
+                protocol: 'https',
+                hostname: 'res.cloudinary.com',
             },
         ],
     },
@@ -57,4 +67,4 @@ const nextConfig = {
     */
 };
 
-module.exports = nextConfig;
+export default bundleAnanlizer(nextConfig);

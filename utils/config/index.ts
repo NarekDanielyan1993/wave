@@ -4,7 +4,6 @@ const getEnvVariable = (environmentVariable: string): string => {
         console.log(
             `Couldn't find environment variable: ${environmentVariable}`
         );
-        return '';
     }
     return unvalidatedEnvironmentVariable;
 };
@@ -29,5 +28,11 @@ export const config = {
     NEXT_PUBLIC_BASE_URL: getEnvVariable('NEXT_PUBLIC_BASE_URL'),
     BASE_URL: getEnvVariable('NEXT_PUBLIC_BASE_URL'),
     TOKEN_SECRET: getEnvVariable('TOKEN_SECRET'),
+    NEXT_PUBLIC_NEXTAUTH_URL: getEnvVariable('NEXT_PUBLIC_NEXTAUTH_URL'),
+    NEXT_PUBLIC_CLOUDINARY_URL: process.env.NEXT_PUBLIC_CLOUDINARY_URL,
+    NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME:
+        process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+    NEXT_PUBLIC_CLOUDINARY_PRESET_NAME:
+        process.env.NEXT_PUBLIC_CLOUDINARY_PRESET_NAME,
     isDev: process.env.NEXT_PUBLIC_NODE_ENV === 'development',
 };

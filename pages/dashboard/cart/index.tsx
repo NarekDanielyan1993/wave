@@ -2,6 +2,7 @@ import { AUTH_ROUTES } from '@constant/route';
 import { wrapper, type SagaStore } from '@store/create-store';
 import { getSite } from '@store/site/action';
 import { getCarts } from '@store/user/action';
+import { getUserPermissions } from '@store/userPermission/action';
 import Cart from 'module/dashboard/cart';
 import DashboardLayout from 'module/dashboard/dashboardLayout';
 import type { GetServerSidePropsContext } from 'next';
@@ -30,6 +31,11 @@ export const getServerSideProps = wrapper.getServerSideProps(
                 };
             }
             store.dispatch(getSite());
+            store.dispatch(
+                getUserPermissions({
+                    role: session.user.role,
+                })
+            );
             store.dispatch(
                 getCarts({
                     id: session.user.id,

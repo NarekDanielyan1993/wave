@@ -11,6 +11,7 @@ import {
 } from '@store/products/action';
 import type { Filters } from 'types/database';
 import { type IProductResponse } from 'types/product';
+import { AddToCartPayloadType } from '../user';
 
 export type GET_PRODUCTS_TYPE = typeof GET_PRODUCTS;
 export type GET_PRODUCT_TYPE = typeof GET_PRODUCT;
@@ -123,6 +124,7 @@ export type ProductCardSectionUnion = 'bestSellingProducts' | 'latestProducts';
 export type ProductCards = {
     which: ProductCardSectionUnion;
     title: string;
+    addToCartHandler: (data: AddToCartPayloadType) => void;
 };
 
 export type IProductSortBy = {

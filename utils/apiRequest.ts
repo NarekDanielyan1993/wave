@@ -1,9 +1,14 @@
 import { config } from '@utils/config';
-import axios from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 export const apiRequest = axios.create({
     baseURL: config.BASE_URL,
     timeout: 30000,
 });
+
+export const request = axios.create({
+    timeout: 30000,
+});
+
 type UrlMethodTypes = 'get' | 'post' | 'delete' | 'update' | 'patch';
 
 // export const apiSagaRequest = (
@@ -25,22 +30,23 @@ type UrlMethodTypes = 'get' | 'post' | 'delete' | 'update' | 'patch';
 //     return request;
 // };
 
-// export const apiRequest = async <T>(
-//     method: UrlMethodTypes,
-//     url: string,
-//     data: T,
-//     options?: AxiosRequestConfig
-// ): Promise<T> => {
-//     const abortController = new AbortController();
-//     let bodyData = data;
-//     if (method === 'get') {
-//         bodyData = { params: data };
-//     }
-//     const requestOptions: AxiosRequestConfig = {
-//         ...bodyData,
-//         signal: abortController.signal,
-//         cancelToken: abortController.abort,
-//     };
+export const axiosInstance = async <T>(
+    method: UrlMethodTypes,
+    url: string,
+    data: T,
+    options?: AxiosRequestConfig
+): Promise<T> => {
+    const abortController = new AbortController();
+    let bodyData = data;
+    if (method === 'get') {
+        bodyData = { params: data };
+    }
+    const requestOptions: AxiosRequestConfig = {
+        ...bodyData,
+        ...options,
+        signal: abortController.signal,
+        // cancelToken: abortController.abort(),
+    };
 
-//     return (axiosInstance as any)[method](url, data, requestOptions);
-// };
+    return (axios as any)[method](url, data, requestOptions);
+};

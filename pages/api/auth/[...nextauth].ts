@@ -105,6 +105,7 @@ export const authOptions = (
                             USER_ERROR_TYPES.USER_NOT_FOUND.status
                         );
                     }
+                    console.log(currentUser);
                     const isValid = await userService.verifyPassword(
                         currentUser.password,
                         password

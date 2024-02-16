@@ -63,12 +63,11 @@ export const addProductSchema = z.object({
         .refine(value => !Number.isNaN(Number(value)), 'Input number')
         .refine(value => Number(value) > 0, 'Input positive number')
         .transform(value => Number(value)),
-    frets: z
-        .string()
-        .min(1, { message: DEFAULT_VALIDATION_ERRORS.required })
-        .refine(value => !Number.isNaN(Number(value)), 'Input number')
-        .refine(value => Number(value) > 0, 'Input positive number')
-        .transform(value => Number(value)),
+    frets: z.coerce
+        .number({
+            invalid_type_error: DEFAULT_VALIDATION_ERRORS.required,
+        })
+        .gt(0, { message: 'Input positive number' }),
     price: z
         .string()
         .min(1, { message: DEFAULT_VALIDATION_ERRORS.required })

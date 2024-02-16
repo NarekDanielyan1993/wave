@@ -12,8 +12,7 @@ import {
     getPaginationRowModel,
     useReactTable,
 } from '@tanstack/react-table';
-import EditProductDialog from 'module/dashboard/admin/products/editProductDialog';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import {
     type GetPaginatedProductsActionPayload,
     type IPaginatedDataResponse,
@@ -47,30 +46,27 @@ export function Table<T>({
     manualPagination = false,
     paginationData,
     getPaginatedData,
+    setId,
 }: {
     data: T[];
     isLoading: boolean;
     cols: TableColumn<T>[];
+    setId: (id: string) => void;
     variant?: string;
     manualPagination: boolean;
     paginationData: IPaginatedDataResponse<keyof T, number>;
     getPaginatedData: (data: GetPaginatedProductsActionPayload) => AnyAction;
 }): JSX.Element {
     const columnHelper = createColumnHelper<T>();
-    const [isDialogOpen, setIsDialogOpen] = useState<undefined | object>(
-        undefined
-    );
 
-    const renderColumn = useCallback((type: ColumnTypesUnion) => {
-        switch (type) {
-            case 'boolean': {
-                // TODO ALIGN CHECKBOX TO THE CENTER IN COLUMN
-                return (info: any) => <Checkbox checked />;
-            }
-            default: {
-                return (info: any) => info.getValue();
-            }
+    const renderColumn = useCallback(column => {
+        if (column.type === 'boolean') {
+            return (info: any) => <Checkbox checked />;
         }
+        if (column.headerName === 'Amount') {
+            return (info: any) => `${info.getValue()}$`;
+        }
+        return (info: any) => info.getValue();
     }, []);
 
     const newColumns = useMemo(() => {
@@ -79,7 +75,7 @@ export function Table<T>({
         }
         return cols.map((col: TableColumn<T>) =>
             columnHelper.accessor(col.accessorKey, {
-                cell: renderColumn(col.type),
+                cell: renderColumn(col),
                 header: col.headerName,
             })
         );
@@ -170,7 +166,10 @@ export function Table<T>({
                 <StyledTbody>
                     {table.getRowModel().rows.map(row => (
                         <>
-                            <StyledTbodyTr key={row.id}>
+                            <StyledTbodyTr
+                                key={row.id}
+                                onClick={() => setId(row.original.id)}
+                            >
                                 {row.getVisibleCells().map(cell => (
                                     <>
                                         <StyledTd key={cell.id}>
@@ -186,13 +185,6 @@ export function Table<T>({
                             </StyledTbodyTr>
                         </>
                     ))}
-                    {isDialogOpen && (
-                        <EditProductDialog
-                            isOpen={!!isDialogOpen}
-                            onClose={() => setIsDialogOpen(undefined)}
-                            row={isDialogOpen}
-                        />
-                    )}
                 </StyledTbody>
             </StyledTable>
             <Box mt="4">{paginationData && Toolbar}</Box>

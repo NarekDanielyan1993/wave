@@ -2,6 +2,7 @@ import { useDisclosure, useMediaQuery } from '@chakra-ui/react';
 import IconButton from '@components/button/icon-button';
 import Sidebar from '@components/sideBar';
 import Drawer from '@components/sideBar/drawer';
+import { useEffect, useState } from 'react';
 import { type DashboardLayoutTypes } from 'types';
 import {
     StyledDashboardContainer,
@@ -15,22 +16,16 @@ const DashboardLayout = ({
     children,
     rightSideTitle,
 }: DashboardLayoutTypes) => {
-    const [isLargerThan800] = useMediaQuery('(max-width: 700px)');
-    const [isLargerThan700] = useMediaQuery('(min-width: 700px)', {
-        ssr: true,
-        fallback: false,
-    });
-    console.log(isLargerThan700);
+    const [isMobile] = useMediaQuery('(max-width: 700px)');
+    const [hideOnMobile, setHideOnMobile] = useState(false);
+    useEffect(() => {
+        setHideOnMobile(isMobile);
+    }, [isMobile]);
     const { isOpen, onOpen, onClose } = useDisclosure();
     return (
         <StyledDashboardContainer>
             <StyledDashboardWrapper>
-                {isLargerThan700 && (
-                    <StyledDashboardLeftSide>
-                        <Sidebar />
-                    </StyledDashboardLeftSide>
-                )}
-                {isLargerThan800 && (
+                {hideOnMobile ? (
                     <>
                         <IconButton
                             color="gray"
@@ -41,6 +36,10 @@ const DashboardLayout = ({
                             <Sidebar />
                         </Drawer>
                     </>
+                ) : (
+                    <StyledDashboardLeftSide>
+                        <Sidebar />
+                    </StyledDashboardLeftSide>
                 )}
                 <StyledRightSide>
                     <StyledDashboardHeader as="h3">

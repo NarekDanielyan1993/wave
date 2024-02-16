@@ -1,6 +1,7 @@
 import { AUTH_ROUTES } from '@constant/route';
 import { wrapper, type SagaStore } from '@store/create-store';
 import { getProduct } from '@store/products/action';
+import { getSite } from '@store/site/action';
 import ProductDetail from 'module/productDetail';
 import type { GetServerSidePropsContext } from 'next';
 import type { Session } from 'next-auth';
@@ -26,6 +27,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
                     },
                 };
             }
+            store.dispatch(getSite());
             store.dispatch(getProduct({ id }));
             store.dispatch(END);
             await store.sagaTask?.toPromise();

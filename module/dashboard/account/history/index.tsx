@@ -7,14 +7,14 @@ import { StyledAccountContentWrapper } from '../style';
 
 const History = () => {
     const history = useAppSelector(historySelector);
-
     const columns: TableColumn<IHistoryResponse>[] =
         history.length > 0
             ? Object.keys(history[0]).map(item => {
                   if (item === 'id' || item === 'userId') {
                       return {
                           id: history[0][item].id,
-                          headerName: item,
+                          headerName:
+                              item.charAt(0).toUpperCase() + item.slice(1),
                           isVisible: false,
                           type: 'text',
                           accessorKey: (person: Person) =>
@@ -24,7 +24,7 @@ const History = () => {
                   }
                   return {
                       id: history[0][item].id,
-                      headerName: item,
+                      headerName: item.charAt(0).toUpperCase() + item.slice(1),
                       isVisible: true,
                       type: 'text',
                       accessorKey: (person: Person) =>

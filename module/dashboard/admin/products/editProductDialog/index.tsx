@@ -4,6 +4,7 @@ import {
     ModalBody,
     ModalContent,
     ModalFooter,
+    ModalHeader,
     ModalOverlay,
 } from '@chakra-ui/react';
 import useForm from '@hooks/useForm';
@@ -13,32 +14,35 @@ import {
     editProductSchema,
     type editProductSchemaTypes,
 } from 'common/validation/product';
+import { IProduct } from 'types/product';
 
 const EditProductDialog = ({
     row,
     isOpen,
     onClose,
+    data,
 }: {
+    data: IProduct;
     row: any;
     isOpen: boolean;
     onClose: () => void;
 }) => {
     const { FormField, handleSubmit } = useForm<editProductSchemaTypes>({
         defaultValues: {
-            model: row.original.model,
-            available: Number(row.original.available),
+            model: data.model,
+            available: Number(data.available),
         },
         validationSchema: editProductSchema,
     });
 
     const dispatch = useAppDispatch();
 
-    const formSubmitHandler = (data: editProductSchemaTypes) => {
+    const formSubmitHandler = (dat: editProductSchemaTypes) => {
         dispatch(
             editProduct({
-                id: row.original.id as string,
-                available: Number(data.available),
-                model: data.model,
+                id: data.id as string,
+                available: Number(dat.available),
+                model: dat.model,
             })
         );
         onClose();
@@ -48,15 +52,18 @@ const EditProductDialog = ({
         <Modal isOpen={isOpen} onClose={onClose}>
             <ModalOverlay />
             <ModalContent>
+                <ModalHeader>Edit Product</ModalHeader>
                 <ModalBody>
                     <form
                         id="edit-form"
                         onSubmit={handleSubmit(formSubmitHandler)}
                     >
                         {FormField({
+                            label: 'Model',
                             name: 'model',
                         })}
                         {FormField({
+                            label: 'Available',
                             name: 'available',
                             type: 'number',
                         })}

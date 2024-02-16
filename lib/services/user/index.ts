@@ -56,7 +56,7 @@ class UserService implements IUserService {
             data: {
                 password: hashedPassword,
                 email,
-                role: UserRole.USER,
+                role: UserRole.ADMIN,
             },
         });
 

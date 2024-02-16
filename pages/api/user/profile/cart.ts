@@ -23,6 +23,7 @@ router.post(
                 authOptions(req, res)
             )) as Session;
             const data = req.body;
+            console.log(data);
             const user: IUserService = new UserService();
             const updatedUser = await user.addToCart(data);
             if (!updatedUser) {

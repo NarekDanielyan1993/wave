@@ -9,7 +9,11 @@ import {
     StyledProductCardsWrapper,
 } from './style';
 
-export const ProductCardsSection = ({ which, title }: ProductCards) => {
+export const ProductCardsSection = ({
+    which,
+    title,
+    addToCartHandler,
+}: ProductCards) => {
     const { data: products, isLoading } = useAppSelector(
         takeProductCardsSectionSelector(which)
     );
@@ -19,7 +23,11 @@ export const ProductCardsSection = ({ which, title }: ProductCards) => {
         <StyledProductCardsContainer>
             <StyledProductCardsTitle>{title}</StyledProductCardsTitle>
             <StyledProductCardsWrapper>
-                <CardList cards={products} type="home" />
+                <CardList
+                    addToCartHandler={addToCartHandler}
+                    cards={products}
+                    type="home"
+                />
             </StyledProductCardsWrapper>
         </StyledProductCardsContainer>
     );

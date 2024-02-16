@@ -24,7 +24,7 @@ const SliderComponent = () => {
                         height: '100dvh',
                     }}
                 >
-                    <Image alt="" layout="fill" src={item.imageUrl} />
+                    <Image alt="" layout="fill" priority src={item.imageUrl} />
                     <StyledPromotionContainer>
                         <Promotion
                             lineOneText={item.lineOneText}
