@@ -33,8 +33,10 @@ export const StyledFooterTitle = chakra(Text, {
 export const StyledContentWrapper = chakra('div', {
     baseStyle: {
         display: 'flex',
-        gap: '4',
-        p: '4',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+        gap: 8,
+        p: 8,
     },
 });
 
@@ -42,7 +44,9 @@ export const StyledFooterLeft = chakra('div', {
     baseStyle: {
         display: 'flex',
         flexDirection: 'column',
-        flex: '1 1 40%',
+        maxW: '20rem',
+        w: 'full',
+        flexShrink: 0,
     },
 });
 
@@ -50,6 +54,8 @@ export const StyledFooterRight = chakra('div', {
     baseStyle: {
         display: 'flex',
         flexDirection: 'column',
-        flex: '1 1 60%',
+        maxW: '20rem',
+        w: 'full',
+        flexShrink: 0,
     },
 });

@@ -1,4 +1,5 @@
 import { DEFAULT_VALIDATION_ERRORS } from '@constant/error';
+import { positiveNumberSchema } from '@utils/validator';
 import { z } from 'zod';
 
 export const createProductValidationSchema = z.object({
@@ -55,32 +56,26 @@ export const editProductSchema = z.object({
     available: z.coerce.number().nullable(),
 });
 
-export const addProductSchema = z.object({
+export const addEditProductSchema = z.object({
     model: z.string().min(1, { message: DEFAULT_VALIDATION_ERRORS.required }),
-    available: z
-        .string()
-        .min(1, { message: DEFAULT_VALIDATION_ERRORS.required })
-        .refine(value => !Number.isNaN(Number(value)), 'Input number')
-        .refine(value => Number(value) > 0, 'Input positive number')
-        .transform(value => Number(value)),
-    frets: z.coerce
-        .number({
-            invalid_type_error: DEFAULT_VALIDATION_ERRORS.required,
-        })
-        .gt(0, { message: 'Input positive number' }),
+    available: positiveNumberSchema,
+    fretId: z.string(),
     price: z
-        .string()
+        .string({ invalid_type_error: DEFAULT_VALIDATION_ERRORS.required })
         .min(1, { message: DEFAULT_VALIDATION_ERRORS.required })
         .refine(value => !Number.isNaN(Number(value)), 'Input number')
         .refine(value => Number(value) > 0, 'Input positive number')
         .transform(value => Number(value)),
-    woodType: z
-        .string()
-        .min(1, { message: DEFAULT_VALIDATION_ERRORS.required }),
+    woodType: z.string(),
     description: z
         .string()
         .min(1, { message: DEFAULT_VALIDATION_ERRORS.required }),
-    file: z.string().optional(),
+    file: z
+        .object({
+            name: z.string(),
+            url: z.string(),
+        })
+        .nullable(),
     shipping: z.boolean(),
     brand: z.string(),
 });
@@ -91,4 +86,4 @@ export type productSearchValidationTypes = z.infer<
 
 export type editProductSchemaTypes = z.infer<typeof editProductSchema>;
 
-export type addProductSchemaTypes = z.infer<typeof addProductSchema>;
+export type addEditProductSchemaTypes = z.infer<typeof addEditProductSchema>;

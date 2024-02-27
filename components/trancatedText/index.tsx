@@ -1,4 +1,4 @@
-import Button from '@components/button';
+import { Box, Button } from '@chakra-ui/react';
 import { useTruncateText } from '@hooks/useTruncatedText';
 
 const TruncatedText = ({ text }: { text: string }) => {
@@ -6,14 +6,15 @@ const TruncatedText = ({ text }: { text: string }) => {
         useTruncateText(text);
 
     return (
-        <>
+        <Box>
             {truncatedText}
+            {'      '}
             {shouldTruncate && (
-                <Button onClick={handleExpand} renderAs="truncate">
+                <Button onClick={handleExpand} variant="truncate">
                     {isExpanded ? 'show less' : 'show more'}
                 </Button>
             )}
-        </>
+        </Box>
     );
 };
 

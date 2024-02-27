@@ -3,7 +3,7 @@ import { AuthTypes } from 'common/validation/auth';
 import { SESSION_PROVIDERS } from 'constant/auth';
 import { UppercaseKeys } from 'types/common';
 import { Keys } from 'types/database';
-import type { IProduct } from 'types/product';
+import type { IProductResponse } from 'types/product';
 
 // export enum UserRole {
 //     ADMIN,
@@ -31,13 +31,17 @@ export interface IUser {
     email: string;
     firstname: string;
     lastname: string;
+    url: string;
+    publicId: string;
     history: object;
     cart: object;
 }
 
 export interface IUserProfile {
-    firstname: string;
-    lastname: string;
+    firstname?: string;
+    lastname?: string;
+    url?: string;
+    publicId?: string;
 }
 
 export interface IUserResponse extends IUser {
@@ -46,9 +50,24 @@ export interface IUserResponse extends IUser {
     createdAt: Date;
     updatedAt: Date;
 }
+
 export interface ICartsResponse {
+    id: string;
     userId: string;
-    product: IProduct;
+    productId: string;
+    product: IProductResponse;
+}
+
+export interface ICarts extends Omit<ICartsResponse, 'product' | 'productId'> {
+    products: IProductCart[];
+    subtotal: number;
+    quantity: number;
+}
+
+export interface IProductCart extends IProductResponse {
+    total: number;
+    quantity: number;
+    cartId: string;
 }
 
 export interface IHistoryResponse {

@@ -1,4 +1,4 @@
-import { Text, chakra } from '@chakra-ui/react';
+import { chakra } from '@chakra-ui/react';
 
 export const StyledDashboardWrapper = chakra('div', {
     baseStyle: {
@@ -6,10 +6,9 @@ export const StyledDashboardWrapper = chakra('div', {
         gap: '12',
         flexGrow: 1,
         width: '100%',
-        maxWidth: '6xl',
-        ml: 'auto',
+        maxWidth: '7xl',
         my: '8',
-        px: '4',
+        mx: '1vw',
     },
 });
 
@@ -34,15 +33,5 @@ export const StyledRightSide = chakra('section', {
         flexDirection: 'column',
         flexGrow: 1,
         gap: '8',
-    },
-});
-
-export const StyledDashboardHeader = chakra(Text, {
-    baseStyle: {
-        color: 'brand.common.black',
-        textTransform: 'capitalize',
-        fontSize: '4xl',
-        fontWeight: 'bold',
-        marginBottom: '4',
     },
 });

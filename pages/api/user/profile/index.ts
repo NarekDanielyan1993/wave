@@ -2,6 +2,7 @@ import { authOptions } from '@api/auth/[...nextauth]';
 import { COMMON_ERROR_TYPES } from '@constant/error';
 import { PERMISSION_ACTION, PERMISSION_RESOURCES } from '@constant/permission';
 import UserService from '@lib/services/user';
+import CloudinaryService from '@lib/upload';
 import {
     ForbiddenError,
     InternalServerError,
@@ -56,11 +57,19 @@ router.put(
                 res,
                 authOptions(req, res)
             )) as Session;
-            const data = req.body;
+            const { file, ...data } = req.body;
+            const userData = data;
+            let img;
+            if (file) {
+                const cloudinaryService = new CloudinaryService();
+                img = await cloudinaryService.uploadFile(file);
+                userData.url = img.url;
+                userData.publicId = img.publicId;
+            }
             const user: IUserService = new UserService();
             const updatedUser = await user.updateUserProfile(
                 session.user.email,
-                data
+                userData
             );
             if (!updatedUser) {
                 throw new InternalServerError();

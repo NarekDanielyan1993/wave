@@ -1,19 +1,15 @@
-import type { ICartsResponse } from 'types';
+import { IProductCard } from 'types/product';
 import CartItem from '../cartItem';
 
 const CartList = ({
     removeCartHandler,
     cart,
 }: {
-    cart: ICartsResponse[];
+    cart: IProductCard[];
     removeCartHandler: (id: string[]) => void;
 }) =>
     cart.map(c => (
-        <CartItem
-            cart={c}
-            key={c.userId}
-            removeCartHandler={removeCartHandler}
-        />
+        <CartItem cart={c} key={c.id} removeCartHandler={removeCartHandler} />
     ));
 
 export default CartList;

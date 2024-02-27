@@ -45,11 +45,10 @@ function* signInGenerator(
             redirect: false,
         });
         Router.push(config.NEXT_PUBLIC_BASE_URL);
-        yield put(isAuthLoading(false));
     } catch (error) {
         console.log(error);
-        yield put(isAuthLoading(false));
     }
+    yield put(isAuthLoading(false));
 }
 
 export function* watchAuthSaga() {

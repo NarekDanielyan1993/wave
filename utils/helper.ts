@@ -10,12 +10,22 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import type {
     FilterOptions,
     Filters,
-    ICartsResponse,
+    ICarts,
     IItemsQueryParams,
     IPaginatedItemsQueryParams,
+    IParsedPaginatedITemsQueryParams,
 } from 'types';
 import type { ZodRawShape, z } from 'zod';
 import { config } from './config';
+
+export async function readFile(f: File) {
+    return new Promise(resolve => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.readAsDataURL(f);
+    });
+}
+
 export async function generateBcryptToken(payload: string, saltRounds = 10) {
     try {
         const salt = await bcrypt.genSalt(saltRounds);
@@ -27,9 +37,9 @@ export async function generateBcryptToken(payload: string, saltRounds = 10) {
     }
 }
 
-export const calculateTotal = (carts: ICartsResponse[]) =>
-    carts.reduce((acc, current) => {
-        acc += current.product.price;
+export const calculateTotal = (carts: ICarts) =>
+    carts.products.reduce((acc, current) => {
+        acc += current.price;
         return acc;
     }, 0);
 
@@ -140,11 +150,11 @@ export function parsePaginatedQueryParams<T extends string>({
     sortBy,
     page,
     filters,
-}: IPaginatedItemsQueryParams<T, string>): IPaginatedItemsQueryParams<
+}: IPaginatedItemsQueryParams<T, string>): IParsedPaginatedITemsQueryParams<
     T,
     number
 > {
-    const paginationData = {} as IPaginatedItemsQueryParams<T, number>;
+    const paginationData = {} as IParsedPaginatedITemsQueryParams<T, number>;
     paginationData.limit = limit
         ? parseInt(limit)
         : PAGINATION_QUERY_PARAMS_DEFAULT.limit;
@@ -269,3 +279,11 @@ export const generatePrismaFilters = (
 
     return where;
 };
+
+export function capitalizeFirstLetter(string: string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+export function isObjectEmpty(obj) {
+    return Object.keys(obj).length === 0;
+}

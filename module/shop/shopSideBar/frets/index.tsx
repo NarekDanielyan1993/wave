@@ -11,7 +11,7 @@ const Frets = ({
 }: {
     register: UseFormRegister<FilterProductSchemaType>;
     update: UseFieldArrayUpdate<FilterProductSchemaType>;
-    frets: { name: number; checked: boolean }[];
+    frets: { name: string; checked: boolean }[];
 }) => (
     <AccordionWrapper title="FRETS">
         <List>

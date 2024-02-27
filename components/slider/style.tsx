@@ -5,9 +5,10 @@ export const StyledPromotionContainer = chakra('div', {
         display: 'flex',
         flexDir: 'column',
         alignItems: 'flex-start',
-        gap: '2',
+        gap: 2,
         position: 'absolute',
-        top: '50%',
+        top: '65%',
         left: '5%',
+        transform: 'translateY(-50%)',
     },
 });

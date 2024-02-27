@@ -1,14 +1,15 @@
 import type { TableColumn } from '@components/table';
+import { GetFretsResponse } from 'types/client/store/frets';
 import { type IProductResponse } from 'types/product';
 
 export const PRODUCTS_TABLE_COLUMNS: TableColumn<IProductResponse>[] = [
-    // {
-    //     headerName: 'Id',
-    //     type: 'boolean',
-    //     isVisible: true,
-    //     accessorKey: 'id',
-    //     id: 'id',
-    // },
+    {
+        headerName: 'Id',
+        type: 'boolean',
+        isVisible: true,
+        accessorKey: 'id',
+        id: 'id',
+    },
     {
         headerName: 'Model',
         type: 'text',
@@ -79,4 +80,35 @@ export const PRODUCTS_TABLE_COLUMNS: TableColumn<IProductResponse>[] = [
     //     type: 'text',
     //     visible: false
     // },
+];
+
+export const FRETS_TABLE_COLUMNS: TableColumn<GetFretsResponse>[] = [
+    {
+        headerName: 'Id',
+        type: 'boolean',
+        isVisible: true,
+        accessorKey: 'id',
+        id: 'id',
+    },
+    {
+        headerName: 'Frets',
+        type: 'text',
+        isVisible: true,
+        id: 'frets',
+        accessorKey: 'frets',
+    },
+    {
+        headerName: 'Created',
+        type: 'date',
+        isVisible: true,
+        id: 'createdAt',
+        accessorKey: 'createdAt',
+    },
+    {
+        headerName: 'UpdatedAt',
+        type: 'date',
+        isVisible: true,
+        id: 'updatedAt',
+        accessorKey: 'updatedAt',
+    },
 ];

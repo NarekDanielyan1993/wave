@@ -35,9 +35,11 @@ model Permission {
 model User {
   id            String    @id @default(auto()) @map("_id") @db.ObjectId
   email         String    @unique
+  url           String?
+  publicId      String?
   password      String
-  firstname     String    @default("")
-  lastname      String    @default("")
+  firstname     String?    @default("")
+  lastname      String?    @default("")
   emailVerified DateTime? @map("email_verified")
   verified      Boolean   @default(false)
   history       String[]  @default([])
@@ -60,12 +62,38 @@ model Cart {
   user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model History {
+model Image {
   id        String  @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String  @db.ObjectId
-  product   String 
-  amount    Int  
-  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  url       String
+  publicId  String
+  Product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String  @db.ObjectId
+}
+
+model SiteImage {
+  id            String  @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  url           String
+  publicId      String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Frets {
+  id            String  @id @default(auto()) @map("_id") @db.ObjectId
+  frets         String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  products  Product[]
+}
+
+model History {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  userId  String @db.ObjectId
+  product String
+  amount  Int
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Brand {
@@ -79,22 +107,22 @@ model Brand {
 }
 
 model Product {
-  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   model       String
-  brandId     String    @db.ObjectId
-  frets       Int
+  brandId     String   @db.ObjectId
+  fretId      String   @db.ObjectId
   woodType    String
   description String
-  url         String
   price       Int
-  available   Int       @default(0)
-  itemsSold   Int       @default(0)
-  shipping    Boolean   @default(false)
-  images      String[]  @default([])
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  available   Int      @default(0)
+  itemsSold   Int      @default(0)
+  shipping    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
   carts       Cart[]
-  brand       Brand     @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  brand       Brand    @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  frets       Frets    @relation(fields: [fretId], references: [id], onDelete: Cascade)
+  images      Image[]
 }
 
 model Account {

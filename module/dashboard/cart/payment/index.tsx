@@ -1,18 +1,15 @@
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
+import { config } from '@utils/config';
 import { StyledPayment } from '../style';
 import PaymentForm from './paymentForm';
 
-const stripePromise = loadStripe(
-    process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
-);
+const stripePromise = loadStripe(config.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
 const options = {
-    mode: 'payment',
+    mode: 'setup',
     currency: 'usd',
-    amount: 1099,
-};
-
+} as const;
 const Payment = () => (
     <StyledPayment>
         <Elements options={options} stripe={stripePromise}>

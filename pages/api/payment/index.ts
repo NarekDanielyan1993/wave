@@ -1,10 +1,18 @@
+import { authOptions } from '@api/auth/[...nextauth]';
 import { COMMON_ERROR_TYPES } from '@constant/error';
+import StripePaymentService from '@lib/payment';
 import ProductService from '@lib/services/product';
-import { NotFoundError, handleError } from '@utils/error-handler';
+import UserService from '@lib/services/user';
+import {
+    InternalServerError,
+    NotFoundError,
+    handleError,
+} from '@utils/error-handler';
 import { parseQueryParams } from '@utils/helper';
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { Session, getServerSession } from 'next-auth';
 import { createRouter } from 'next-connect';
-import Stripe from 'stripe';
+import { IUserService } from 'types';
 import type { IProductModelFields, IProductsQueryParams } from 'types/product';
 
 const router = createRouter<NextApiRequest, NextApiResponse>();
@@ -49,14 +57,32 @@ router.post(
     // validateRequest(createProductValidationSchema),
     async (req, res) => {
         try {
-            const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-                typescript: true,
-                apiVersion: '2023-10-16',
-            });
-            const paymentIntent = await stripe.paymentIntents.create({
-                amount: 100,
-                currency: 'USD',
-            });
+            const session = (await getServerSession(
+                req,
+                res,
+                authOptions(req, res)
+            )) as Session;
+            const { amount, products } = req.body;
+            const stripeService = new StripePaymentService();
+            const paymentIntent = await stripeService.createPaymentIntent(
+                amount
+            );
+            const history = products.map(ca => ({
+                userId: session.user.id,
+                amount: ca.total,
+                product: ca.model,
+            }));
+            const user: IUserService = new UserService();
+            const updatedHistory = await user.addToHistory(history);
+            if (!updatedHistory) {
+                throw new InternalServerError();
+            }
+            const cartsDeleted = await user.removeCart(
+                products.map(pr => pr.id)
+            );
+            if (!cartsDeleted) {
+                throw new InternalServerError();
+            }
             res.status(200).json(paymentIntent);
         } catch (error) {
             handleError(error, res);

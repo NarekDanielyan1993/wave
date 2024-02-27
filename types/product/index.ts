@@ -10,6 +10,7 @@ import type {
     UppercaseKeys,
 } from 'types/common';
 import type { Keys } from 'types/database';
+import { IImage, IImageResponse } from 'types/image';
 
 export type ProductGetQueryParamsTypes = {
     productId: string;
@@ -18,19 +19,22 @@ export type ProductGetQueryParamsTypes = {
 export interface IProduct {
     model: string;
     brandId: string;
-    frets: number;
+    fretId: string;
     woodType: string;
     description: string;
     price: number;
     available: number;
     itemsSold?: number;
     shipping: boolean;
-    images?: string[];
-    url: string;
 }
 
-export interface IProductBody extends Omit<IProduct, 'url'> {
-    file: string;
+export interface IProductBody extends IProduct {
+    file: IImage;
+}
+
+export interface IProductResponseClient {
+    product: IProductResponse;
+    image: IImageResponse;
 }
 
 export interface IProductResponse extends IProduct {
@@ -38,6 +42,12 @@ export interface IProductResponse extends IProduct {
     brand: {
         id: string;
         name: string;
+        createdAt: Date;
+        updatedAt: Date;
+    };
+    frets: {
+        id: string;
+        frets: string;
         createdAt: Date;
         updatedAt: Date;
     };
@@ -59,14 +69,6 @@ export interface IProductCardsLoading {
     isLoading: boolean;
 }
 
-// export type IProductCard = {
-//     img: string;
-//     title: string;
-//     textPrimary: string;
-//     price: number;
-//     desc: string;
-// };
-
 export type IProductCardStoreState = {
     isLoading: boolean;
     isFetched: boolean;
@@ -85,8 +87,6 @@ export type IParsedProductsQueryParams<K> = IItemsQueryParams<
     K
 >;
 
-// export type IPaginatedProducts<K> = IItemsQueryParams<IProductModelFields, K>;
-
 export type IProductsQueryParams<K> = IItemsQueryParams<IProductModelFields, K>;
 
 export type IPaginatedProductsQueryParams<K> = IPaginatedItemsQueryParams<
@@ -97,21 +97,36 @@ export type IPaginatedProductsQueryParams<K> = IPaginatedItemsQueryParams<
 export type IParsedPaginatedProductsQueryParams<K> =
     IParsedPaginatedITemsQueryParams<IProductModelFields, K>;
 
-// export interface IPaginatedProductResponse {
-//     limit: number;
-//     totalItems: number;
-//     page: number;
-//     products: IProductResponse[];
-// }
-
 export type IPaginatedProductResponse = IPaginatedDataResponse<
     IProductModelFields,
     number
-> & { products: IProductResponse[] };
+> & { products: IProductResponse[]; images: IImageResponse[] };
 
 export interface IPaginatedProductResponseClient {
     pageCount: number;
     products: IProductResponse[];
+}
+
+export interface IProductService {
+    createProduct(product: IProduct): Promise<IProductResponse>;
+    getProductById(id: string): Promise<IProductResponse | null>;
+    updateProduct(
+        id: string,
+        product: IProductOptional
+    ): Promise<IProductResponse>;
+    deleteProduct(id: string): Promise<IProductResponse>;
+    getProducts({
+        sortBy,
+        limit,
+        order,
+    }: IProductsQueryParams<number>): Promise<IProductResponse[] | null>;
+
+    getPaginatedProducts({
+        sortBy,
+        page,
+        limit,
+        order,
+    }: IParsedPaginatedProductsQueryParams<number>): Promise<IPaginatedProductResponse | null>;
 }
 
 export interface IProductService {

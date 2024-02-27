@@ -1,9 +1,11 @@
 import 'react-datepicker/dist/react-datepicker.css';
 import { Controller, FieldValues } from 'react-hook-form';
 
-import { Box, Checkbox } from '@chakra-ui/react';
+import { Box, Checkbox, Select } from '@chakra-ui/react';
 import { ChakraFieldDefaultOptions, IFormInputProps } from 'types';
 import FileSelect from './fileSelect';
+import Input from './input';
+import NumberInput from './numberInput';
 import {
     StyledErrorText,
     StyledFormControl,
@@ -13,20 +15,16 @@ import {
     StyledSelect,
 } from './style';
 
-const FormInput = <T extends FieldValues>({
+function FormInput<T extends FieldValues>({
     control,
     name,
     label,
     type = 'text',
     error,
-    defaultValue,
     options,
     views,
     disabled,
-    clearErrors,
-    eraseFieldsOnChange,
-    format: dateFormat,
-}: IFormInputProps<T>): JSX.Element => {
+}: IFormInputProps<T>): JSX.Element {
     const defaultOptions: ChakraFieldDefaultOptions<T> = {
         isInvalid: !!error,
         size: 'md',
@@ -44,15 +42,17 @@ const FormInput = <T extends FieldValues>({
                     control={control}
                     name={name}
                     render={({ field: { value, onChange } }) => (
-                        <StyledSelect
-                            onChange={val => onChange(val)}
-                            {...defaultOptions}
-                        >
-                            {options?.map(option => (
-                                <option key={option.id} value={option.id}>
-                                    {option.name}
-                                </option>
-                            ))}
+                        <StyledSelect>
+                            <Select
+                                onChange={val => onChange(val)}
+                                {...defaultOptions}
+                            >
+                                {options?.map(option => (
+                                    <option key={option.id} value={option.id}>
+                                        {option.name}
+                                    </option>
+                                ))}
+                            </Select>
                         </StyledSelect>
                     )}
                 />
@@ -101,10 +101,8 @@ const FormInput = <T extends FieldValues>({
                 <Controller
                     control={control}
                     name={name}
-                    render={({ field: { onChange, name } }) => (
-                        <FileSelect
-                            onChange={e => onChange(e.target?.result)}
-                        />
+                    render={({ field: { onChange, name, value } }) => (
+                        <FileSelect onChange={e => onChange(e)} value={value} />
                     )}
                 />
             );
@@ -187,22 +185,17 @@ const FormInput = <T extends FieldValues>({
                 />
             );
         }
-        default:
+        case 'number': {
             return (
                 <Controller
                     control={control}
                     name={name}
-                    render={({ field: { onChange, value }, formState }) => (
+                    render={({ field: { onChange, value } }) => (
                         <>
                             <StyledFormControl>
                                 <Box pos="relative">
-                                    <StyledInput
-                                        onChange={e => {
-                                            onChange(e);
-                                            !formState.isValid &&
-                                                eraseFieldsOnChange &&
-                                                clearErrors();
-                                        }}
+                                    <NumberInput
+                                        onChange={onChange}
                                         placeholder=" "
                                         value={value}
                                         {...defaultOptions}
@@ -219,7 +212,27 @@ const FormInput = <T extends FieldValues>({
                     )}
                 />
             );
+        }
+        default:
+            return (
+                <Controller
+                    control={control}
+                    name={name}
+                    render={({ field: { onChange, value }, formState }) => (
+                        <>
+                            <Input
+                                error={error}
+                                isInvalid={defaultOptions.isInvalid}
+                                label={defaultOptions.label}
+                                name={name}
+                                onChange={onChange}
+                                value={value}
+                            />
+                        </>
+                    )}
+                />
+            );
     }
-};
+}
 
 export default FormInput;

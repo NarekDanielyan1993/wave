@@ -64,14 +64,17 @@ class UserService implements IUserService {
     }
 
     async addToCart({ userId, productId }: ICart): Promise<ICart> {
-        const user = await this.prisma.cart.create({
+        const cart = await this.prisma.cart.create({
             data: {
                 userId,
                 productId,
             },
+            include: {
+                product: true,
+            },
         });
 
-        return user;
+        return cart;
     }
 
     async addToHistory(history: IHistory[]): Promise<IHistory> {
@@ -93,7 +96,7 @@ class UserService implements IUserService {
     async removeCart(id: string[]): Promise<ICart> {
         const user = await this.prisma.cart.deleteMany({
             where: {
-                id: { in: id },
+                productId: { in: id },
             },
         });
 

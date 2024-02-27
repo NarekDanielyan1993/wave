@@ -67,7 +67,6 @@ export type IFormInputProps<T extends FieldValues> = {
     label?: string;
     format?: string;
     clearErrors: () => void;
-    eraseFieldsOnChange: boolean;
 };
 
 export interface ChakraFieldDefaultOptions<T> extends IFormFieldProps<T> {

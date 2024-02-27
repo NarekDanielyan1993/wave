@@ -4,27 +4,26 @@ export const StyledShopCardContainer = chakra('div', {
     baseStyle: {
         width: '100%',
         maxWidth: '40rem',
-        minHeight: '15',
         display: 'flex',
+        flexDir: 'column',
+        gap: 6,
+        p: 4,
         boxShadow: 'sm',
         border: `1px solid lightgray`,
-        alignItems: 'flex-start',
     },
 });
 
 export const StyledShopCardContentWrapper = chakra('div', {
     baseStyle: {
+        pos: 'relative',
         display: 'flex',
-        flexDirection: 'column',
-        gap: 1,
-        flexGrow: 2,
-        minHeight: '15rem',
+        alignItems: 'flex-start',
+        gap: 2,
     },
 });
 
 export const StyledShopCardTitle = chakra('div', {
     baseStyle: {
-        display: 'flex',
         fontSize: '2xl',
         padding: 0.8,
         fontWeight: 'bold',
@@ -38,6 +37,12 @@ export const StyledShopCardTitleText = chakra(Text, {
     },
 });
 
+export const StyledShopCardPriceText = chakra(Text, {
+    baseStyle: {
+        color: 'brand.common.black',
+    },
+});
+
 export const StyledShopCardTitleBrandText = chakra(Text, {
     baseStyle: {
         color: 'brand.secondary.main',
@@ -46,17 +51,18 @@ export const StyledShopCardTitleBrandText = chakra(Text, {
 
 export const StyledShopCardImage = chakra('div', {
     baseStyle: {
-        flexGrow: 1,
         position: 'relative',
+        width: '10rem',
+        height: '10rem',
+        flexShrink: 0,
     },
 });
 
 export const StyledShopCardContent = chakra('div', {
     baseStyle: {
+        pos: 'relative',
         display: 'flex',
         flexDirection: 'column',
-        height: '100%',
-        padding: `0 0.5rem`,
     },
 });
 
@@ -72,6 +78,5 @@ export const StyledShopCardActions = chakra(Text, {
         justifyContent: 'flex-end',
         marginTop: 'auto',
         gap: 1,
-        p: 2,
     },
 });

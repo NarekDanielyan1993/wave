@@ -1,3 +1,4 @@
+import Sidebar from '@components/sideBar';
 import { PRODUCT_CARDS_QUERY_DEFAULT_PARAMS } from '@constant/default';
 import { AUTH_ROUTES } from '@constant/route';
 import { SagaStore, wrapper } from '@store/create-store';
@@ -12,9 +13,11 @@ import { Session } from 'next-auth';
 import { getSession } from 'next-auth/react';
 import { END } from 'redux-saga';
 import { CustomNextPage } from 'types';
+import PageTitle from '../../../module/dashboard/dashboardLayout/pageTitle';
 
 const UserProfilePage: CustomNextPage = () => (
-    <DashboardLayout rightSideTitle="user information">
+    <DashboardLayout sideBar={<Sidebar />}>
+        <PageTitle>user information</PageTitle>
         <UserProfile />
     </DashboardLayout>
 );

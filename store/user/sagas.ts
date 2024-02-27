@@ -6,6 +6,7 @@ import {
     AddToHistoryPayloadType,
     GetHistoryPayloadType,
     GetUserProfilePayloadType,
+    IDeleteProfileImagePayload,
     UpdateUserEmailPayloadType,
     UpdateUserPayloadType,
     type AddToCartPayloadType,
@@ -13,8 +14,10 @@ import {
     type RemoveCartPayloadType,
 } from 'types';
 import {
+    ADD_PROFILE_IMAGE,
     ADD_TO_CART,
     ADD_TO_HISTORY,
+    DELETE_PROFILE_IMAGE,
     GET_CART,
     GET_HISTORY,
     GET_USER_PROFILE,
@@ -23,13 +26,18 @@ import {
     UPDATE_USER_EMAIL,
 } from './action';
 import {
+    addProfileImageSuccess,
     addToCartSuccess,
+    deleteProfileImageSuccess,
     getCartsSuccess,
     getHistorySuccess,
     getUserInit,
     getUserSuccess,
+    isCartLoading,
     isUserEmailLoading,
     isUserLoading,
+    isUserProfileImageDeleteLoading,
+    isUserProfileImageLoading,
     removeCartSuccess,
     updateUserEmailSuccess,
     updateUserSuccess,
@@ -56,7 +64,6 @@ function* getCartsGenerator(action: PayloadAction<GetCartsPayloadType>) {
         const { data } = yield call(apiRequest.get, USER_API.GET_CARTS, {
             params: { userId: id },
         });
-        console.log(data);
         yield put(getCartsSuccess(data));
     } catch (error) {
         console.log(error);
@@ -64,7 +71,7 @@ function* getCartsGenerator(action: PayloadAction<GetCartsPayloadType>) {
 }
 
 function* addToCartGenerator(action: PayloadAction<AddToCartPayloadType>) {
-    yield put(isUserLoading(true));
+    yield put(isCartLoading(true));
     try {
         const { data } = yield call(apiRequest.post, USER_API.ADD_TO_CART, {
             ...action.payload,
@@ -73,20 +80,59 @@ function* addToCartGenerator(action: PayloadAction<AddToCartPayloadType>) {
     } catch (error) {
         console.log(error);
     }
-    yield put(isUserLoading(true));
+    yield put(isCartLoading(false));
+}
+
+function* addProfileImageGenerator(
+    action: PayloadAction<AddToCartPayloadType>
+) {
+    yield put(isUserProfileImageLoading(true));
+    try {
+        const { data } = yield call(
+            apiRequest.put,
+            USER_API.ADD_PROFILE_IMAGE,
+            {
+                ...action.payload,
+            }
+        );
+        yield put(addProfileImageSuccess(data));
+    } catch (error) {
+        console.log(error);
+    }
+    yield put(isUserProfileImageLoading(false));
+}
+
+function* deleteProfileImageGenerator(
+    action: PayloadAction<IDeleteProfileImagePayload>
+) {
+    yield put(isUserProfileImageDeleteLoading(true));
+    try {
+        const { data } = yield call(
+            apiRequest.delete,
+            USER_API.DELETE_PROFILE_IMAGE,
+            {
+                data: { params: { ...action.payload } },
+            }
+        );
+        yield put(deleteProfileImageSuccess(data));
+    } catch (error) {
+        console.log(error);
+    }
+    yield put(isUserProfileImageDeleteLoading(false));
 }
 
 function* removeCartGenerator(action: PayloadAction<RemoveCartPayloadType>) {
     const { id } = action.payload;
+    yield put(isCartLoading(true));
     try {
         const { data } = yield call(apiRequest.delete, USER_API.REMOVE_CART, {
-            params: { id },
+            data: { ids: id },
         });
-        console.log(data);
-        yield put(removeCartSuccess(id));
+        yield put(removeCartSuccess({ quantity: data, id: id }));
     } catch (error) {
         console.log(error);
     }
+    yield put(isCartLoading(false));
 }
 
 function* addToHistoryGenerator(
@@ -155,6 +201,8 @@ export function* watchUserSaga() {
     yield takeLatest(UPDATE_USER_EMAIL, updateUserEmailGenerator);
     yield takeLatest(UPDATE_USER, updateUserGenerator);
     yield takeLatest(ADD_TO_CART, addToCartGenerator);
+    yield takeLatest(ADD_PROFILE_IMAGE, addProfileImageGenerator);
+    yield takeLatest(DELETE_PROFILE_IMAGE, deleteProfileImageGenerator);
     yield takeLatest(GET_CART, getCartsGenerator);
     yield takeLatest(REMOVE_CART, removeCartGenerator);
     yield takeLatest(ADD_TO_HISTORY, addToHistoryGenerator);

@@ -1,13 +1,20 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { ISiteResponse } from 'types/client/store/site';
+import type {
+    ISiteImageResponse,
+    ISiteResponse,
+} from 'types/client/store/site';
 import { siteReducerName } from './action';
 
 interface ISiteState {
     site: ISiteResponse;
+    siteImages: ISiteImageResponse[];
+    isSiteLoading: boolean;
 }
 
 const initialState: ISiteState = {
     site: {} as ISiteResponse,
+    siteImages: [],
+    isSiteLoading: false,
 };
 
 const siteSlice = createSlice({
@@ -20,15 +27,45 @@ const siteSlice = createSlice({
         ) => {
             state.site = action.payload;
         },
+        isSiteLoading: (state: ISiteState, action: PayloadAction<boolean>) => {
+            state.isSiteLoading = action.payload;
+        },
+        uploadSiteImageSuccess: (
+            state: ISiteState,
+            action: PayloadAction<ISiteImageResponse>
+        ) => {
+            state.siteImages = [...state.siteImages, action.payload];
+        },
         updateSiteSuccess: (
             state: ISiteState,
             action: PayloadAction<ISiteResponse>
         ) => {
             state.site = action.payload;
         },
+        deleteSiteImageSuccess: (
+            state: ISiteState,
+            action: PayloadAction<ISiteImageResponse>
+        ) => {
+            state.siteImages = state.siteImages.filter(
+                image => image.id !== action.payload.id
+            );
+        },
+        getSiteImageSuccess: (
+            state: ISiteState,
+            action: PayloadAction<ISiteImageResponse[]>
+        ) => {
+            state.siteImages = action.payload;
+        },
     },
 });
 
-export const { getSiteSuccess, updateSiteSuccess } = siteSlice.actions;
+export const {
+    getSiteSuccess,
+    updateSiteSuccess,
+    deleteSiteImageSuccess,
+    uploadSiteImageSuccess,
+    getSiteImageSuccess,
+    isSiteLoading,
+} = siteSlice.actions;
 
 export default siteSlice.reducer;

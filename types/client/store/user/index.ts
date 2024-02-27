@@ -1,6 +1,8 @@
 import {
+    ADD_PROFILE_IMAGE,
     ADD_TO_CART,
     ADD_TO_HISTORY,
+    DELETE_PROFILE_IMAGE,
     GET_CART,
     GET_HISTORY,
     GET_USER_PROFILE,
@@ -8,13 +10,14 @@ import {
     UPDATE_USER,
     UPDATE_USER_EMAIL,
 } from '@store/user/action';
-import { UserProfileValidationTypes } from 'common/validation/user';
 import { IUser, IUserResponse } from 'types/user';
 
 export type GET_USER_PROFILE_TYPE = typeof GET_USER_PROFILE;
 export type UPDATE_USER_EMAIL_TYPE = typeof UPDATE_USER_EMAIL;
 export type UPDATE_USER_TYPE = typeof UPDATE_USER;
 export type ADD_TO_CART_TYPE = typeof ADD_TO_CART;
+export type ADD_PROFILE_IMAGE_TYPE = typeof ADD_PROFILE_IMAGE;
+export type DELETE_PROFILE_IMAGE_TYPE = typeof DELETE_PROFILE_IMAGE;
 export type ADD_TO_HISTORY_TYPE = typeof ADD_TO_HISTORY;
 export type GET_CART_TYPE = typeof GET_CART;
 export type GET_HISTORY_TYPE = typeof GET_HISTORY;
@@ -38,6 +41,24 @@ export type AddToCartPayloadType = {
     productId: string;
     userId: string;
 };
+
+export interface IAddProfileImageAction {
+    type: ADD_PROFILE_IMAGE_TYPE;
+    payload: IAddProfileImagePayload;
+}
+
+export interface IAddProfileImagePayload {
+    file: string;
+}
+
+export interface IDeleteProfileImageAction {
+    type: DELETE_PROFILE_IMAGE_TYPE;
+    payload: IDeleteProfileImagePayload;
+}
+
+export interface IDeleteProfileImagePayload {
+    publicId: string;
+}
 
 export type AddToHistoryActionTypes = {
     type: ADD_TO_HISTORY_TYPE;
@@ -81,10 +102,16 @@ export type UpdateUserPayloadType = {
     userData: Pick<IUser, 'firstname' | 'lastname'>;
 };
 
-export type UpdateUserProfileActionTypes = {
+export interface IUpdateUserProfilePayload {
+    firstname?: string;
+    lastname?: string;
+    file?: string;
+}
+
+export interface IUpdateUserProfileAction {
     type: UPDATE_USER_TYPE;
-    payload: UserProfileValidationTypes;
-};
+    payload: IUpdateUserProfilePayload;
+}
 
 export type UpdateUserEmailPayloadType = {
     email: string;

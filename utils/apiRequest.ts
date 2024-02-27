@@ -1,7 +1,8 @@
 import { config } from '@utils/config';
-import axios, { AxiosRequestConfig } from 'axios';
+import axios, { AxiosRequestConfig, Method } from 'axios';
+import { CANCEL } from 'redux-saga';
 export const apiRequest = axios.create({
-    baseURL: config.BASE_URL,
+    baseURL: config.NEXT_PUBLIC_BASE_URL,
     timeout: 30000,
 });
 
@@ -11,27 +12,26 @@ export const request = axios.create({
 
 type UrlMethodTypes = 'get' | 'post' | 'delete' | 'update' | 'patch';
 
-// export const apiSagaRequest = (
-//     method: UrlMethodTypes,
-//     url: string,
-//     data: any,
-//     options = {}
-// ) => {
-//     console.log(data);
-//     const abortController = new AbortController();
-//     const hasData = method === 'get';
-//     const settings: AxiosRequestConfig = hasData ? data : options;
-//     settings.cancelToken = abortController.signal;
-//     const request = hasData
-//         ? (axiosInstance as any)[method](url, settings)
-//         : (axiosInstance as any)[method](url, data, settings);
-//     request[CANCEL] = () => abortController.abort();
+export const apiSagaRequest = (
+    method: UrlMethodTypes,
+    url: string,
+    data: any,
+    options = {}
+) => {
+    const abortController = new AbortController();
+    const hasData = method === 'get';
+    const settings: AxiosRequestConfig = hasData ? data : options;
+    settings.signal = abortController.signal;
+    const request = hasData
+        ? (apiRequest as any)[method](url, settings)
+        : (apiRequest as any)[method](url, data, settings);
+    request[CANCEL] = () => abortController.abort();
 
-//     return request;
-// };
+    return request;
+};
 
 export const axiosInstance = async <T>(
-    method: UrlMethodTypes,
+    method: Method,
     url: string,
     data: T,
     options?: AxiosRequestConfig
@@ -45,8 +45,8 @@ export const axiosInstance = async <T>(
         ...bodyData,
         ...options,
         signal: abortController.signal,
-        // cancelToken: abortController.abort(),
     };
-
-    return (axios as any)[method](url, data, requestOptions);
+    const request = (axios as any)[method](url, data, requestOptions);
+    console.log(request);
+    return request;
 };

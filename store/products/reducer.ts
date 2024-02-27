@@ -2,7 +2,9 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { DateFns } from '@utils/date';
 import type { GetBrandsResponseTypes, IPaginatedDataResponse } from 'types';
 import { type IProductSortBy } from 'types/client/store/products';
+import { IImageResponse } from 'types/image';
 import {
+    IProductResponseClient,
     type IPaginatedProductResponse,
     type IProductCardsLoading,
     type IProductCardStoreState,
@@ -14,6 +16,7 @@ import { ProductsReducerName } from './action';
 interface IProductsState {
     isProductsLoading: boolean;
     products: IProductResponse[];
+    images: IImageResponse[];
     product: IProductResponse;
     paginationData: IPaginatedDataResponse<IProductModelFields, number>;
     bestSellingProducts: IProductCardStoreState;
@@ -23,6 +26,7 @@ interface IProductsState {
 
 const initialState: IProductsState = {
     products: [],
+    images: [],
     product: {} as IProductResponse,
     paginationData: {
         limit: 10,
@@ -70,6 +74,7 @@ const productsSlice = createSlice({
             state.paginationData.page = action.payload.page;
             state.paginationData.totalItems = action.payload.totalItems;
             state.paginationData.filters = action.payload.filters;
+            state.images = action.payload.images;
         },
         getProductSuccess: (
             state: IProductsState,
@@ -101,6 +106,7 @@ const productsSlice = createSlice({
             state.paginationData.page = action.payload.page;
             state.paginationData.totalItems = action.payload.totalItems;
             state.paginationData.filters = action.payload.filters;
+            state.images = action.payload.images;
         },
         isProductCardsLoading: (
             state: IProductsState,
@@ -124,18 +130,19 @@ const productsSlice = createSlice({
         },
         editProductSuccess: (
             state: IProductsState,
-            action: PayloadAction<IProductResponse>
+            action: PayloadAction<IProductResponseClient>
         ) => {
+            state.images = [...state.images, action.payload.image];
             const dateFns = new DateFns();
             state.products = state.products.map(product => {
-                if (product.id === action.payload.id) {
+                if (product.id === action.payload.product.id) {
                     return {
-                        ...action.payload,
+                        ...action.payload.product,
                         createdAt: dateFns.parseToHumanReadableFormat(
-                            action.payload.createdAt as string
+                            action.payload.product.createdAt as string
                         ),
                         updatedAt: dateFns.parseToHumanReadableFormat(
-                            action.payload.updatedAt as string
+                            action.payload.product.updatedAt as string
                         ),
                     };
                 }
@@ -144,23 +151,31 @@ const productsSlice = createSlice({
         },
         addProductSuccess: (
             state: IProductsState,
-            action: PayloadAction<IProductResponse>
+            action: PayloadAction<IProductResponseClient>
         ) => {
             const dateFns = new DateFns();
             state.products = [
                 ...state.products,
                 {
-                    ...action.payload,
+                    ...action.payload.product,
                     createdAt: dateFns.parseToHumanReadableFormat(
-                        action.payload.createdAt as string
+                        action.payload.product.createdAt as string
                     ),
                     updatedAt: dateFns.parseToHumanReadableFormat(
-                        action.payload.updatedAt as string
+                        action.payload.product.updatedAt as string
                     ),
                 },
             ];
             state.paginationData.totalItems =
                 state.paginationData.totalItems + 1;
+            state.images = state.images.map(img => {
+                if (img.id === action.payload.image.id) {
+                    return img.id === action.payload.image.id
+                        ? action.payload.image
+                        : img;
+                }
+                return img;
+            });
         },
         deleteProductSuccess: (
             state: IProductsState,
@@ -171,6 +186,14 @@ const productsSlice = createSlice({
             );
             state.paginationData.totalItems =
                 state.paginationData.totalItems - 1;
+        },
+        deleteImageSuccess: (
+            state: IProductsState,
+            action: PayloadAction<IImageResponse>
+        ) => {
+            state.images = state.images.filter(
+                img => img.id !== action.payload.id
+            );
         },
     },
 });
@@ -186,5 +209,6 @@ export const {
     addProductSuccess,
     editProductSuccess,
     deleteProductSuccess,
+    deleteImageSuccess,
 } = productsSlice.actions;
 export default productsSlice.reducer;

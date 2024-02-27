@@ -8,6 +8,19 @@ const nextConfig = {
     basePath: '',
     reactStrictMode: false,
     swcMinify: true,
+    async headers() {
+        return [
+            {
+                source: '/(.*)',
+                headers: [
+                    {
+                        key: 'Access-Control-Allow-Origin',
+                        value: '*',
+                    },
+                ],
+            },
+        ];
+    },
     eslint: {
         ignoreDuringBuilds: true,
     },

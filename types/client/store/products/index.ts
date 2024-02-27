@@ -1,5 +1,6 @@
 import {
     ADD_PRODUCT,
+    DELETE_IMAGE,
     DELETE_PRODUCT,
     EDIT_PRODUCT,
     GET_BRANDS,
@@ -19,6 +20,7 @@ export type GET_PRODUCTS_BY_SOLD_TYPE = typeof GET_PRODUCTS_BY_SOLD;
 export type GET_PRODUCTS_CREATED_DATE_TYPE = typeof GET_PRODUCTS_CREATED_DATE;
 export type GET_PAGINATED_PRODUCTS_TYPE = typeof GET_PAGINATED_PRODUCTS;
 export type DELETE_PRODUCT_TYPE = typeof DELETE_PRODUCT;
+export type DELETE_IMAGE_TYPE = typeof DELETE_IMAGE;
 export type EDIT_PRODUCT_TYPE = typeof EDIT_PRODUCT;
 export type ADD_PRODUCT_TYPE = typeof ADD_PRODUCT;
 export type GET_BRANDS_TYPE = typeof GET_BRANDS;
@@ -33,9 +35,9 @@ export type GetProductsActionPayload = {
 
 export type GetPaginatedProductsActionPayload = {
     filters?: Filters;
-    page: number;
+    page?: number;
     order?: string;
-    limit: number;
+    limit?: number;
 };
 
 export type GetProductsActionTypes = {
@@ -76,11 +78,21 @@ export type DeleteProductPayloadTypes = {
     id: string;
 };
 
-export type editProductPayloadTypes = {
-    id: string;
-    model: string;
-    available: number;
+export type DeleteImageActionTypes = {
+    type: DELETE_IMAGE_TYPE;
+    payload: DeleteImagePayloadTypes;
 };
+
+export type DeleteImagePayloadTypes = {
+    id: string;
+    productId: string;
+    publicId: string;
+};
+
+export interface editProductPayloadTypes
+    extends Partial<addProductPayloadTypes> {
+    id: string;
+}
 
 export type editProductActionTypes = {
     type: EDIT_PRODUCT_TYPE;
@@ -90,7 +102,7 @@ export type editProductActionTypes = {
 export type addProductPayloadTypes = {
     model: string;
     available: number;
-    frets: number | null;
+    fretId: string;
     woodType: string;
     description: string;
     price: number;

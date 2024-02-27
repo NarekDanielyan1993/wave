@@ -26,7 +26,6 @@ export const StyledProductCardsWrapper = chakra('div', {
 export const StyledProductCardsTitle = chakra(Text, {
     baseStyle: {
         fontWeight: 'bold',
-        fontSize: '2xl',
         textTransform: 'uppercase',
         marginBottom: '16',
     },

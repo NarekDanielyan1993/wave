@@ -1,41 +1,45 @@
+import { Box } from '@chakra-ui/react';
+import Carousel from '@components/carousel';
+import ImageComponent from '@components/image';
 import Promotion from '@components/promotion';
 import useGeneratePromotion from '@hooks/useGenerateSliderPromotion';
-import Image from 'next/image';
-import { Carousel } from 'react-responsive-carousel';
-import 'react-responsive-carousel/lib/styles/carousel.min.css';
+import { useAppSelector } from '@store/create-store';
+import { siteSelector } from '@store/site/selectors';
 import { SliderPromotionTypes } from 'types';
 import { StyledPromotionContainer } from './style';
+
 const SliderComponent = () => {
-    const settings = {
-        emulateTouch: true,
-        showArrows: false,
-        showThumbs: false,
-        showIndicators: false,
-        showStatus: false,
-    };
     const sliderPromotions: SliderPromotionTypes[] = useGeneratePromotion();
+    const { siteImages } = useAppSelector(siteSelector);
     return (
-        <Carousel dynamicHeight {...settings}>
-            {sliderPromotions.map((item, index) => (
-                <div
-                    key={index}
-                    style={{
-                        position: 'relative',
-                        height: '100dvh',
-                    }}
-                >
-                    <Image alt="" layout="fill" priority src={item.imageUrl} />
-                    <StyledPromotionContainer>
-                        <Promotion
-                            lineOneText={item.lineOneText}
-                            lineTwoText={item.lineTwoText}
-                            linkText={item.linkText}
-                            linkTo={item.linkTo}
+        <Box sx={{ w: '100%', h: '80vh' }}>
+            <Carousel autoSlide withTouch>
+                {sliderPromotions.map((item, index) => (
+                    <div
+                        key={index}
+                        style={{
+                            position: 'relative',
+                        }}
+                    >
+                        <ImageComponent
+                            alt=""
+                            layout="fill"
+                            objectFit="cover"
+                            priority
+                            src={siteImages[index]?.url}
                         />
-                    </StyledPromotionContainer>
-                </div>
-            ))}
-        </Carousel>
+                        <StyledPromotionContainer>
+                            <Promotion
+                                lineOneText={item.lineOneText}
+                                lineTwoText={item.lineTwoText}
+                                linkText={item.linkText}
+                                linkTo={item.linkTo}
+                            />
+                        </StyledPromotionContainer>
+                    </div>
+                ))}
+            </Carousel>
+        </Box>
     );
 };
 

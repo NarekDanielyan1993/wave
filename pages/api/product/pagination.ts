@@ -1,4 +1,5 @@
 import { COMMON_ERROR_TYPES } from '@constant/error';
+import ImageService from '@lib/services/image';
 import ProductService from '@lib/services/product';
 import { NotFoundError, handleError } from '@utils/error-handler';
 import { parsePaginatedQueryParams } from '@utils/helper';
@@ -36,11 +37,15 @@ router.get(
                 sortBy: data.sortBy,
                 filters: data.filters,
             });
+            console.log('productData', productData);
+
+            const imageService = new ImageService();
+            const images = await imageService.getImages();
 
             if (!productData) {
                 throw new NotFoundError('Product not found.');
             }
-            res.status(201).json(productData);
+            res.status(201).json({ ...productData, images });
         } catch (error) {
             handleError(error, res);
         }

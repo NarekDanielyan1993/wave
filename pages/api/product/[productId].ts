@@ -1,6 +1,8 @@
 import { COMMON_ERROR_TYPES } from '@constant/error';
 import { VALIDATION_SOURCES } from '@constant/validation';
+import ImageService from '@lib/services/image';
 import ProductService from '@lib/services/product';
+import CloudinaryService from '@lib/upload';
 import {
     InternalServerError,
     NotFoundError,
@@ -14,7 +16,7 @@ import {
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
 import type {
-    IProductOptional,
+    IProductBody,
     IProductService,
     ProductGetQueryParamsTypes,
 } from 'types/product';
@@ -54,21 +56,33 @@ router.put(
     validateRequest(updateProductValidationSchema),
     async (req, res) => {
         try {
-            const productData: IProductOptional = req.body;
+            const { file, ...productData }: IProductBody = req.body;
             const { productId } = req.query as ProductGetQueryParamsTypes;
-
             const productService: IProductService = new ProductService();
 
             const product = await productService.updateProduct(
                 productId,
                 productData
             );
+            let img;
+            if (file?.publicId) {
+                const cloudinaryService = new CloudinaryService();
+                const image = await cloudinaryService.uploadFile(file.url);
+                console.log(image);
+                const imageService = new ImageService();
+                img = await imageService.createImage({
+                    name: file.name,
+                    url: image.url,
+                    publicId: image.publicId,
+                    productId: product.id,
+                });
+            }
 
             if (!product) {
                 throw new NotFoundError('Product not Found');
             }
 
-            res.status(201).json(product);
+            res.status(201).json({ product, image: img });
         } catch (error) {
             handleError(error, res);
         }

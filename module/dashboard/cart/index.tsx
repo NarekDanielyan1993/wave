@@ -3,7 +3,7 @@ import Payment from './payment';
 import { StyledCart } from './style';
 
 const Cart = () => (
-    <StyledCart>
+    <StyledCart flexDir={{ base: 'column', xl: 'row' }}>
         <Carts />
         <Payment />
     </StyledCart>

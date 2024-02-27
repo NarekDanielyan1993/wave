@@ -1,7 +1,6 @@
-import { Button } from '@chakra-ui/react';
+import { Button, Text } from '@chakra-ui/react';
 import { PAYMENT_API } from '@constant/api';
 import { useAppSelector } from '@store/create-store';
-import { addToHistory, removeCart } from '@store/user/action';
 import { usersSelector } from '@store/user/selectors';
 import {
     PaymentElement,
@@ -9,19 +8,17 @@ import {
     useStripe,
 } from '@stripe/react-stripe-js';
 import { apiRequest } from '@utils/apiRequest';
-import { config } from '@utils/config';
-import { calculateTotal } from '@utils/helper';
+import { useRouter } from 'next/router';
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 const PaymentForm = () => {
     const stripe = useStripe();
     const elements = useElements();
     const { cart } = useAppSelector(usersSelector);
-    console.log(cart);
-    const [errorMessage, setErrorMessage] = useState(null);
+    const [errorMessage, setErrorMessage] = useState<string>('');
     const [isLoading, setIsLoading] = useState(false);
-    const dispatch = useDispatch();
+    // const dispatch = useDispatch();
+    const router = useRouter();
 
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -32,7 +29,7 @@ const PaymentForm = () => {
             }
 
             const { error: submitError } = await elements.submit();
-            if (submitError) {
+            if (submitError?.message) {
                 setErrorMessage(submitError.message);
                 return;
             }
@@ -41,45 +38,41 @@ const PaymentForm = () => {
                 method: 'post',
                 url: PAYMENT_API.payment,
                 data: {
-                    amount: calculateTotal(cart),
+                    products: cart.products,
+                    amount: cart.subtotal,
                 },
             });
-
-            console.log(data.client_secret);
-            console.log(config.NEXT_PUBLIC_BASE_URL);
-            console.log(process.env.NEXT_PUBLIC_BASE_URL);
-            setIsLoading(false);
-
-            const history = cart.map(ca => ({
-                userId: ca.userId,
-                amount: ca.product.price,
-                product: ca.product.model,
-            }));
-            const ids = cart.map(c => c.id);
-            dispatch(addToHistory(history));
-            dispatch(removeCart({ id: ids }));
-            const { error } = await stripe?.confirmPayment({
-                elements,
-                clientSecret: data.client_secret,
-                confirmParams: {
-                    return_url: process.env.NEXT_PUBLIC_BASE_URL,
-                },
-            });
-            if (error) {
-                // This point will only be reached if there is an immediate error when
-                // confirming the payment. Show error to your customer (for example, payment
-                // details incomplete)
-                setErrorMessage(error.message);
-            }
+            console.log(data);
+            router.push('/shop');
+            // const ids = cart.products.map(c => c.id);
+            // const { error } = await stripe?.confirmPayment({
+            //     elements,
+            //     clientSecret: data.client_secret,
+            //     confirmParams: {
+            //         return_url: process.env.NEXT_PUBLIC_BASE_URL,
+            //     },
+            // });
+            // if (error) {
+            //     setErrorMessage(error.message);
+            // }
+            // const history = cart.products.map(ca => ({
+            //     userId: cart.userId,
+            //     amount: ca.total,
+            //     product: ca.model,
+            // }));
+            // dispatch(addToHistory(history));
+            // dispatch(removeCart({ id: ids }));
         } catch (error) {
             console.log(error);
+        } finally {
+            setIsLoading(false);
         }
     };
     return (
         <form onSubmit={onSubmit}>
             <PaymentElement />
             <Button
-                isDisabled={cart.length < 1 || !stripe || !elements}
+                isDisabled={cart.products.length < 1 || !stripe || !elements}
                 isLoading={isLoading}
                 mt={2}
                 type="submit"
@@ -88,7 +81,7 @@ const PaymentForm = () => {
             >
                 Pay
             </Button>
-            {errorMessage && <div>{errorMessage}</div>}
+            {errorMessage && <Text>{errorMessage}</Text>}
         </form>
     );
 };

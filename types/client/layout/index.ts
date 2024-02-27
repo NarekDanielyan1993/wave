@@ -2,10 +2,6 @@ export type LayoutTypes = {
     children: React.ReactNode;
 };
 
-export type DashboardLayoutTypes = {
-    rightSideTitle: string;
-} & LayoutTypes;
-
 // FOOTER
 
 export type businessIconDetailTypes =

@@ -4,21 +4,26 @@ import { apiRequest } from '@utils/apiRequest';
 import type { AxiosResponse } from 'axios';
 import { call, put, takeLatest } from 'redux-saga/effects';
 import type {
+    DeleteImagePayloadTypes,
     DeleteProductPayloadTypes,
     GetBrandsResponseTypes,
     GetPaginatedProductsActionPayload,
     GetProductActionPayload,
+    GetProductsResponseTypes,
     IAddProductPayload,
     ProductCardSectionUnion,
     editProductPayloadTypes,
 } from 'types';
+import { IImageResponse } from 'types/image';
 import type {
     IPaginatedProductResponse,
     IProductResponse,
+    IProductResponseClient,
     IProductsQueryParams,
 } from 'types/product';
 import {
     ADD_PRODUCT,
+    DELETE_IMAGE,
     DELETE_PRODUCT,
     EDIT_PRODUCT,
     GET_BRANDS,
@@ -30,6 +35,7 @@ import {
     getPaginatedProducts,
 } from './action';
 import {
+    deleteImageSuccess,
     deleteProductSuccess,
     editProductSuccess,
     getBrandsSuccess,
@@ -62,6 +68,7 @@ function* getProductsGenerator(
                 },
             }
         );
+        console.log(data);
         yield put(getProductsSuccess(data));
     } catch (error) {
         console.log(error);
@@ -103,7 +110,7 @@ function* getPaginatedProductsGenerator(
 ) {
     try {
         yield put(isProductsLoading(true));
-        const { data }: AxiosResponse<IPaginatedProductResponse> = yield call(
+        const { data }: AxiosResponse<GetProductsResponseTypes> = yield call(
             apiRequest.get,
             PRODUCTS_API.GET_PAGINATED_PRODUCTS,
             {
@@ -146,16 +153,13 @@ const getProductsSortBy = (key: ProductCardSectionUnion) =>
     };
 
 function* editProductGenerator(action: PayloadAction<editProductPayloadTypes>) {
-    const { id } = action.payload;
+    const { id, ...product } = action.payload;
     try {
         yield put(isProductsLoading(true));
-        const { data }: AxiosResponse<IProductResponse> = yield call(
+        const { data }: AxiosResponse<IProductResponseClient> = yield call(
             apiRequest.put,
             `${PRODUCTS_API.EDIT_PRODUCT}/${id}`,
-            {
-                model: action.payload.model,
-                available: action.payload.available,
-            }
+            product
         );
         yield put(editProductSuccess(data));
     } catch (error) {
@@ -214,6 +218,26 @@ function* deleteProductGenerator(
     yield put(isProductsLoading(false));
 }
 
+function* deleteImageGenerator(action: PayloadAction<DeleteImagePayloadTypes>) {
+    const { id, productId, publicId } = action.payload;
+    console.log(id);
+
+    try {
+        yield put(isProductsLoading(true));
+        const { data }: AxiosResponse<IImageResponse> = yield call(
+            apiRequest.delete,
+            PRODUCTS_API.DELETE_PRODUCT_IMAGE,
+            {
+                params: { productId, id, publicId },
+            }
+        );
+        yield put(deleteImageSuccess(data));
+    } catch (error) {
+        console.log(error);
+    }
+    yield put(isProductsLoading(false));
+}
+
 export function* watchProductsSaga() {
     yield takeLatest(GET_PRODUCTS, getProductsGenerator);
     yield takeLatest(
@@ -226,6 +250,7 @@ export function* watchProductsSaga() {
     );
     yield takeLatest(GET_PAGINATED_PRODUCTS, getPaginatedProductsGenerator);
     yield takeLatest(DELETE_PRODUCT, deleteProductGenerator);
+    yield takeLatest(DELETE_IMAGE, deleteImageGenerator);
     yield takeLatest(EDIT_PRODUCT, editProductGenerator);
     yield takeLatest(ADD_PRODUCT, addProductGenerator);
     yield takeLatest(GET_PRODUCT, getProductGenerator);

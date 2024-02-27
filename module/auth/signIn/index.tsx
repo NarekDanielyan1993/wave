@@ -20,7 +20,6 @@ const SignInModule = ({
         email: '',
         password: '',
     };
-    console.log(9999);
 
     const { handleSubmit, FormField } = useForm<AuthTypes>({
         validationSchema: authValidationSchema,

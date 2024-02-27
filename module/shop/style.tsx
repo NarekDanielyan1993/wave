@@ -2,6 +2,7 @@ import { chakra } from '@chakra-ui/react';
 
 export const StyledShopWrapper = chakra('div', {
     baseStyle: {
+        pos: 'relative',
         display: 'flex',
         flexGrow: 1,
         width: '100%',
@@ -25,7 +26,7 @@ export const StyledShopLeftSide = chakra('aside', {
 export const StyledShopRightSide = chakra('section', {
     baseStyle: {
         display: 'flex',
-        flexDirection: 'column',
+        flexDir: 'column',
         flexGrow: 1,
     },
 });

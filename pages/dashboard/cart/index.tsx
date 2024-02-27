@@ -1,5 +1,7 @@
+import Sidebar from '@components/sideBar';
 import { AUTH_ROUTES } from '@constant/route';
 import { wrapper, type SagaStore } from '@store/create-store';
+import { getPaginatedProducts } from '@store/products/action';
 import { getSite } from '@store/site/action';
 import { getCarts } from '@store/user/action';
 import { getUserPermissions } from '@store/userPermission/action';
@@ -9,9 +11,11 @@ import type { GetServerSidePropsContext } from 'next';
 import type { Session } from 'next-auth';
 import { getSession } from 'next-auth/react';
 import { END } from 'redux-saga';
+import PageTitle from '../../../module/dashboard/dashboardLayout/pageTitle';
 
 const CartPage = () => (
-    <DashboardLayout rightSideTitle="Your Cart">
+    <DashboardLayout sideBar={<Sidebar />}>
+        <PageTitle>Your Cart</PageTitle>
         <Cart />
     </DashboardLayout>
 );
@@ -34,6 +38,12 @@ export const getServerSideProps = wrapper.getServerSideProps(
             store.dispatch(
                 getUserPermissions({
                     role: session.user.role,
+                })
+            );
+            store.dispatch(
+                getPaginatedProducts({
+                    limit: 10,
+                    page: 0,
                 })
             );
             store.dispatch(

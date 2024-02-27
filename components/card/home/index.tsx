@@ -2,7 +2,9 @@ import { Button } from '@chakra-ui/react';
 import IconButton from '@components/button/icon-button';
 import ImageComponent from '@components/image';
 import { useAppSelector } from '@store/create-store';
-import { userSelector } from '@store/user/selectors';
+import { productsSelector } from '@store/products/selectors';
+import { userSelector, usersSelector } from '@store/user/selectors';
+import { withCurrency } from '@utils/helper';
 import { useRouter } from 'next/router';
 import { type IProductCard } from 'types/product';
 import {
@@ -19,15 +21,22 @@ const HomeCard = ({ product, addToCartHandler }: IProductCard) => {
     const {
         data: { id },
     } = useAppSelector(userSelector);
+    const { isCartLoading } = useAppSelector(usersSelector);
+    const { images } = useAppSelector(productsSelector);
+    const image = images.find(im => im.productId === product.id);
     return (
         <StyledHomeCardContainer>
             <StyledHomeCardContent>
                 <StyledHomeCardImage>
-                    <ImageComponent layout="fill" src={product.url} />
+                    <ImageComponent layout="fill" src={image?.url} />
                 </StyledHomeCardImage>
                 <StyledHomeCardTitle>{product.brand.name}</StyledHomeCardTitle>
-                <StyledHomeCardText as="p">{product.model}</StyledHomeCardText>
-                <StyledHomeCardText as="p">{product.price}</StyledHomeCardText>
+                <StyledHomeCardText isTruncated as="p">
+                    {product.model}
+                </StyledHomeCardText>
+                <StyledHomeCardText as="p">
+                    {withCurrency(product.price)}
+                </StyledHomeCardText>
             </StyledHomeCardContent>
             <StyledHomeCardActions>
                 <Button
@@ -38,6 +47,7 @@ const HomeCard = ({ product, addToCartHandler }: IProductCard) => {
                     view product
                 </Button>
                 <IconButton
+                    isDisabled={isCartLoading}
                     iconName="shop"
                     onClick={() =>
                         addToCartHandler({ userId: id, productId: product.id })

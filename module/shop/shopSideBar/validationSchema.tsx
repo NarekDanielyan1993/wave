@@ -3,14 +3,16 @@ import { z } from 'zod';
 export const filterProductSchema = z.object({
     frets: z.array(
         z.object({
-            name: z.number(),
+            name: z.string(),
             checked: z.boolean(),
+            id: z.string(),
         })
     ),
     brands: z.array(
         z.object({
             name: z.string(),
             checked: z.boolean(),
+            id: z.string(),
         })
     ),
     from: z.coerce.number().min(0).or(z.null()),

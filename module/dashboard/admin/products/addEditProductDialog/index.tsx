@@ -9,55 +9,93 @@ import {
 } from '@chakra-ui/react';
 import useForm from '@hooks/useForm';
 import { useAppDispatch, useAppSelector } from '@store/create-store';
-import { addProduct } from '@store/products/action';
+import { fretsSelector } from '@store/frets/selectors';
+import { addProduct, editProduct } from '@store/products/action';
 import {
     brandsSelector,
     paginatedProductsSelector,
+    productsSelector,
 } from '@store/products/selectors';
 import {
-    addProductSchema,
-    type addProductSchemaTypes,
+    addEditProductSchema,
+    addEditProductSchemaTypes,
 } from 'common/validation/product';
+import { useMemo } from 'react';
+import { IProductResponse } from 'types/product';
 
-const AddProductDialog = ({
+const AddEditProductDialog = ({
     isOpen = false,
     onClose,
+    data,
 }: {
+    data?: IProductResponse;
     isOpen: boolean;
     onClose: () => void;
 }) => {
     const { brands } = useAppSelector(brandsSelector);
+    const { images } = useAppSelector(productsSelector);
+    const { frets } = useAppSelector(fretsSelector);
     const { paginationData } = useAppSelector(paginatedProductsSelector);
-    const { FormField, handleSubmit } = useForm<addProductSchemaTypes>({
-        defaultValues: {
+    const defaultValues = useMemo(() => {
+        if (data) {
+            const image = images.find(img => img?.productId === data.id);
+            return {
+                available: data.available.toString(),
+                fretId: data.frets.id,
+                price: data.price.toString(),
+                model: data.model,
+                woodType: data.woodType,
+                description: data.description,
+                brand: data.brand.id,
+                shipping: data.shipping,
+                file: image || null,
+            };
+        }
+        return {
             available: null,
-            frets: null,
-            price: null,
+            fretId: frets[0]?.id,
+            price: '',
             model: '',
             woodType: '',
             description: '',
             brand: brands[0]?.id,
             shipping: false,
-            file: '',
-        },
-        validationSchema: addProductSchema,
+            file: null,
+        };
+    }, []);
+    const { FormField, handleSubmit } = useForm<addEditProductSchemaTypes>({
+        defaultValues,
+        validationSchema: addEditProductSchema,
     });
 
     const dispatch = useAppDispatch();
 
-    const formSubmitHandler = (data: addProductSchemaTypes) => {
+    const formSubmitHandler = (dat: addEditProductSchemaTypes) => {
+        console.log(dat);
         const newData = {
-            price: Number(data.price),
-            available: Number(data.available),
-            brandId: data.brand,
-            frets: Number(data.frets),
-            model: data.model,
-            description: data.description,
-            woodType: data.woodType,
-            shipping: data.shipping,
-            file: data.file,
+            brandId: dat.brand,
+            model: dat.model,
+            available: dat.available,
+            fretId: dat.fretId,
+            price: dat.price,
+            woodType: dat.woodType,
+            description: dat.description,
+            file: dat.file,
+            shipping: dat.shipping,
         };
-        dispatch(addProduct({ page: paginationData.page, limit: 10 }, newData));
+        if (data) {
+            console.log(newData);
+            dispatch(
+                editProduct({
+                    id: data.id as string,
+                    ...newData,
+                })
+            );
+        } else {
+            dispatch(
+                addProduct({ page: paginationData.page, limit: 10 }, newData)
+            );
+        }
         onClose();
     };
 
@@ -65,7 +103,7 @@ const AddProductDialog = ({
         <Modal isOpen={isOpen} onClose={onClose} scrollBehavior="inside">
             <ModalOverlay />
             <ModalContent>
-                <ModalHeader>Add Product</ModalHeader>
+                <ModalHeader>{data ? 'edit' : 'Add'} Product</ModalHeader>
                 <ModalBody>
                     <form
                         id="product-form"
@@ -80,8 +118,13 @@ const AddProductDialog = ({
                             label: 'Model',
                         })}
                         {FormField({
-                            name: 'frets',
+                            name: 'fretId',
                             label: 'Frets',
+                            type: 'select',
+                            options: frets.map(fret => ({
+                                id: fret.id,
+                                name: fret.frets,
+                            })),
                         })}
                         {FormField({
                             name: 'woodType',
@@ -118,7 +161,7 @@ const AddProductDialog = ({
                 </ModalBody>
                 <ModalFooter display="flex" gap={2}>
                     <Button form="product-form" type="submit" variant="primary">
-                        add
+                        {data ? 'edit' : 'add'}
                     </Button>
                     <Button onClick={onClose} variant="primary">
                         close
@@ -129,4 +172,4 @@ const AddProductDialog = ({
     );
 };
 
-export default AddProductDialog;
+export default AddEditProductDialog;

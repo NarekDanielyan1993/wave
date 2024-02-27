@@ -1,10 +1,9 @@
-import { chakra } from '@chakra-ui/react';
+import { Text, chakra } from '@chakra-ui/react';
 
-export const StyledSliderLineOne = chakra('div', {
+export const StyledSliderLineOne = chakra(Text, {
     baseStyle: {
         width: 'fit-content',
         padding: `1`,
-        fontSize: '4xl',
         backgroundColor: 'brand.primary.darkenWithOpacity',
         color: 'white',
         textTransform: 'uppercase',

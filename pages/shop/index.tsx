@@ -1,13 +1,16 @@
 import { AUTH_ROUTES } from '@constant/route';
 import { useAppDispatch, wrapper, type SagaStore } from '@store/create-store';
+import { getFrets } from '@store/frets/action';
 import {
     getBrands,
     getPaginatedProducts,
     getProducts,
 } from '@store/products/action';
 import { getSite } from '@store/site/action';
-import { getUser } from '@store/user/action';
-import Shop from 'module/shop';
+import { getCarts, getUser } from '@store/user/action';
+import DashboardLayout from 'module/dashboard/dashboardLayout';
+import Products from 'module/shop/products';
+import ShopSideBar from 'module/shop/shopSideBar';
 import type { GetServerSidePropsContext } from 'next';
 import type { Session } from 'next-auth';
 import { getSession } from 'next-auth/react';
@@ -19,7 +22,13 @@ const ShopPage = () => {
     const filterProducts = (data: GetPaginatedProductsActionPayload) => {
         dispatch(getPaginatedProducts(data));
     };
-    return <Shop filterProducts={filterProducts} />;
+    return (
+        <DashboardLayout
+            sideBar={<ShopSideBar filterProducts={filterProducts} />}
+        >
+            <Products />
+        </DashboardLayout>
+    );
 };
 
 ShopPage.requiredAuth = true;
@@ -38,6 +47,8 @@ export const getServerSideProps = wrapper.getServerSideProps(
             }
             store.dispatch(getSite());
             store.dispatch(getBrands());
+            store.dispatch(getCarts({ id: session.user.id }));
+            store.dispatch(getFrets({ page: 0, limit: 10 }));
             store.dispatch(getUser({ email: session.user.email }));
             store.dispatch(
                 getProducts({

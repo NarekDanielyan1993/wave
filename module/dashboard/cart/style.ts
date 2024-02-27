@@ -3,12 +3,12 @@ import { chakra } from '@chakra-ui/react';
 export const StyledCart = chakra('div', {
     baseStyle: {
         display: 'flex',
-        gap: 2,
+        gap: 4,
     },
 });
 
 export const StyledPayment = chakra('div', {
     baseStyle: {
-        width: '35%',
+        flexBasis: '20rem',
     },
 });

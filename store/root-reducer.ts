@@ -4,6 +4,7 @@ import { HYDRATE } from 'next-redux-wrapper';
 import { RootReducerStateTypes } from 'types/client/store/rootReducer';
 import authSlice from './auth/reducer';
 import errorSlice from './error/reducer';
+import fretsSlice from './frets/reducer';
 import notificationSlice from './notification/reducer';
 import productsSlice from './products/reducer';
 import siteSlice from './site/reducer';
@@ -13,6 +14,7 @@ import userPermissionsSlice from './userPermission/reducer';
 const rootReducerState = {
     errorState: errorSlice,
     productState: productsSlice,
+    fretsState: fretsSlice,
     notificationState: notificationSlice,
     authState: authSlice,
     userState: userSlice,

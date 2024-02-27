@@ -1,5 +1,6 @@
 import useForm from '@hooks/useForm';
 import { useAppSelector } from '@store/create-store';
+import { fretsSelector } from '@store/frets/selectors';
 import {
     brandsSelector,
     paginatedProductsSelector,
@@ -36,6 +37,7 @@ const ShopSideBar = ({
     filterProducts: (data: GetPaginatedProductsActionPayload) => void;
 }) => {
     const { brands: data } = useAppSelector(brandsSelector);
+    const { frets } = useAppSelector(fretsSelector);
     const {
         paginationData: { page },
     } = useAppSelector(paginatedProductsSelector);
@@ -46,10 +48,12 @@ const ShopSideBar = ({
                 brands: data.map(brand => ({
                     name: brand.name,
                     checked: false,
+                    id: brand.id,
                 })),
-                frets: fretList.map(fret => ({
-                    name: fret.name,
+                frets: frets.map(fret => ({
+                    name: fret.frets,
                     checked: false,
+                    id: fret.id,
                 })),
                 from: null,
                 to: null,
@@ -62,7 +66,7 @@ const ShopSideBar = ({
         name: 'brands',
     });
 
-    const { fields: frets, update: updateFrets } = useFieldArray({
+    const { fields: fretsData, update: updateFrets } = useFieldArray({
         control,
         name: 'frets',
     });
@@ -72,8 +76,10 @@ const ShopSideBar = ({
         console.log(data);
         const formData: GetPaginatedProductsActionPayload = {
             page: 0,
-            limit: 4,
-            filters: { baseFilters: { search: [], range: [] } },
+            limit: 10,
+            filters: {
+                baseFilters: { search: [], range: [] },
+            },
         };
 
         if (data.brands.some(brand => brand.checked)) {
@@ -92,12 +98,16 @@ const ShopSideBar = ({
             });
         }
         if (data.frets.some(fret => fret.checked)) {
+            formData.filters.relation = {
+                name: 'frets',
+                baseFilters: { search: [], range: [] },
+            };
             data.frets.forEach(fret => {
                 if (fret.checked) {
-                    formData?.filters?.baseFilters.search?.push({
-                        keyword: 'in',
+                    formData?.filters?.relation.baseFilters.search?.push({
+                        keyword: 'contains',
                         name: 'frets',
-                        value: [fret.name],
+                        value: fret.name,
                     });
                 }
             });
@@ -117,7 +127,7 @@ const ShopSideBar = ({
         <StyledSideBar>
             <form onChange={handleSubmit(onSubmit)}>
                 <Brands brands={brands} update={update} />
-                <Frets frets={frets} update={updateFrets} />
+                <Frets frets={fretsData} update={updateFrets} />
                 <PriceRange errors={formState.errors} register={register} />
             </form>
         </StyledSideBar>

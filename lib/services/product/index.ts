@@ -32,6 +32,7 @@ class ProductService implements IProductService {
             take: limit,
             include: {
                 brand: true,
+                frets: true,
             },
         });
         return products;
@@ -59,6 +60,7 @@ class ProductService implements IProductService {
                 where: filterInput,
                 include: {
                     brand: true,
+                    frets: true,
                 },
             }
         );
@@ -82,6 +84,7 @@ class ProductService implements IProductService {
             data: product,
             include: {
                 brand: true,
+                frets: true,
             },
         });
         return newProduct;
@@ -98,6 +101,7 @@ class ProductService implements IProductService {
             data: product,
             include: {
                 brand: true,
+                frets: true,
             },
         });
         return updatedProduct;
@@ -110,6 +114,7 @@ class ProductService implements IProductService {
             },
             include: {
                 brand: true,
+                frets: true,
             },
         });
         return product;
@@ -122,6 +127,7 @@ class ProductService implements IProductService {
             },
             include: {
                 brand: true,
+                frets: true,
             },
         });
         return deletedProduct;

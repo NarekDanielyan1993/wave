@@ -5,6 +5,17 @@ export interface ISite {
     email: string;
 }
 
+export interface ISiteImage {
+    url: string;
+    name: string;
+    publicId: string;
+}
+
+export interface ISiteDeleteImageBody {
+    id: string;
+    publicId: string;
+}
+
 export type siteQueryParams = {
     siteId: string;
 };

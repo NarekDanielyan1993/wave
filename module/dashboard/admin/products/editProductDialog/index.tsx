@@ -17,7 +17,6 @@ import {
 import { IProduct } from 'types/product';
 
 const EditProductDialog = ({
-    row,
     isOpen,
     onClose,
     data,

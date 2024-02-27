@@ -19,10 +19,7 @@ const Drawer = ({
         <DrawerOverlay />
         <DrawerContent>
             <DrawerCloseButton />
-            <DrawerBody>
-                {children}
-                {/* <ShopSideBar filterProducts={filterProducts} /> */}
-            </DrawerBody>
+            <DrawerBody>{children}</DrawerBody>
         </DrawerContent>
     </ChakraDrawer>
 );

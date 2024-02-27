@@ -21,6 +21,13 @@ class SiteService implements ISiteService {
         return createdSite;
     }
 
+    async uploadSiteImage(site: ISite): Promise<ISiteResponse | null> {
+        const createdSite: ISiteResponse = await this.prisma.site.create({
+            data: site,
+        });
+        return createdSite;
+    }
+
     async updateSiteArgs(
         id: string,
         site: ISiteOptional

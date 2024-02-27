@@ -84,6 +84,11 @@ const Button = defineStyleConfig({
                 bgColor: 'brand.error.darken',
             },
         },
+        truncate: {
+            color: 'brand.secondary.main',
+            padding: 0,
+            fontSize: 'xs',
+        },
     },
 });
 

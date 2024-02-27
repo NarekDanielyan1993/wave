@@ -1,4 +1,6 @@
 import type {
+    DeleteImageActionTypes,
+    DeleteImagePayloadTypes,
     DeleteProductActionTypes,
     DeleteProductPayloadTypes,
     GetBrandsActionTypes,
@@ -21,6 +23,7 @@ export const GET_PAGINATED_PRODUCTS = 'GET_PAGINATED_PRODUCTS';
 export const GET_PRODUCTS_BY_SOLD = 'GET_PRODUCTS_BY_SOLD';
 export const GET_PRODUCTS_CREATED_DATE = 'GET_PRODUCTS_CREATED_DATE';
 export const DELETE_PRODUCT = 'DELETE_PRODUCT';
+export const DELETE_IMAGE = 'DELETE_IMAGE';
 export const EDIT_PRODUCT = 'EDIT_PRODUCT';
 export const ADD_PRODUCT = 'ADD_PRODUCT';
 export const GET_PRODUCT = 'GET_PRODUCT';
@@ -85,6 +88,15 @@ export function deleteProduct(
 ): DeleteProductActionTypes {
     return {
         type: DELETE_PRODUCT,
+        payload: data,
+    };
+}
+
+export function deleteImage(
+    data: DeleteImagePayloadTypes
+): DeleteImageActionTypes {
+    return {
+        type: DELETE_IMAGE,
         payload: data,
     };
 }

@@ -21,7 +21,9 @@ export const ProductCardsSection = ({
         <Loader />
     ) : (
         <StyledProductCardsContainer>
-            <StyledProductCardsTitle>{title}</StyledProductCardsTitle>
+            <StyledProductCardsTitle fontSize={{ base: 'xl', sm: '2xl' }}>
+                {title}
+            </StyledProductCardsTitle>
             <StyledProductCardsWrapper>
                 <CardList
                     addToCartHandler={addToCartHandler}

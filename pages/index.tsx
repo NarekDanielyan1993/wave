@@ -5,10 +5,11 @@ import { PRODUCT_MODEL_FIELDS } from '@constant/db';
 import { PRODUCT_CARDS_QUERY_DEFAULT_PARAMS } from '@constant/default';
 import { SagaStore, useAppDispatch, wrapper } from '@store/create-store';
 import {
+    getPaginatedProducts,
     getProductsByCreatedDate,
     getProductsBySold,
 } from '@store/products/action';
-import { getSite } from '@store/site/action';
+import { getSite, getSiteImages } from '@store/site/action';
 import { addToCart, getUser } from '@store/user/action';
 import { GetServerSidePropsContext } from 'next';
 import { getSession } from 'next-auth/react';
@@ -54,7 +55,14 @@ export const getServerSideProps = wrapper.getServerSideProps(
                 ...PRODUCT_CARDS_QUERY_DEFAULT_PARAMS,
             })
         );
+        store.dispatch(
+            getPaginatedProducts({
+                limit: 10,
+                page: 0,
+            })
+        );
         store.dispatch(getSite());
+        store.dispatch(getSiteImages());
         store.dispatch(END);
         await store.sagaTask?.toPromise();
         return {

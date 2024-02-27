@@ -17,19 +17,14 @@ router.post(
     // validateRequest(updateProfileSchema),
     async (req: NextApiRequest, res: NextApiResponse) => {
         try {
-            const session = (await getServerSession(
-                req,
-                res,
-                authOptions(req, res)
-            )) as Session;
             const data = req.body;
             console.log(data);
-            const user: IUserService = new UserService();
-            const updatedUser = await user.addToCart(data);
-            if (!updatedUser) {
+            const userService: IUserService = new UserService();
+            const createdUser = await userService.addToCart(data);
+            if (!createdUser) {
                 throw new InternalServerError();
             }
-            res.status(201).json(updatedUser);
+            res.status(201).json(createdUser);
         } catch (error) {
             handleError(error, res);
         }
@@ -75,10 +70,10 @@ router.delete(
                 res,
                 authOptions(req, res)
             )) as Session;
-            const { id } = req.query;
-            console.log('id', id);
+            const data = req.body;
+            console.log(data);
             const user: IUserService = new UserService();
-            const carts = await user.removeCart(id);
+            const carts = await user.removeCart(data.ids);
             if (!carts) {
                 throw new InternalServerError();
             }

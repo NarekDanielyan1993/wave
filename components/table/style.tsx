@@ -54,6 +54,7 @@ export const StyledTheadTr = chakra(Tr, {
 export const StyledTbodyTr = chakra(Tr, {
     baseStyle: {
         minHeight: '10',
+        cursor: 'pointer',
         _even: {
             bgColor: 'brand.secondary.main',
             border: 'none',

@@ -1,4 +1,3 @@
-import { UserProfileValidationTypes } from 'common/validation/user';
 import {
     AddToHistoryActionTypes,
     AddToHistoryPayloadType,
@@ -6,8 +5,13 @@ import {
     GetHistoryPayloadType,
     GetUserProfilePayloadType,
     GetUserProfilesActionTypes,
+    IAddProfileImageAction,
+    IAddProfileImagePayload,
+    IDeleteProfileImageAction,
+    IDeleteProfileImagePayload,
+    IUpdateUserProfileAction,
+    IUpdateUserProfilePayload,
     UpdateUserEmailActionTypes,
-    UpdateUserProfileActionTypes,
     type AddToCartActionTypes,
     type AddToCartPayloadType,
     type GetCartsActionTypes,
@@ -19,6 +23,8 @@ export const GET_USER_PROFILE = 'GET_USER_PROFILE';
 export const UPDATE_USER_EMAIL = 'UPDATE_USER_EMAIL';
 export const UPDATE_USER = 'UPDATE_USER';
 export const ADD_TO_CART = 'ADD_TO_CART';
+export const ADD_PROFILE_IMAGE = 'ADD_PROFILE_IMAGE';
+export const DELETE_PROFILE_IMAGE = 'DELETE_PROFILE_IMAGE';
 export const ADD_TO_HISTORY = 'ADD_TO_HISTORY';
 export const GET_CART = 'GET_CART';
 export const GET_HISTORY = 'GET_HISTORY';
@@ -50,6 +56,24 @@ export function addToCart(data: AddToCartPayloadType): AddToCartActionTypes {
     };
 }
 
+export function addProfileImage(
+    data: IAddProfileImagePayload
+): IAddProfileImageAction {
+    return {
+        type: ADD_PROFILE_IMAGE,
+        payload: data,
+    };
+}
+
+export function deleteProfileImage(
+    data: IDeleteProfileImagePayload
+): IDeleteProfileImageAction {
+    return {
+        type: DELETE_PROFILE_IMAGE,
+        payload: data,
+    };
+}
+
 export function addToHistory(
     data: AddToHistoryPayloadType[]
 ): AddToHistoryActionTypes {
@@ -74,8 +98,8 @@ export function removeCart(data: RemoveCartPayloadType): RemoveCartActionTypes {
 }
 
 export function updateUserProfile(
-    data: UserProfileValidationTypes
-): UpdateUserProfileActionTypes {
+    data: IUpdateUserProfilePayload
+): IUpdateUserProfileAction {
     return {
         type: UPDATE_USER,
         payload: data,

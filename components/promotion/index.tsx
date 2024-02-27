@@ -9,8 +9,12 @@ const Promotion = ({
     linkTo,
 }: PromotionTypes) => (
     <>
-        <StyledSliderLineOne>{lineOneText}</StyledSliderLineOne>
-        <StyledSliderLineTwo>{lineTwoText}</StyledSliderLineTwo>
+        <StyledSliderLineOne fontSize={{ base: 'xl', md: '6xl' }}>
+            {lineOneText}
+        </StyledSliderLineOne>
+        <StyledSliderLineTwo fontSize={{ base: 'xl', md: '3xl' }}>
+            {lineTwoText}
+        </StyledSliderLineTwo>
         <Link href={linkTo} variant="primary">
             {linkText}
         </Link>

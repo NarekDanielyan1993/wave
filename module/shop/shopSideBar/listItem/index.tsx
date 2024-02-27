@@ -1,4 +1,4 @@
-import { ListItem } from '@chakra-ui/react';
+import { ListItem, Text } from '@chakra-ui/react';
 import type { UseFieldArrayUpdate } from 'react-hook-form';
 import type { FilterProductSchemaType } from '../validationSchema';
 
@@ -11,37 +11,40 @@ const Item = ({
     type: string;
     update: UseFieldArrayUpdate<FilterProductSchemaType>;
     index: number;
-    brand: { name: string; checked: boolean };
+    brand: { name: string; checked: boolean; id: string };
 }) => {
     const onClickHandler = (index: number) => {
-        update(index, { name: brand.name, checked: !brand.checked });
+        update(index, {
+            name: brand.name,
+            checked: !brand.checked,
+            id: brand.id,
+        });
     };
 
     return (
-        <ListItem
-            alignItems="center"
-            cursor="pointer"
-            display="flex"
-            justifyContent="space-between"
-            pl={2}
-            pos="relative"
-            py={2}
-        >
+        <ListItem display="flex">
             <label
-                htmlFor={`${type}.${index}.name`}
-                onClick={() => onClickHandler(index)}
-                style={{ flexGrow: 1, display: 'block', cursor: 'pointer' }}
+                htmlFor={`${type}.${index}.checked`}
+                onChange={() => onClickHandler(index)}
+                style={{
+                    display: 'flex',
+                    flexGrow: 1,
+                    justifyContent: 'space-between',
+                    cursor: 'pointer',
+                    paddingBlock: 4,
+                    paddingInline: 4,
+                }}
             >
-                {brand?.name}
+                <Text>{brand?.name}</Text>
+                <input
+                    checked={brand.checked}
+                    id={`${type}.${index}.checked`}
+                    readOnly
+                    type="checkbox"
+                />
+                <input name={`${type}.${index}.name`} type="hidden" />
+                <input name={`${type}.${index}.id`} type="hidden" />
             </label>
-            <input
-                checked={brand.checked}
-                id={`${type}.${index}.name`}
-                name={`${type}.${index}.checked`}
-                style={{ position: 'absolute', right: 0, zIndex: -1 }}
-                type="checkbox"
-            />
-            <input name={`${type}.${index}.name`} type="hidden" />
         </ListItem>
     );
 };

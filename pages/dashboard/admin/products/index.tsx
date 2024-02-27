@@ -1,11 +1,14 @@
+import Sidebar from '@components/sideBar';
 import { AUTH_ROUTES } from '@constant/route';
 import { wrapper, type SagaStore } from '@store/create-store';
+import { getFrets } from '@store/frets/action';
 import { getBrands, getPaginatedProducts } from '@store/products/action';
 import { getSite } from '@store/site/action';
 import { getUser } from '@store/user/action';
 import { getUserPermissions } from '@store/userPermission/action';
 import AdminProducts from 'module/dashboard/admin/products';
 import DashboardLayout from 'module/dashboard/dashboardLayout';
+import PageTitle from 'module/dashboard/dashboardLayout/pageTitle';
 import type { GetServerSidePropsContext } from 'next';
 import type { Session } from 'next-auth';
 import { getSession } from 'next-auth/react';
@@ -13,7 +16,8 @@ import { END } from 'redux-saga';
 import type { CustomNextPage } from 'types';
 
 const AdminProductsPage: CustomNextPage = () => (
-    <DashboardLayout rightSideTitle="products">
+    <DashboardLayout sideBar={<Sidebar />}>
+        <PageTitle>products</PageTitle>
         <AdminProducts />
     </DashboardLayout>
 );
@@ -38,6 +42,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
                     role: session.user.role,
                 })
             );
+            store.dispatch(getFrets({ page: 0, limit: 10 }));
             store.dispatch(getSite());
             store.dispatch(
                 getPaginatedProducts({

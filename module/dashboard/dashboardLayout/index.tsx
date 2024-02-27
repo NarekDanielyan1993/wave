@@ -1,52 +1,26 @@
-import { useDisclosure, useMediaQuery } from '@chakra-ui/react';
-import IconButton from '@components/button/icon-button';
-import Sidebar from '@components/sideBar';
-import Drawer from '@components/sideBar/drawer';
-import { useEffect, useState } from 'react';
-import { type DashboardLayoutTypes } from 'types';
+import { useMediaQuery } from '@chakra-ui/react';
+import MobileMenu from '@components/layout/mobileMenu';
+import { LayoutTypes } from 'types';
 import {
     StyledDashboardContainer,
-    StyledDashboardHeader,
     StyledDashboardLeftSide,
     StyledDashboardWrapper,
     StyledRightSide,
 } from './style';
 
-const DashboardLayout = ({
-    children,
-    rightSideTitle,
-}: DashboardLayoutTypes) => {
-    const [isMobile] = useMediaQuery('(max-width: 700px)');
-    const [hideOnMobile, setHideOnMobile] = useState(false);
-    useEffect(() => {
-        setHideOnMobile(isMobile);
-    }, [isMobile]);
-    const { isOpen, onOpen, onClose } = useDisclosure();
+const DashboardLayout = ({ children, sideBar }: LayoutTypes) => {
+    const [isMobile] = useMediaQuery('(max-width: 975px)');
     return (
         <StyledDashboardContainer>
             <StyledDashboardWrapper>
-                {hideOnMobile ? (
+                {isMobile ? (
                     <>
-                        <IconButton
-                            color="gray"
-                            iconName="burger"
-                            onClick={onOpen}
-                        />
-                        <Drawer isOpen={isOpen} onClose={onClose}>
-                            <Sidebar />
-                        </Drawer>
+                        <MobileMenu>{sideBar}</MobileMenu>
                     </>
                 ) : (
-                    <StyledDashboardLeftSide>
-                        <Sidebar />
-                    </StyledDashboardLeftSide>
+                    <StyledDashboardLeftSide>{sideBar}</StyledDashboardLeftSide>
                 )}
-                <StyledRightSide>
-                    <StyledDashboardHeader as="h3">
-                        {rightSideTitle}
-                    </StyledDashboardHeader>
-                    {children}
-                </StyledRightSide>
+                <StyledRightSide>{children}</StyledRightSide>
             </StyledDashboardWrapper>
         </StyledDashboardContainer>
     );

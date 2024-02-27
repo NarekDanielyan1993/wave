@@ -4,7 +4,7 @@ import useDidUpdate from '@hooks/useDidUpdate';
 import usePagination from '@hooks/usePagination';
 import { type AnyAction } from '@reduxjs/toolkit';
 import { useAppDispatch } from '@store/create-store';
-import type { DeepKeys } from '@tanstack/react-table';
+import type { DeepKeys, RowSelectionState } from '@tanstack/react-table';
 import {
     createColumnHelper,
     flexRender,
@@ -12,7 +12,8 @@ import {
     getPaginationRowModel,
     useReactTable,
 } from '@tanstack/react-table';
-import { useCallback, useMemo } from 'react';
+import { isObjectEmpty, withCurrency } from '@utils/helper';
+import { useCallback, useMemo, useState } from 'react';
 import {
     type GetPaginatedProductsActionPayload,
     type IPaginatedDataResponse,
@@ -46,27 +47,38 @@ export function Table<T>({
     manualPagination = false,
     paginationData,
     getPaginatedData,
-    setId,
+    setSelectedRow,
+    selectedRow,
 }: {
     data: T[];
     isLoading: boolean;
     cols: TableColumn<T>[];
-    setId: (id: string) => void;
+    selectedRow: string[];
+    setSelectedRow: (id: string[]) => void;
     variant?: string;
     manualPagination: boolean;
     paginationData: IPaginatedDataResponse<keyof T, number>;
     getPaginatedData: (data: GetPaginatedProductsActionPayload) => AnyAction;
 }): JSX.Element {
     const columnHelper = createColumnHelper<T>();
+    const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
-    const renderColumn = useCallback(column => {
-        if (column.type === 'boolean') {
-            return (info: any) => <Checkbox checked />;
+    const renderColumn = useCallback((props, column: TableColumn<T>) => {
+        if (column.headerName === 'Id') {
+            return <Checkbox isChecked={props.row.getIsSelected()} />;
+        }
+        if (column.headerName === 'Shipping') {
+            return (
+                <Checkbox
+                    isChecked={props.getValue()}
+                    sx={{ pointerEvents: 'none' }}
+                />
+            );
         }
         if (column.headerName === 'Amount') {
-            return (info: any) => `${info.getValue()}$`;
+            return withCurrency(props.getValue());
         }
-        return (info: any) => info.getValue();
+        return props.getValue();
     }, []);
 
     const newColumns = useMemo(() => {
@@ -75,7 +87,7 @@ export function Table<T>({
         }
         return cols.map((col: TableColumn<T>) =>
             columnHelper.accessor(col.accessorKey, {
-                cell: renderColumn(col),
+                cell: props => renderColumn(props, col),
                 header: col.headerName,
             })
         );
@@ -89,6 +101,14 @@ export function Table<T>({
         data,
         columns: newColumns,
         enableHiding: true,
+        getRowId: row => row.id,
+        enableMultiRowSelection: false,
+        ...(setSelectedRow && {
+            onRowSelectionChange: setRowSelection,
+        }),
+        state: {
+            rowSelection,
+        },
         initialState: {
             pagination: {
                 pageIndex: 0,
@@ -114,6 +134,16 @@ export function Table<T>({
         debugHeaders: true,
         debugColumns: true,
     });
+
+    useDidUpdate(() => {
+        if (isObjectEmpty(rowSelection)) {
+            setSelectedRow([]);
+            return;
+        }
+        if (rowSelection) {
+            setSelectedRow(Object.keys(rowSelection));
+        }
+    }, [rowSelection]);
 
     useDidUpdate(() => {
         if (!manualPagination) {
@@ -168,7 +198,7 @@ export function Table<T>({
                         <>
                             <StyledTbodyTr
                                 key={row.id}
-                                onClick={() => setId(row.original.id)}
+                                onClick={row.getToggleSelectedHandler()}
                             >
                                 {row.getVisibleCells().map(cell => (
                                     <>

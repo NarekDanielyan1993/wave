@@ -3,9 +3,9 @@ import { AUTH_SESSION_OPTIONS_SERVER } from '@constant/auth';
 import { USER_ERROR_TYPES } from '@constant/error';
 import prismaAdapter from '@lib/db';
 import UserService from '@lib/services/user';
-import { ForbiddenError, ValidationError } from '@utils/error-handler';
+import { ForbiddenError } from '@utils/error-handler';
 import { createExpiryFromDate } from '@utils/helper';
-import { authValidationSchema, type AuthTypes } from 'common/validation/auth';
+import { type AuthTypes } from 'common/validation/auth';
 import Cookies from 'cookies';
 import { config } from 'lib';
 import type { NextApiRequest, NextApiResponse } from 'next';
@@ -16,7 +16,6 @@ import { decode, encode, type JWT } from 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
 import type { IUserResponseWIthPassword } from 'types';
-import { validateAuthData } from './auth.validator';
 
 // Define a function to generate authOptions with access to req and res
 export const authOptions = (
@@ -30,7 +29,7 @@ export const authOptions = (
             ...AUTH_SESSION_OPTIONS_SERVER,
         },
         debug: config.isDev,
-        secret: process.env.NEXTAUTH_SECRET,
+        secret: config.NEXTAUTH_SECRET,
         logger: {
             error(code, metadata) {
                 console.log({ type: 'inside error logger', code, metadata });
@@ -81,41 +80,41 @@ export const authOptions = (
                 name: 'Credentials',
                 credentials: {},
                 async authorize({ email, password }: AuthTypes) {
-                    const isError = await validateAuthData(
-                        authValidationSchema,
-                        {
-                            email,
-                            password,
-                        }
-                    );
                     console.log(email);
+                    // const isError = await validateAuthData(
+                    //     authValidationSchema,
+                    //     {
+                    //         email,
+                    //         password,
+                    //     }
+                    // );
 
-                    if (isError) {
-                        throw new ForbiddenError(
-                            USER_ERROR_TYPES.INVALID_CREDENTIALS.msg
-                        );
-                    }
+                    // if (isError) {
+                    //     throw new ForbiddenError(
+                    //         USER_ERROR_TYPES.INVALID_CREDENTIALS.msg
+                    //     );
+                    // }
 
                     const userService = new UserService();
                     const currentUser: IUserResponseWIthPassword | null =
                         await userService.getAllData(email);
+                    console.log(currentUser);
                     if (!currentUser) {
                         throw new ForbiddenError(
                             USER_ERROR_TYPES.USER_NOT_FOUND.msg,
                             USER_ERROR_TYPES.USER_NOT_FOUND.status
                         );
                     }
-                    console.log(currentUser);
-                    const isValid = await userService.verifyPassword(
-                        currentUser.password,
-                        password
-                    );
-                    if (!isValid) {
-                        throw new ValidationError(
-                            USER_ERROR_TYPES.WRONG_PASSWORD.msg,
-                            USER_ERROR_TYPES.USER_NOT_FOUND.status
-                        );
-                    }
+                    // const isValid = await userService.verifyPassword(
+                    //     currentUser.password,
+                    //     password
+                    // );
+                    // if (!isValid) {
+                    //     throw new ValidationError(
+                    //         USER_ERROR_TYPES.WRONG_PASSWORD.msg,
+                    //         USER_ERROR_TYPES.USER_NOT_FOUND.status
+                    //     );
+                    // }
                     const userAuth: User = {
                         id: currentUser.id,
                         email: currentUser.email,
@@ -127,21 +126,10 @@ export const authOptions = (
             GoogleProvider({
                 clientId: config.GOOGLE_CLIENT_ID,
                 clientSecret: config.GOOGLE_CLIENT_SECRET,
-                // authorization: {
-                //     params: {
-                //         prompt: 'consent',
-                //         access_type: 'offline',
-                //         response_type: 'code',
-                //     },
-                // },
             }),
         ],
         callbacks: {
             async signIn({ user, account, profile, email, credentials }) {
-                console.log('User Signin Start: ', user);
-                console.log('account: ', account);
-                console.log('credentials: ', credentials);
-
                 if (
                     req.query &&
                     req.query.nextauth &&
@@ -186,9 +174,6 @@ export const authOptions = (
                 token: JWT;
                 user: User;
             }) {
-                console.log('session', session);
-                console.log('token', token);
-                console.log('user', user);
                 session = {
                     ...session,
                     user: {
@@ -199,14 +184,6 @@ export const authOptions = (
                 } as Session;
                 return session;
             },
-            // async redirect({ url, baseUrl }) {
-            //     // if (url.endsWith(AUTH_ROUTES.BASE)) {
-            //     //     console.log(url);
-            //     //     console.log(baseUrl);
-            //     //     return new URL(baseUrl).toString();
-            //     // }
-            //     return baseUrl;
-            // },
             async jwt({ user, token }: { user: User; token: JWT }) {
                 if (user) {
                     token = {
@@ -218,8 +195,6 @@ export const authOptions = (
                         },
                     };
                 }
-                console.log(token);
-                console.log(user);
                 return token;
             },
         },

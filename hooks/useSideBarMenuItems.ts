@@ -21,6 +21,10 @@ const useSideBarMenuItems = (which: SideBarMenuSectionTypesUnion) => {
             href: '/dashboard/admin/products',
         },
         {
+            text: 'Frets',
+            href: '/dashboard/admin/frets',
+        },
+        {
             text: 'Manage sites',
             href: '/dashboard/site',
         },

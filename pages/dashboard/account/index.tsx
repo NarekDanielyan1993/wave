@@ -1,3 +1,4 @@
+import Sidebar from '@components/sideBar';
 import { AUTH_ROUTES } from '@constant/route';
 import { SagaStore, wrapper } from '@store/create-store';
 import { getSite } from '@store/site/action';
@@ -10,9 +11,11 @@ import { Session } from 'next-auth';
 import { getSession } from 'next-auth/react';
 import { END } from 'redux-saga';
 import { CustomNextPage } from 'types';
+import PageTitle from '../../../module/dashboard/dashboardLayout/pageTitle';
 
 const AccountPage: CustomNextPage = () => (
-    <DashboardLayout rightSideTitle="overview">
+    <DashboardLayout sideBar={<Sidebar />}>
+        <PageTitle>Overview</PageTitle>
         <Account />
     </DashboardLayout>
 );
