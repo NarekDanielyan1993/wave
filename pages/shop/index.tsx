@@ -22,6 +22,7 @@ const ShopPage = () => {
     const filterProducts = (data: GetPaginatedProductsActionPayload) => {
         dispatch(getPaginatedProducts(data));
     };
+
     return (
         <DashboardLayout
             sideBar={<ShopSideBar filterProducts={filterProducts} />}

@@ -3,7 +3,6 @@ import { Box, chakra } from '@chakra-ui/react';
 export const CarouselContainer = chakra(Box, {
     baseStyle: {
         position: 'relative',
-        overflow: 'hidden',
         width: '100%',
         height: '100%',
     },

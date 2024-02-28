@@ -1,5 +1,5 @@
 import { ArrowLeftIcon, ArrowRightIcon } from '@chakra-ui/icons';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Indicators from './Indicators';
 import Indicator from './Indicators/indicator';
 import CarouselBtn from './carouselBtn';
@@ -20,13 +20,45 @@ const Carousel = ({
     withIndicators?: boolean;
     children: React.ReactNode[];
 }) => {
-    const [current, setCurrent] = useState(0);
+    const swiperRef = useRef<HTMLDivElement>(null);
+    const currentRef = useRef<number>(0);
+    const [current, setCurrent] = useState<number>(0);
+
     const prev = () => {
-        setCurrent(prev => (prev === 0 ? children.length - 1 : prev - 1));
+        if (swiperRef.current && swiperRef.current.children.length > 0) {
+            currentRef.current =
+                currentRef.current === 0
+                    ? children.length - 1
+                    : currentRef.current - 1;
+            swiperRef.current.children[currentRef.current].scrollIntoView({
+                behavior: 'smooth',
+                block: 'nearest',
+                inline: 'start',
+            });
+        }
+    };
+
+    const indicatorHandler = (index: number) => {
+        swiperRef.current.children[index].scrollIntoView({
+            behavior: 'smooth',
+            block: 'nearest',
+            inline: 'start',
+        });
+        setCurrent(index);
     };
 
     const next = () => {
-        setCurrent(prev => (prev === children.length - 1 ? 0 : prev + 1));
+        if (swiperRef.current && swiperRef.current.children.length > 0) {
+            currentRef.current =
+                currentRef.current === children.length - 1
+                    ? 0
+                    : currentRef.current + 1;
+            swiperRef.current.children[currentRef.current].scrollIntoView({
+                behavior: 'smooth',
+                block: 'nearest',
+                inline: 'start',
+            });
+        }
     };
 
     useEffect(() => {
@@ -40,15 +72,17 @@ const Carousel = ({
     return (
         <CarouselContainer>
             <CarouselWrapper
+                ref={swiperRef}
                 sx={{
                     '& > *': {
                         position: 'relative',
-                        flex: '0 0 100%',
+                        flexShrink: 0,
                         scrollSnapStop: withTouch ? 'always' : '',
                         scrollSnapAlign: withTouch ? 'start' : '',
-                        transform: `translateX(-${current * 100}%)`,
-                        transition: '0.6s transform ease-out',
+                        width: '100%',
+                        height: '100%',
                     },
+                    display: 'flex',
                     overflowX: 'auto',
                     scrollSnapType: withTouch ? 'x mandatory' : 'none',
                 }}
@@ -73,9 +107,9 @@ const Carousel = ({
                 <Indicators>
                     {children.map((_, i) => (
                         <Indicator
+                            onClick={() => indicatorHandler(i)}
                             key={i}
                             style={{
-                                padding: current === i ? '8px' : 0,
                                 opacity: current === i ? 1 : 0.7,
                             }}
                         />

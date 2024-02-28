@@ -1,10 +1,7 @@
 import useForm from '@hooks/useForm';
 import { useAppSelector } from '@store/create-store';
 import { fretsSelector } from '@store/frets/selectors';
-import {
-    brandsSelector,
-    paginatedProductsSelector,
-} from '@store/products/selectors';
+import { brandsSelector } from '@store/products/selectors';
 import { useFieldArray } from 'react-hook-form';
 import type { GetPaginatedProductsActionPayload } from 'types';
 import Brands from './brands';
@@ -16,44 +13,23 @@ import {
     type FilterProductSchemaType,
 } from './validationSchema';
 
-export const fretList = [
-    {
-        checked: false,
-        name: 12,
-    },
-    {
-        checked: false,
-        name: 14,
-    },
-    {
-        checked: false,
-        name: 16,
-    },
-];
-
 const ShopSideBar = ({
     filterProducts,
 }: {
     filterProducts: (data: GetPaginatedProductsActionPayload) => void;
 }) => {
-    const { brands: data } = useAppSelector(brandsSelector);
+    const brands = useAppSelector(brandsSelector);
     const { frets } = useAppSelector(fretsSelector);
-    const {
-        paginationData: { page },
-    } = useAppSelector(paginatedProductsSelector);
-
-    const { register, control, formState, handleSubmit } =
+    const { control, handleSubmit, register, formState } =
         useForm<FilterProductSchemaType>({
             defaultValues: {
-                brands: data.map(brand => ({
+                brands: brands.map(brand => ({
                     name: brand.name,
                     checked: false,
-                    id: brand.id,
                 })),
                 frets: frets.map(fret => ({
                     name: fret.frets,
                     checked: false,
-                    id: fret.id,
                 })),
                 from: null,
                 to: null,
@@ -61,10 +37,11 @@ const ShopSideBar = ({
             validationSchema: filterProductSchema,
         });
 
-    const { fields: brands, update } = useFieldArray({
+    const { fields: brandsData, update } = useFieldArray({
         control,
         name: 'brands',
     });
+    console.log(brandsData);
 
     const { fields: fretsData, update: updateFrets } = useFieldArray({
         control,
@@ -126,7 +103,7 @@ const ShopSideBar = ({
     return (
         <StyledSideBar>
             <form onChange={handleSubmit(onSubmit)}>
-                <Brands brands={brands} update={update} />
+                <Brands brands={brandsData} update={update} />
                 <Frets frets={fretsData} update={updateFrets} />
                 <PriceRange errors={formState.errors} register={register} />
             </form>

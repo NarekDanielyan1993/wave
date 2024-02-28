@@ -1,10 +1,17 @@
 import { createAuthSignInPromise } from '@store/auth/action';
 import { authSelector } from '@store/auth/selectors';
-import { useAppDispatch, useAppSelector } from '@store/create-store';
+import {
+    SagaStore,
+    useAppDispatch,
+    useAppSelector,
+    wrapper,
+} from '@store/create-store';
+import { getSite } from '@store/site/action';
 import type { AuthTypes } from 'common/validation/auth';
 import SignInModule from 'module/auth/signIn';
 import type { GetServerSidePropsContext } from 'next';
 import { getSession } from 'next-auth/react';
+import { END } from 'redux-saga';
 import type { CustomNextPage } from 'types';
 
 const SignInPage: CustomNextPage = () => {
@@ -18,24 +25,28 @@ const SignInPage: CustomNextPage = () => {
     return <SignInModule isLoading={isLoading} onSubmit={formSubmitHandler} />;
 };
 
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-    const session = await getSession({ req: context.req });
-    console.log(session);
-    if (session) {
+export const getServerSideProps = wrapper.getServerSideProps(
+    (store: SagaStore) => async (ctx: GetServerSidePropsContext) => {
+        const session = await getSession({ req: ctx.req });
+        console.log(session);
+        if (session) {
+            return {
+                redirect: {
+                    destination: '/',
+                    permanent: false,
+                },
+            };
+        }
+        store.dispatch(getSite());
+        store.dispatch(END);
+        await store.sagaTask?.toPromise();
         return {
-            redirect: {
-                destination: '/',
-                permanent: false,
+            props: {
+                session,
             },
         };
     }
-
-    return {
-        props: {
-            session,
-        },
-    };
-}
+);
 
 SignInPage.requiredAuth = false;
 

@@ -5,14 +5,12 @@ export const filterProductSchema = z.object({
         z.object({
             name: z.string(),
             checked: z.boolean(),
-            id: z.string(),
         })
     ),
     brands: z.array(
         z.object({
             name: z.string(),
             checked: z.boolean(),
-            id: z.string(),
         })
     ),
     from: z.coerce.number().min(0).or(z.null()),

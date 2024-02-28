@@ -7,4 +7,4 @@ export const takeProductCardsSectionSelector =
 export const productsSelector = (state: AppState) => state.productState;
 export const paginatedProductsSelector = (state: AppState) =>
     state.productState;
-export const brandsSelector = (state: AppState) => state.productState;
+export const brandsSelector = (state: AppState) => state.productState.brands;

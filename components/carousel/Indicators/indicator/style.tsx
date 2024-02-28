@@ -6,5 +6,6 @@ export const StyledIndicator = chakra(Box, {
         w: '1rem',
         h: '1rem',
         borderRadius: '50%',
+        cursor: 'pointer',
     },
 });

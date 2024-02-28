@@ -1,8 +1,8 @@
 import { HamburgerIcon } from '@chakra-ui/icons';
 import { IconButton as ChakraIconButton, Tooltip } from '@chakra-ui/react';
 import ShoppingCart from 'public/shopping.svg';
+import { GrClose } from 'react-icons/gr';
 import { IconButtonTypes, IconsTypes } from 'types';
-
 export const IconButton = ({
     iconName,
     tooltipText = '',
@@ -12,6 +12,7 @@ export const IconButton = ({
     const icons: IconsTypes = {
         shop: ShoppingCart,
         burger: HamburgerIcon,
+        close: GrClose,
     };
     const Icon = icons[iconName];
     return (

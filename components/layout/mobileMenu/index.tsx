@@ -6,7 +6,7 @@ import React from 'react';
 const MobileMenu = ({ children }: { children: React.ReactNode }) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     return (
-        <Box pos="absolute">
+        <Box>
             <IconButton color="gray" iconName="burger" onClick={onOpen} />
             <Drawer isOpen={isOpen} onClose={onClose}>
                 {children}

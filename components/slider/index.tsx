@@ -13,7 +13,7 @@ const SliderComponent = () => {
     const { siteImages } = useAppSelector(siteSelector);
     return (
         <Box sx={{ w: '100%', h: '80vh' }}>
-            <Carousel autoSlide withTouch>
+            <Carousel withIndicators autoSlide withTouch>
                 {sliderPromotions.map((item, index) => (
                     <div
                         key={index}

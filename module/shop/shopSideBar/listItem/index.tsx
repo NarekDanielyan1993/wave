@@ -11,13 +11,12 @@ const Item = ({
     type: string;
     update: UseFieldArrayUpdate<FilterProductSchemaType>;
     index: number;
-    brand: { name: string; checked: boolean; id: string };
+    brand: { name: string; checked: boolean };
 }) => {
     const onClickHandler = (index: number) => {
         update(index, {
             name: brand.name,
             checked: !brand.checked,
-            id: brand.id,
         });
     };
 
@@ -38,12 +37,11 @@ const Item = ({
                 <Text>{brand?.name}</Text>
                 <input
                     checked={brand.checked}
-                    id={`${type}.${index}.checked`}
                     readOnly
+                    id={`${type}.${index}.checked`}
                     type="checkbox"
                 />
                 <input name={`${type}.${index}.name`} type="hidden" />
-                <input name={`${type}.${index}.id`} type="hidden" />
             </label>
         </ListItem>
     );
