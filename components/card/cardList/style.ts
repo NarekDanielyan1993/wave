@@ -5,6 +5,7 @@ export const StyledCardList = chakra(Box, {
         display: 'flex',
         justifyContent: 'center',
         flexWrap: 'wrap',
+        width: 'full',
         gap: 6,
     },
 });
