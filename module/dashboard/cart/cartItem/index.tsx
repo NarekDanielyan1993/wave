@@ -23,8 +23,17 @@ const CartItem = ({
     };
     return (
         <StyledCartWrapper>
-            <Box display={{ sm: 'flex' }} gap={4}>
-                <Box pos="relative" height="10rem" w="10rem">
+            <Box
+                flexDir={{ base: 'column', md: 'row' }}
+                display={{ base: 'flex' }}
+                gap={4}
+            >
+                <Box
+                    alignSelf={'center'}
+                    pos="relative"
+                    height="10rem"
+                    w="10rem"
+                >
                     <ImageComponent layout="fill" src={image?.url} />
                 </Box>
                 <Box

@@ -8,6 +8,7 @@ export const StyledDrawer = chakra('div', {
         width: 'full',
         top: 0,
         bottom: 0,
+        p: '1rem',
         zIndex: 1200,
         backgroundColor: 'white',
         paddingTop: '1rem',
