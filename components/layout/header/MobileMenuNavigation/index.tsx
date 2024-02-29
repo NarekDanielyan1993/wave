@@ -14,12 +14,14 @@ import { usersSelector } from '@store/user/selectors';
 import { useRouter } from 'next/router';
 import { NavLinkTypes } from 'types';
 
-const Menu = () => {
-    const [upperLinks, bottomLinks, links] = useGenerateNavLinks();
+const MobileMenMenuNavigation = () => {
+    const { links } = useGenerateNavLinks();
     const { asPath } = useRouter();
-    const { cart } = useAppSelector(usersSelector);
+    const {
+        cart: { quantity },
+    } = useAppSelector(usersSelector);
     return (
-        <ChakraMenu>
+        <ChakraMenu autoSelect={false}>
             <MenuButton
                 aria-label="Options"
                 as={IconButton}
@@ -36,14 +38,15 @@ const Menu = () => {
                                     aria-current={
                                         asPath === link.url ? 'page' : undefined
                                     }
+                                    variant={'secondary'}
                                     color="black"
                                     href={link.url}
                                     key={index}
                                     sx={{ width: '100%' }}
                                 >
                                     {link.url === '/dashboard/cart' &&
-                                    cart.length > 0
-                                        ? cart.length
+                                    quantity > 0
+                                        ? quantity
                                         : ''}{' '}
                                     {link.text}
                                 </Link>
@@ -53,6 +56,7 @@ const Menu = () => {
                     return (
                         <MenuItem key={index}>
                             <Button
+                                variant={'ghost'}
                                 color="black"
                                 key={index}
                                 onClick={link.click}
@@ -68,4 +72,4 @@ const Menu = () => {
     );
 };
 
-export default Menu;
+export default MobileMenMenuNavigation;

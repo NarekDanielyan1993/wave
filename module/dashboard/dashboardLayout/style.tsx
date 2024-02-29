@@ -8,6 +8,7 @@ export const StyledDashboardWrapper = chakra('div', {
         width: '100%',
         maxWidth: '7xl',
         my: '8',
+        px: '3vw',
     },
 });
 

@@ -14,7 +14,8 @@ const Drawer = ({
 }) => {
     return (
         <Box
-            w={isOpen ? '40vw' : 0}
+            w={isOpen ? '60vw' : 0}
+            maxW={'20rem'}
             pos={'fixed'}
             bottom={0}
             top={0}

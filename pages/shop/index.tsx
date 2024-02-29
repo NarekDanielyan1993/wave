@@ -1,4 +1,3 @@
-import { AUTH_ROUTES } from '@constant/route';
 import { useAppDispatch, wrapper, type SagaStore } from '@store/create-store';
 import { getFrets } from '@store/frets/action';
 import {
@@ -32,25 +31,19 @@ const ShopPage = () => {
     );
 };
 
-ShopPage.requiredAuth = true;
+ShopPage.requiredAuth = false;
 
 export const getServerSideProps = wrapper.getServerSideProps(
     (store: SagaStore) =>
         async ({ req }: GetServerSidePropsContext) => {
             const session: Session | null = await getSession({ req });
-            if (!session) {
-                return {
-                    redirect: {
-                        destination: AUTH_ROUTES.BASE,
-                        permanent: false,
-                    },
-                };
+            if (session) {
+                store.dispatch(getCarts({ id: session.user.id }));
+                store.dispatch(getUser({ email: session.user.email }));
             }
             store.dispatch(getSite());
             store.dispatch(getBrands());
-            store.dispatch(getCarts({ id: session.user.id }));
             store.dispatch(getFrets({ page: 0, limit: 10 }));
-            store.dispatch(getUser({ email: session.user.email }));
             store.dispatch(
                 getProducts({
                     limit: 4,

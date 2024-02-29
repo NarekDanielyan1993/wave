@@ -53,6 +53,10 @@ const Button = defineStyleConfig({
         ghost: {
             bgColor: 'transparent',
             color: 'white',
+        },
+        text: {
+            bgColor: 'transparent',
+            color: 'white',
             _hover: {
                 color: 'brand.primary.main',
             },

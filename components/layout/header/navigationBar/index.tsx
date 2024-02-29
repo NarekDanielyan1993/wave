@@ -4,7 +4,7 @@ import NavLinkList from './navLinkList';
 import { StyledNavigation } from './style';
 
 const Navigation = () => {
-    const [upperLinks, bottomLinks] = useGenerateNavLinks();
+    const { upperLinks, bottomLinks } = useGenerateNavLinks();
     return (
         <StyledNavigation>
             <NavLinkList list={upperLinks} />

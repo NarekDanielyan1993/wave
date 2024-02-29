@@ -2,7 +2,7 @@ import { chakra } from '@chakra-ui/react';
 
 export const StyledProductHeader = chakra('div', {
     baseStyle: {
-        py: 4,
+        p: 4,
         maxWidth: '4xl',
         margin: '0 auto',
         textTransform: 'uppercase',

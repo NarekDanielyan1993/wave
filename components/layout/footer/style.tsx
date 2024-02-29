@@ -36,7 +36,7 @@ export const StyledContentWrapper = chakra('div', {
         flexWrap: 'wrap',
         justifyContent: 'center',
         gap: 8,
-        p: 8,
+        px: '5vw',
     },
 });
 

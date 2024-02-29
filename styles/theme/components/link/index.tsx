@@ -33,9 +33,9 @@ const Link = defineStyleConfig({
         secondary: {
             color: 'brand.primary.main',
             p: '2',
-            _hover: {
-                color: 'brand.primary.darken',
-            },
+            // _hover: {
+            //     color: 'brand.primary.darken',
+            // },
         },
         tertiary: {
             color: 'brand.secondary.main',

@@ -25,22 +25,32 @@ export function prismaExclude<T extends Entity, K extends Keys<T>>(
 
 export type SearchFilter = {
     name: string;
-    value: string;
+    value: string[] | number[];
     keyword: string;
 };
 
-export type RangeFilter = {
+export interface SearchRelationFilter extends SearchFilter {
+    relationName: string;
+}
+
+export interface RangeFilter {
     name: string;
     min?: number;
     max?: number;
-};
+}
+
+export interface RangeRelationFilter extends RangeFilter {
+    relationName?: string;
+}
 
 export type Filters = {
     baseFilters: FilterOptions;
-    relation?: {
-        name: string;
-        baseFilters: FilterOptions;
-    };
+    relation: FilterRelation;
+};
+
+export type FilterRelation = {
+    search?: SearchRelationFilter[];
+    range?: RangeRelationFilter[];
 };
 
 export type FilterOptions = {

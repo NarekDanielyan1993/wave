@@ -15,6 +15,8 @@ export const StyledHomeCardContainer = chakra('div', {
 export const StyledHomeCardImage = chakra('div', {
     baseStyle: {
         height: '44',
+        maxWidth: '100%',
+        width: '100%',
         position: 'relative',
     },
 });

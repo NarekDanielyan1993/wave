@@ -9,6 +9,7 @@ import Cookies, { Cookie } from 'cookies';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import type {
     FilterOptions,
+    FilterRelation,
     Filters,
     ICarts,
     IItemsQueryParams,
@@ -194,14 +195,12 @@ export const generatePrismaFilters = (
                 ...filterOptions.range.map(rangeFilter => {
                     const { name, min, max } = rangeFilter;
                     const filter: Prisma.ProductWhereInput = {};
-                    if (name) {
-                        if (min !== undefined && max !== undefined) {
-                            return { [name]: { gte: min, lte: max } };
-                        } else if (min !== undefined) {
-                            return { [name]: { gte: min } };
-                        } else if (max !== undefined) {
-                            return { [name]: { lte: max } };
-                        }
+                    if (min !== undefined && max !== undefined) {
+                        return { [name]: { gte: min, lte: max } };
+                    } else if (min !== undefined) {
+                        return { [name]: { gte: min } };
+                    } else if (max !== undefined) {
+                        return { [name]: { lte: max } };
                     }
                     return filter;
                 })
@@ -210,70 +209,53 @@ export const generatePrismaFilters = (
         return filterConditions;
     };
 
-    const buildRelationFilterOptions = (filterOptions: Filters) => {
+    const buildRelationFilterOptions = (filterOptions: FilterRelation) => {
         const filterConditions: Prisma.ProductWhereInput[] = [];
-
-        if (
-            filterOptions?.relation?.baseFilters?.search &&
-            filterOptions?.relation.baseFilters?.search.length > 0
-        ) {
+        if (filterOptions.search && filterOptions.search.length > 0) {
             filterConditions.push(
-                ...filterOptions.relation.baseFilters.search.map(
-                    searchFilter => {
-                        const { name, value, keyword } = searchFilter;
-                        if (name && keyword) {
-                            return {
-                                [filterOptions.relation.name]: {
-                                    [name]: { [keyword]: value },
-                                },
-                            };
-                        }
-                        return {};
-                    }
-                )
+                ...filterOptions.search.map(searchFilter => {
+                    const { relationName, name, value, keyword } = searchFilter;
+                    return {
+                        [relationName]: {
+                            [name]: { [keyword]: value },
+                        },
+                    };
+                })
             );
         }
 
-        if (
-            filterOptions?.relation?.baseFilters?.range &&
-            filterOptions?.relation?.baseFilters?.range.length > 0
-        ) {
+        if (filterOptions.range && filterOptions.range.length > 0) {
             filterConditions.push(
-                ...filterOptions.relation?.baseFilters.range.map(
-                    rangeFilter => {
-                        const { name, min, max } = rangeFilter;
-                        const filter: Prisma.ProductWhereInput = {};
-                        if (name) {
-                            if (min !== undefined && max !== undefined) {
-                                return { [name]: { gte: min, lte: max } };
-                            } else if (min !== undefined) {
-                                return { [name]: { gte: min } };
-                            } else if (max !== undefined) {
-                                return { [name]: { lte: max } };
-                            }
-                        }
-                        return filter;
+                ...filterOptions.range.map(rangeFilter => {
+                    const { name, min, max } = rangeFilter;
+                    const filter: Prisma.ProductWhereInput = {};
+                    if (min !== undefined && max !== undefined) {
+                        return { [name]: { gte: min, lte: max } };
+                    } else if (min !== undefined) {
+                        return { [name]: { gte: min } };
+                    } else if (max !== undefined) {
+                        return { [name]: { lte: max } };
                     }
-                )
+                    return filter;
+                })
             );
         }
-
         return filterConditions;
     };
 
     if (
-        filters?.baseFilters?.search?.length > 0 ||
-        filters?.baseFilters?.range?.length > 0
+        (filters.baseFilters.search && filters.baseFilters.search.length > 0) ||
+        (filters.baseFilters.range && filters.baseFilters.range.length > 0)
     ) {
-        where.OR = buildFilterOptions(filters.baseFilters);
+        where.AND = buildFilterOptions(filters.baseFilters);
     }
 
     if (filters.relation) {
-        const relationWhere = buildRelationFilterOptions(filters);
+        const relationWhere = buildRelationFilterOptions(filters.relation);
 
         if (relationWhere.length > 0) {
-            where.OR = where.OR || [];
-            where.OR.push(...relationWhere);
+            where.AND = where.AND || [];
+            where.AND.push(...relationWhere);
         }
     }
 

@@ -7,5 +7,6 @@ export const StyledProductWrapper = chakra('div', {
         minHeight: 'lg',
         maxWidth: '4xl',
         margin: '0 auto',
+        p: 4,
     },
 });

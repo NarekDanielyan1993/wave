@@ -1,4 +1,3 @@
-import { List } from '@chakra-ui/react';
 import AccordionWrapper from '@components/accordion';
 import type { UseFieldArrayUpdate } from 'react-hook-form';
 import Item from '../listItem';
@@ -9,20 +8,20 @@ const Brands = ({
     update,
 }: {
     update: UseFieldArrayUpdate<FilterProductSchemaType>;
-    brands: { name: string; checked: boolean }[];
+    brands: { name: string; checked: boolean; id: string }[];
 }) => (
     <AccordionWrapper title="BRANDS">
-        <List>
+        <div>
             {brands.map((brand, index) => (
                 <Item
                     brand={brand}
                     index={index}
-                    key={index}
+                    key={brand.id}
                     type="brands"
                     update={update}
                 />
             ))}
-        </List>
+        </div>
     </AccordionWrapper>
 );
 

@@ -9,9 +9,8 @@ import { StyledLayoutNavLinkList } from '../style';
 const NavLinkList = ({ list }: { list: NavLinkTypes[] }) => {
     const { asPath } = useRouter();
     const {
-        cart: { products, quantity },
+        cart: { quantity },
     } = useAppSelector(usersSelector);
-    console.log(quantity);
     return (
         <StyledLayoutNavLinkList>
             {list.map((link: NavLinkTypes, index: number) => {
@@ -32,7 +31,12 @@ const NavLinkList = ({ list }: { list: NavLinkTypes[] }) => {
                     );
                 }
                 return (
-                    <Button key={index} onClick={link.click}>
+                    <Button
+                        variant={'text'}
+                        pr={2}
+                        key={index}
+                        onClick={link.click}
+                    >
                         {link.text}
                     </Button>
                 );

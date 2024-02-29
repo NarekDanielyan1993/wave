@@ -9,16 +9,6 @@ const useGenerateNavLinks = () => {
     const router = useRouter();
     const links = [
         {
-            text: 'MY Cart',
-            url: '/dashboard/cart',
-            type: 'link',
-        },
-        {
-            text: 'MY Account',
-            url: '/dashboard/account',
-            type: 'link',
-        },
-        {
             text: 'Home',
             url: '/',
             type: 'link',
@@ -27,16 +17,6 @@ const useGenerateNavLinks = () => {
             text: 'Guitars',
             url: '/shop',
             type: 'link',
-        },
-        {
-            text: 'LOG OUT',
-            url: '/',
-            type: 'button',
-            renderAs: 'text',
-            click: () =>
-                signOut({ redirect: false }).then(() => {
-                    router.push(AUTH_ROUTES.BASE);
-                }),
         },
     ];
     const navLinksUpperWithSignIn: NavLinkTypes[] = [
@@ -86,9 +66,30 @@ const useGenerateNavLinks = () => {
     let navLinksUpper: NavLinkTypes[] = signOutNavLinksUpper;
     if (status === SESSION_STATUS.AUTHENTICATED) {
         navLinksUpper = navLinksUpperWithSignIn;
+        links.unshift(
+            {
+                text: 'MY Cart',
+                url: '/dashboard/cart',
+                type: 'link',
+            },
+            {
+                text: 'MY Account',
+                url: '/dashboard/account',
+                type: 'link',
+            }
+        );
+        links.push({
+            text: 'LOG OUT',
+            url: '/',
+            type: 'button',
+            click: () =>
+                signOut({ redirect: false }).then(() => {
+                    router.push(AUTH_ROUTES.BASE);
+                }),
+        });
     }
 
-    return [navLinksUpper, navLinksBottom, links];
+    return { upperLinks: navLinksUpper, bottomLinks: navLinksBottom, links };
 };
 
 export default useGenerateNavLinks;

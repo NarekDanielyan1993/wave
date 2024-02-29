@@ -11,7 +11,7 @@ const Frets = ({
 }: {
     register: UseFormRegister<FilterProductSchemaType>;
     update: UseFieldArrayUpdate<FilterProductSchemaType>;
-    frets: { name: string; checked: boolean }[];
+    frets: { name: string; checked: boolean; id: string }[];
 }) => (
     <AccordionWrapper title="FRETS">
         <List>
@@ -19,8 +19,7 @@ const Frets = ({
                 <Item
                     brand={fret}
                     index={index}
-                    key={index}
-                    register={register}
+                    key={fret.id}
                     type="frets"
                     update={update}
                 />

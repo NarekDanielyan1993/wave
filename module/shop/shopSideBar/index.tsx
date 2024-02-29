@@ -41,7 +41,6 @@ const ShopSideBar = ({
         control,
         name: 'brands',
     });
-    console.log(brandsData);
 
     const { fields: fretsData, update: updateFrets } = useFieldArray({
         control,
@@ -49,49 +48,45 @@ const ShopSideBar = ({
     });
 
     const onSubmit = (data: FilterProductSchemaType) => {
-        console.log(brands);
         console.log(data);
         const formData: GetPaginatedProductsActionPayload = {
             page: 0,
             limit: 10,
             filters: {
                 baseFilters: { search: [], range: [] },
+                relation: { search: [], range: [] },
             },
         };
 
         if (data.brands.some(brand => brand.checked)) {
-            formData.filters.relation = {
-                name: 'brand',
-                baseFilters: { search: [] },
-            };
-            data.brands.forEach(brand => {
-                if (brand.checked) {
-                    formData?.filters?.relation?.baseFilters.search?.push({
-                        keyword: 'contains',
-                        name: 'name',
-                        value: brand.name,
-                    });
-                }
+            formData?.filters?.relation?.search?.push({
+                keyword: 'in',
+                name: 'name',
+                value: data.brands.reduce((acc, brand) => {
+                    if (brand.checked) {
+                        acc.push(brand.name);
+                    }
+                    return acc;
+                }, [] as string[]),
+                relationName: 'brand',
             });
         }
         if (data.frets.some(fret => fret.checked)) {
-            formData.filters.relation = {
+            formData?.filters?.relation?.search?.push({
+                keyword: 'in',
                 name: 'frets',
-                baseFilters: { search: [], range: [] },
-            };
-            data.frets.forEach(fret => {
-                if (fret.checked) {
-                    formData?.filters?.relation.baseFilters.search?.push({
-                        keyword: 'contains',
-                        name: 'frets',
-                        value: fret.name,
-                    });
-                }
+                value: data.frets.reduce((acc, fret) => {
+                    if (fret.checked) {
+                        acc.push(fret.name);
+                    }
+                    return acc;
+                }, [] as string[]),
+                relationName: 'frets',
             });
         }
 
         if (data.from || data.to) {
-            formData?.filters?.baseFilters.range?.push({
+            formData?.filters?.baseFilters?.range?.push({
                 ...(data.from && { min: data.from }),
                 ...(data.to && { max: data.to }),
                 name: 'price',

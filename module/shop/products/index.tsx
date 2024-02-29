@@ -1,4 +1,4 @@
-import { Box, Text } from '@chakra-ui/react';
+import { Box, IconButton, Text } from '@chakra-ui/react';
 import CardList from '@components/card/cardList';
 import useObserver from '@hooks/useObserver';
 import { useAppDispatch, useAppSelector } from '@store/create-store';
@@ -12,13 +12,13 @@ import { StyledSectionWrapper } from './style';
 
 const Products = () => {
     const {
-        paginationData: { filters, page, totalItems, limit },
+        paginationData: { filters, page, totalItems },
         isProductsLoading,
         products,
     } = useAppSelector(paginatedProductsSelector);
     const [grid, setGrid] = useState<'home' | 'shop'>('home');
     const dispatch = useAppDispatch();
-    const getProduct = useCallback(() => {
+    const getProductsHandler = useCallback(() => {
         dispatch(
             getProducts({
                 limit: 4,
@@ -37,35 +37,41 @@ const Products = () => {
 
     const { sentinelRef } = useObserver({
         isEnabled: products.length < totalItems,
-        callback: () => getProduct(),
+        callback: () => getProductsHandler(),
     });
 
     return (
         <>
-            <Box display="flex" gap={2} justifyContent="right" py={2}>
-                <MdOutlineGridOff
-                    onClick={() => setGrid('home')}
-                    style={{ cursor: 'pointer' }}
-                />
-                <MdOutlineGridOn
-                    onClick={() => setGrid('shop')}
-                    style={{ cursor: 'pointer' }}
-                />
-            </Box>
             <StyledSectionWrapper>
+                <Box display="flex" gap={2} justifyContent="right" py={2}>
+                    <IconButton
+                        color={grid === 'home' ? 'brand.secondary.main' : ''}
+                        minW={0}
+                        aria-label=""
+                        icon={<MdOutlineGridOff />}
+                        onClick={() => setGrid('home')}
+                    />
+                    <IconButton
+                        color={grid === 'shop' ? 'brand.secondary.main' : ''}
+                        minW={0}
+                        aria-label=""
+                        icon={<MdOutlineGridOn />}
+                        onClick={() => setGrid('shop')}
+                    />
+                </Box>
                 <CardList
                     addToCartHandler={addToCartHandler}
                     cards={products}
                     type={grid}
                 />
+                <Box
+                    display="block"
+                    ref={sentinelRef}
+                    sx={{ textAlign: 'center', mt: 10 }}
+                >
+                    {isProductsLoading && <Text>Loading...</Text>}
+                </Box>
             </StyledSectionWrapper>
-            <Box
-                display="block"
-                ref={sentinelRef}
-                sx={{ textAlign: 'center', my: 10 }}
-            >
-                {isProductsLoading && <Text>Loading...</Text>}
-            </Box>
         </>
     );
 };

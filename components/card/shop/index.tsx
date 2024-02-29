@@ -31,7 +31,6 @@ const ShopCard = ({ product, addToCartHandler }: IProductCard) => {
             <StyledShopCardContentWrapper
                 alignItems={{ base: 'center', md: 'flex-start' }}
                 flexDir={{ base: 'column', md: 'row' }}
-                textAlign={{ base: 'center' }}
             >
                 <StyledShopCardImage>
                     <ImageComponent

@@ -3,6 +3,7 @@ import { Text, chakra } from '@chakra-ui/react';
 export const StyledBusinessInfoContent = chakra('div', {
     baseStyle: {
         display: 'flex',
+        flexWrap: 'wrap',
         justifyContent: 'space-between',
     },
 });

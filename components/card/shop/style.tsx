@@ -17,7 +17,6 @@ export const StyledShopCardContentWrapper = chakra('div', {
     baseStyle: {
         pos: 'relative',
         display: 'flex',
-        alignItems: 'flex-start',
         gap: 2,
     },
 });
