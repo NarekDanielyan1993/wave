@@ -182,11 +182,17 @@ export const generatePrismaFilters = (
         if (filterOptions.search && filterOptions.search.length > 0) {
             filterConditions.push(
                 ...filterOptions.search.map(searchFilter => {
-                    const { name, value, keyword } = searchFilter;
-                    if (name && keyword) {
-                        return { [name]: { [keyword]: value } };
-                    }
-                    return {};
+                    const { name, value, keyword, keywords } = searchFilter;
+                    return {
+                        [name]: {
+                            [keyword]: value,
+                            ...(keywords &&
+                                keywords.reduce((acc, key) => {
+                                    acc[key.keyword] = key.value;
+                                    return acc;
+                                }, {})),
+                        },
+                    };
                 })
             );
         }

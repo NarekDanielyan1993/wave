@@ -3,7 +3,6 @@ import { NOTIFICATION_MESSAGES } from '@constant/notification';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { showNotification } from '@store/notification/reducer';
 import { apiRequest } from '@utils/apiRequest';
-import { config } from '@utils/config';
 import { AuthTypes } from 'common/validation/auth';
 import { signIn } from 'next-auth/react';
 import Router from 'next/router';
@@ -44,7 +43,7 @@ function* signInGenerator(
             password,
             redirect: false,
         });
-        Router.push(config.NEXT_PUBLIC_BASE_URL);
+        Router.push('/shop');
     } catch (error) {
         console.log(error);
     }

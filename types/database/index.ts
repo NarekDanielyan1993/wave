@@ -27,6 +27,7 @@ export type SearchFilter = {
     name: string;
     value: string[] | number[];
     keyword: string;
+    keywords?: Record<any, any>[];
 };
 
 export interface SearchRelationFilter extends SearchFilter {

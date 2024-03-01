@@ -21,6 +21,12 @@ const ProductSearchForm = () => {
                                 name: 'model',
                                 value: debounce,
                                 keyword: 'contains',
+                                keywords: [
+                                    {
+                                        keyword: 'mode',
+                                        value: 'insensitive',
+                                    },
+                                ],
                             },
                         ],
                     },

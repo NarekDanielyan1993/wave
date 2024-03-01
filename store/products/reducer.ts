@@ -86,6 +86,7 @@ const productsSlice = createSlice({
             state: IProductsState,
             action: PayloadAction<GetBrandsResponseTypes[]>
         ) => {
+            console.log(action.payload);
             state.brands = action.payload;
         },
         getPaginatedProductsSuccess: (

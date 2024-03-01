@@ -28,7 +28,6 @@ const SignInPage: CustomNextPage = () => {
 export const getServerSideProps = wrapper.getServerSideProps(
     (store: SagaStore) => async (ctx: GetServerSidePropsContext) => {
         const session = await getSession({ req: ctx.req });
-        console.log(session);
         if (session) {
             return {
                 redirect: {

@@ -18,6 +18,11 @@ const useGenerateNavLinks = () => {
             url: '/shop',
             type: 'link',
         },
+        {
+            text: 'Log In',
+            url: AUTH_ROUTES.BASE,
+            type: 'link',
+        },
     ];
     const navLinksUpperWithSignIn: NavLinkTypes[] = [
         {
@@ -78,6 +83,7 @@ const useGenerateNavLinks = () => {
                 type: 'link',
             }
         );
+        links.pop();
         links.push({
             text: 'LOG OUT',
             url: '/',

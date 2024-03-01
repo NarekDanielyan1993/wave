@@ -32,7 +32,7 @@ const AddEditProductDialog = ({
     isOpen: boolean;
     onClose: () => void;
 }) => {
-    const { brands } = useAppSelector(brandsSelector);
+    const brands = useAppSelector(brandsSelector);
     const { images } = useAppSelector(productsSelector);
     const { frets } = useAppSelector(fretsSelector);
     const { paginationData } = useAppSelector(paginatedProductsSelector);

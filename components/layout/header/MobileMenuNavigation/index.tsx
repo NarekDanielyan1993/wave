@@ -29,7 +29,7 @@ const MobileMenMenuNavigation = () => {
                 icon={<HamburgerIcon />}
                 variant="outline"
             />
-            <MenuList>
+            <MenuList rootProps={{ zIndex: 2 }}>
                 {links?.map((link: NavLinkTypes, index: number) => {
                     if (link.type === 'link') {
                         return (
@@ -54,7 +54,7 @@ const MobileMenMenuNavigation = () => {
                         );
                     }
                     return (
-                        <MenuItem key={index}>
+                        <MenuItem as={'div'} key={index}>
                             <Button
                                 variant={'ghost'}
                                 color="black"

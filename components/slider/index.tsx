@@ -12,13 +12,15 @@ const SliderComponent = () => {
     const sliderPromotions: SliderPromotionTypes[] = useGeneratePromotion();
     const { siteImages } = useAppSelector(siteSelector);
     return (
-        <Box sx={{ w: '100%', h: '80vh' }}>
-            <Carousel withIndicators autoSlide withTouch>
+        <Box sx={{ w: '100%', h: '80vh', overflow: 'hidden' }}>
+            <Carousel>
                 {sliderPromotions.map((item, index) => (
                     <div
                         key={index}
                         style={{
                             position: 'relative',
+                            width: '100%',
+                            height: '80vh',
                         }}
                     >
                         <ImageComponent
