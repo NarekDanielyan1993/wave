@@ -14,7 +14,6 @@ router.post(async (req, res) => {
         const userPermissions = await userPermissionsService.getPermissions(
             role
         );
-        console.log(userPermissions);
         res.status(201).json(userPermissions);
     } catch (error) {
         handleError(error, res);

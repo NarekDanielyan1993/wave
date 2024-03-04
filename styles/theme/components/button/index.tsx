@@ -74,7 +74,7 @@ const Button = defineStyleConfig({
             },
         },
         iconPrimary: {
-            p: '1',
+            p: '5px',
             backgroundColor: 'brand.primary.lighten',
             color: 'brand.primary.main',
             _hover: {

@@ -24,7 +24,6 @@ const SiteForm = () => {
 
     const formSubmitHandler = (data: siteCreateValidationSchemaTypes) => {
         if (site.id) {
-            console.log(site.id);
             dispatch(editSite({ id: site.id, site: data }));
         } else {
             dispatch(createSite({ site: data }));

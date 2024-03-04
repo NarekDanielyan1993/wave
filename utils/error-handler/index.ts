@@ -178,7 +178,10 @@ export class ErrorHandler {
                 return err;
             }
             default: {
-                const err = new InternalServerError();
+                const err = new InternalServerError(
+                    error?.msg,
+                    error.status || error?.status
+                );
                 return err;
             }
         }
@@ -264,7 +267,6 @@ export class ErrorHandler {
 }
 
 export const handleError = (error: any, res: NextApiResponse) => {
-    console.error('onError', error);
     const err = ErrorHandler.handleError(error);
 
     res.status(

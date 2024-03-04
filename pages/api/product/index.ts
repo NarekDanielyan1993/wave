@@ -3,11 +3,12 @@ import ImageService from '@lib/services/image';
 import ProductService from '@lib/services/product';
 import CloudinaryService from '@lib/upload';
 import {
-    InternalServerError,
+    ForbiddenError,
     NotFoundError,
     handleError,
 } from '@utils/error-handler';
-import { parseQueryParams } from '@utils/helper';
+import { parseQueryParams, validateRequest } from '@utils/helper';
+import { addEditProductSchema } from 'common/validation/product';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
 import type {
@@ -21,11 +22,17 @@ const router = createRouter<NextApiRequest, NextApiResponse>();
 
 router.get(
     // permissionMiddleware({
-    //     resource: PERMISSION_RESOURCES.PROFILE,
-    //     permissions: [PERMISSION_ACTION.READ_OWN],
+    //     resource: PERMISSION_RESOURCES.PRODUCT,
+    //     permissions: [PERMISSION_ACTION.READ],
     // }),
     async (req, res) => {
         try {
+            // const session: Session | null = await getServerSession(
+            //     req,
+            //     res,
+            //     authOptions(req, res)
+            // );
+            // console.log(session);
             const { limit, order, sortBy } =
                 req.query as IProductsQueryParams<string>;
             const data: IProductsQueryParams<number> =
@@ -41,9 +48,6 @@ router.get(
                 sortBy: data.sortBy,
             });
 
-            const imageService = new ImageService();
-            const images = await imageService.getImages();
-
             if (!productData) {
                 throw new NotFoundError('Product not found.');
             }
@@ -56,10 +60,10 @@ router.get(
 
 router.post(
     // permissionMiddleware({
-    //     resource: PERMISSION_RESOURCES.PROFILE,
-    //     permissions: [PERMISSION_ACTION.READ_OWN],
+    //     resource: PERMISSION_RESOURCES.PRODUCT,
+    //     permissions: [PERMISSION_ACTION.CREATE],
     // }),
-    // validateRequest(createProductValidationSchema),
+    validateRequest(addEditProductSchema),
     async (req, res) => {
         try {
             const { file, ...productData }: IProductBody = req.body;
@@ -79,8 +83,8 @@ router.post(
                     productId: newProductData.id,
                 });
             }
-            if (!newProductData) {
-                throw new InternalServerError();
+            if (newProductData) {
+                throw new ForbiddenError('Failed to add product.');
             }
 
             res.status(201).json({ product: newProductData, image });
@@ -92,38 +96,16 @@ router.post(
 
 router.delete(
     // permissionMiddleware({
-    //     resource: PERMISSION_RESOURCES.PROFILE,
-    //     permissions: [PERMISSION_ACTION.READ_OWN],
+    //     resource: PERMISSION_RESOURCES.PRODUCT,
+    //     permissions: [PERMISSION_ACTION.DELETE],
     // }),
-    // validateRequest(createProductValidationSchema),
     async (req, res) => {
         try {
-            const { id, productId } = req.query;
-            console.log('productId', productId);
+            const { id } = req.query;
             if (id) {
                 const imageService = new ImageService();
-                const image = await imageService.deleteImage(id);
-                console.log(image);
+                await imageService.deleteImage(id);
             }
-
-            // cloudinary.config({
-            //     cloud_name: config.CLOU,
-            //     api_key: config.NEXT_PUBLIC_API_KEY,
-            //     api_secret: config.NEXT_PUBLIC_API_SECRET,
-            // });
-
-            // cloudinary.v2.uploader
-            //     .destroy(publicId, function (error, result) {
-            //         console.log(result, error);
-            //     })
-            //     .then(resp => console.log(resp))
-            //     .catch(_err =>
-            //         console.log('Something went wrong, please try again later.')
-            //     );
-
-            // if (!newProductData) {
-            //     throw new InternalServerError();
-            // }
         } catch (error) {
             handleError(error, res);
         }

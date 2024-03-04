@@ -18,16 +18,12 @@ const CartItem = ({
     const { images } = useAppSelector(productsSelector);
     const image = images.find(img => img.productId === cart.id);
     const dispatch = useAppDispatch();
-    const calculateTotalHandler = (value: '+' | '-') => {
-        dispatch(calculateTotal({ productId: cart.id, sign: value }));
+    const calculateTotalHandler = (type: '+' | '-' | 'val', value: number) => {
+        dispatch(calculateTotal({ productId: cart.id, type: type, value }));
     };
     return (
         <StyledCartWrapper>
-            <Box
-                flexDir={{ base: 'column', md: 'row' }}
-                display={{ base: 'flex' }}
-                gap={4}
-            >
+            <Box flexDir={{ base: 'column', md: 'row' }} display="flex" gap={4}>
                 <Box
                     alignSelf={'center'}
                     pos="relative"
@@ -38,9 +34,9 @@ const CartItem = ({
                 </Box>
                 <Box
                     display={'flex'}
-                    flexDir={{ base: 'column', sm: 'row' }}
+                    flexDir={{ base: 'column', md: 'row' }}
                     flexGrow={1}
-                    gap={4}
+                    gap={2}
                     justifyContent="space-between"
                 >
                     <Box>
@@ -51,15 +47,20 @@ const CartItem = ({
                             <Text>{withCurrency(cart.price)}</Text>
                         </Box>
                     </Box>
-                    <Box display={'flex'} gap={6}>
+                    <Box
+                        width={'16rem'}
+                        overflow="hidden"
+                        display={'flex'}
+                        gap={3}
+                    >
                         <NumberInput
                             onChange={calculateTotalHandler}
                             value={cart.quantity}
                             width="10rem"
                         />
-                        <Box>
+                        <Box overflow={'hidden'}>
                             <Text fontWeight="bold">Total</Text>
-                            <Text>{withCurrency(cart.total)}</Text>
+                            <Text isTruncated>{withCurrency(cart.total)}</Text>
                         </Box>
                     </Box>
                 </Box>

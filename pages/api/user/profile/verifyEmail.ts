@@ -17,15 +17,11 @@ const router = createRouter<NextApiRequest, NextApiResponse>();
 router.get(async (req, res) => {
     try {
         const { token } = req.query;
-        console.log(token);
         const userToken = Array.isArray(token) ? token[0] : (token as string);
-        console.log(userToken);
         const decodedToken: ITokenPayload = jwt.verify(
             userToken,
             config.NEXTAUTH_SECRET
         ) as ITokenPayload;
-        console.log(config.NEXTAUTH_SECRET);
-        console.log(decodedToken);
         if (!decodedToken) {
             throw new InternalServerError();
         }
@@ -34,7 +30,6 @@ router.get(async (req, res) => {
 
         const verificationTokenData: IVerificationToken | null =
             await verificationTokenService.getByIdentifier(decodedToken.id);
-        console.log(verificationTokenData);
 
         if (!verificationTokenData) {
             throw new InternalServerError();
@@ -44,7 +39,6 @@ router.get(async (req, res) => {
             userToken,
             verificationTokenData.token
         );
-        console.log(isValid);
         if (!isValid) {
             throw new InternalServerError();
         }
@@ -58,10 +52,8 @@ router.get(async (req, res) => {
         if (isExpired) {
             throw new InternalServerError('Token is expired.');
         }
-        console.log(isExpired);
         const userService = new UserService();
         const updatedUser = await userService.verifyEmail(decodedToken.id);
-        console.log(updatedUser);
         if (!updatedUser) {
             //TODO  Redirect to email expired page
             throw new InternalServerError();

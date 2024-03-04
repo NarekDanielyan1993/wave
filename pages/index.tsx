@@ -13,14 +13,15 @@ import { getSite, getSiteImages } from '@store/site/action';
 import { addToCart, getUser } from '@store/user/action';
 import { GetServerSidePropsContext } from 'next';
 import { getSession } from 'next-auth/react';
+import { useCallback } from 'react';
 import { END } from 'redux-saga';
 import { AddToCartPayloadType } from 'types';
 
 const Home = () => {
     const dispatch = useAppDispatch();
-    const addToCartHandler = (data: AddToCartPayloadType) => {
+    const addToCartHandler = useCallback((data: AddToCartPayloadType) => {
         dispatch(addToCart(data));
-    };
+    }, []);
 
     return (
         <>

@@ -42,26 +42,7 @@ const PaymentForm = () => {
                     amount: cart.subtotal,
                 },
             });
-            console.log(data);
             router.push('/shop');
-            // const ids = cart.products.map(c => c.id);
-            // const { error } = await stripe?.confirmPayment({
-            //     elements,
-            //     clientSecret: data.client_secret,
-            //     confirmParams: {
-            //         return_url: process.env.NEXT_PUBLIC_BASE_URL,
-            //     },
-            // });
-            // if (error) {
-            //     setErrorMessage(error.message);
-            // }
-            // const history = cart.products.map(ca => ({
-            //     userId: cart.userId,
-            //     amount: ca.total,
-            //     product: ca.model,
-            // }));
-            // dispatch(addToHistory(history));
-            // dispatch(removeCart({ id: ids }));
         } catch (error) {
             console.log(error);
         } finally {

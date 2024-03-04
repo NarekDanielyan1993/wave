@@ -61,6 +61,7 @@ const ProductTable = () => {
                 data={products}
                 getPaginatedData={getPaginatedProducts}
                 isLoading={isLoading}
+                key={products}
                 manualPagination={true}
                 paginationData={paginationData}
                 selectedRow={selectedProduct}

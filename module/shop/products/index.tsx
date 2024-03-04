@@ -1,4 +1,5 @@
-import { Box, IconButton, Text } from '@chakra-ui/react';
+import { Box, Text } from '@chakra-ui/react';
+import IconButton from '@components/button/icon-button';
 import CardList from '@components/card/cardList';
 import useObserver from '@hooks/useObserver';
 import { useAppDispatch, useAppSelector } from '@store/create-store';
@@ -6,7 +7,6 @@ import { getProducts } from '@store/products/action';
 import { paginatedProductsSelector } from '@store/products/selectors';
 import { addToCart } from '@store/user/action';
 import { useCallback, useState } from 'react';
-import { MdOutlineGridOff, MdOutlineGridOn } from 'react-icons/md';
 import type { AddToCartPayloadType } from 'types';
 import { StyledSectionWrapper } from './style';
 
@@ -45,18 +45,11 @@ const Products = () => {
             <StyledSectionWrapper>
                 <Box display="flex" gap={2} justifyContent="right" py={2}>
                     <IconButton
-                        color={grid === 'home' ? 'brand.secondary.main' : ''}
-                        minW={0}
-                        aria-label=""
-                        icon={<MdOutlineGridOff />}
-                        onClick={() => setGrid('home')}
-                    />
-                    <IconButton
-                        color={grid === 'shop' ? 'brand.secondary.main' : ''}
-                        minW={0}
-                        aria-label=""
-                        icon={<MdOutlineGridOn />}
-                        onClick={() => setGrid('shop')}
+                        boxSize="1rem"
+                        iconName={grid === 'home' ? 'gridOn' : 'gridOff'}
+                        onClick={() =>
+                            setGrid(prev => (prev === 'home' ? 'shop' : 'home'))
+                        }
                     />
                 </Box>
                 <CardList

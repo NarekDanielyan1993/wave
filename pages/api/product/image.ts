@@ -15,15 +15,13 @@ router.delete(
     // validateRequest(createProductValidationSchema),
     async (req, res) => {
         try {
-            const { id, productId, publicId } = req.query;
-            console.log('productId', productId);
+            const { id, publicId } = req.query;
             let image;
             if (id) {
                 const imageService = new ImageService();
                 image = await imageService.deleteImage(id);
-                console.log(image);
                 const coudinaryService = new CloudinaryService();
-                const img = await coudinaryService.deleteFile(publicId);
+                await coudinaryService.deleteFile(publicId);
             }
             res.status(201).json(image);
         } catch (error) {

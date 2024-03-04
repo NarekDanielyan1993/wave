@@ -15,7 +15,6 @@ class ImageService implements IImageService {
     }
 
     async createImage(image: IImage): Promise<IImageResponse> {
-        console.log(image);
         const newImage = await this.prisma.image.create({
             data: image,
         });

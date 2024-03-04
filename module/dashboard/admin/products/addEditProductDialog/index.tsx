@@ -71,7 +71,6 @@ const AddEditProductDialog = ({
     const dispatch = useAppDispatch();
 
     const formSubmitHandler = (dat: addEditProductSchemaTypes) => {
-        console.log(dat);
         const newData = {
             brandId: dat.brand,
             model: dat.model,
@@ -84,7 +83,6 @@ const AddEditProductDialog = ({
             shipping: dat.shipping,
         };
         if (data) {
-            console.log(newData);
             dispatch(
                 editProduct({
                     id: data.id as string,

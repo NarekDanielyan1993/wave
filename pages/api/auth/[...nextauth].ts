@@ -3,9 +3,9 @@ import { AUTH_SESSION_OPTIONS_SERVER } from '@constant/auth';
 import { USER_ERROR_TYPES } from '@constant/error';
 import prismaAdapter from '@lib/db';
 import UserService from '@lib/services/user';
-import { ForbiddenError } from '@utils/error-handler';
+import { ForbiddenError, ValidationError } from '@utils/error-handler';
 import { createExpiryFromDate } from '@utils/helper';
-import { type AuthTypes } from 'common/validation/auth';
+import { authValidationSchema, type AuthTypes } from 'common/validation/auth';
 import Cookies from 'cookies';
 import { config } from 'lib';
 import type { NextApiRequest, NextApiResponse } from 'next';
@@ -16,6 +16,7 @@ import { decode, encode, type JWT } from 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
 import type { IUserResponseWIthPassword } from 'types';
+import { validateAuthData } from './auth.validator';
 
 // Define a function to generate authOptions with access to req and res
 export const authOptions = (
@@ -80,41 +81,39 @@ export const authOptions = (
                 name: 'Credentials',
                 credentials: {},
                 async authorize({ email, password }: AuthTypes) {
-                    console.log(email);
-                    // const isError = await validateAuthData(
-                    //     authValidationSchema,
-                    //     {
-                    //         email,
-                    //         password,
-                    //     }
-                    // );
+                    const isError = await validateAuthData(
+                        authValidationSchema,
+                        {
+                            email,
+                            password,
+                        }
+                    );
 
-                    // if (isError) {
-                    //     throw new ForbiddenError(
-                    //         USER_ERROR_TYPES.INVALID_CREDENTIALS.msg
-                    //     );
-                    // }
+                    if (isError) {
+                        throw new ForbiddenError(
+                            USER_ERROR_TYPES.INVALID_CREDENTIALS.msg
+                        );
+                    }
 
                     const userService = new UserService();
                     const currentUser: IUserResponseWIthPassword | null =
                         await userService.getAllData(email);
-                    console.log(currentUser);
                     if (!currentUser) {
                         throw new ForbiddenError(
                             USER_ERROR_TYPES.USER_NOT_FOUND.msg,
                             USER_ERROR_TYPES.USER_NOT_FOUND.status
                         );
                     }
-                    // const isValid = await userService.verifyPassword(
-                    //     currentUser.password,
-                    //     password
-                    // );
-                    // if (!isValid) {
-                    //     throw new ValidationError(
-                    //         USER_ERROR_TYPES.WRONG_PASSWORD.msg,
-                    //         USER_ERROR_TYPES.USER_NOT_FOUND.status
-                    //     );
-                    // }
+                    const isValid = await userService.verifyPassword(
+                        currentUser.password,
+                        password
+                    );
+                    if (!isValid) {
+                        throw new ValidationError(
+                            USER_ERROR_TYPES.WRONG_PASSWORD.msg,
+                            USER_ERROR_TYPES.USER_NOT_FOUND.status
+                        );
+                    }
                     const userAuth: User = {
                         id: currentUser.id,
                         email: currentUser.email,
@@ -182,7 +181,7 @@ export const authOptions = (
                         role: user.role,
                     } as User,
                 } as Session;
-                return session;
+                return Promise.resolve(session);
             },
             async jwt({ user, token }: { user: User; token: JWT }) {
                 if (user) {
@@ -212,7 +211,6 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
-    // Call getAuthOptions to generate authOptions with access to req and res
     const options = authOptions(req, res);
 
     return await NextAuth(req, res, options);

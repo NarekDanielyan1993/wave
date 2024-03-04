@@ -17,8 +17,6 @@ const usePagination = ({
     pageCount: number;
     setCurrentPage: (index: number) => void;
 }) => {
-    console.log(currentPage);
-
     const buttonCount = 3;
     const firstPage = 1;
     let displayedPages: number[] = [];

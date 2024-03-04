@@ -1,7 +1,7 @@
 import { COMMON_ERROR_TYPES } from '@constant/error';
 import SiteImageService from '@lib/services/siteImage';
 import CloudinaryService from '@lib/upload';
-import { handleError } from '@utils/error-handler';
+import { ForbiddenError, handleError } from '@utils/error-handler';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
 import { ISiteDeleteImageBody, ISiteImage } from 'types/site';
@@ -34,14 +34,17 @@ router.post(
     async (req, res) => {
         try {
             const site = req.body as ISiteImage;
-            const coudinaryService = new CloudinaryService();
-            const img = await coudinaryService.uploadFile(site.url);
+            const cloudinaryService = new CloudinaryService();
+            const img = await cloudinaryService.uploadFile(site.url);
             const siteImageService = new SiteImageService();
             const siteImage = await siteImageService.createImage({
                 name: site.name,
                 url: img.url,
                 publicId: img.publicId,
             });
+            if (!siteImage) {
+                throw new ForbiddenError('Failed to upload image.');
+            }
 
             res.status(201).json(siteImage);
         } catch (error) {
@@ -60,10 +63,9 @@ router.delete(
         try {
             const { id, publicId } = req.body as ISiteDeleteImageBody;
             const coudinaryService = new CloudinaryService();
-            const img = await coudinaryService.deleteFile(publicId);
+            await coudinaryService.deleteFile(publicId);
             const siteImageService = new SiteImageService();
             const siteImage = await siteImageService.deleteImage(id);
-
             res.status(201).json(siteImage);
         } catch (error) {
             handleError(error, res);

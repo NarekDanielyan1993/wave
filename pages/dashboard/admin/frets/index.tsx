@@ -5,7 +5,7 @@ import { getFrets } from '@store/frets/action';
 import { getSite } from '@store/site/action';
 import { getUser } from '@store/user/action';
 import { getUserPermissions } from '@store/userPermission/action';
-import AdminFrets from 'module/dashboard/admin/products copy';
+import AdminFrets from 'module/dashboard/admin/frets';
 import DashboardLayout from 'module/dashboard/dashboardLayout';
 import PageTitle from 'module/dashboard/dashboardLayout/pageTitle';
 import type { GetServerSidePropsContext } from 'next';

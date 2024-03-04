@@ -17,14 +17,14 @@ const Product = ({
         <>
             <ProductHeader />
             <StyledProductWrapper
-                alignItems={'flex-start'}
+                alignItems="flex-start"
                 flexDir={{ base: 'column', lg: 'row' }}
             >
                 <Box
+                    height="30rem"
+                    maxWidth="full"
                     pos="relative"
                     width="140rem"
-                    maxWidth={'full'}
-                    height={'30rem'}
                 >
                     <ImageComponent layout="fill" src={image?.url} />
                 </Box>

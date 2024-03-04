@@ -17,19 +17,16 @@ const ProfileImage = () => {
     const [image, setImage] = useState<string>('');
     const [isOpenDialog, setIsOpenDialog] = useState<boolean>(false);
     const [croppedImage, setCroppedImage] = useState<string>('');
-    console.log(croppedImage);
     const dispatch = useAppDispatch();
     const user = useAppSelector(userSelector);
     const { isUserProfileImageLoading, isUserProfileImageDeleteLoading } =
         useAppSelector(usersSelector);
-    console.log(user);
     const fileDeleteHandler = () => {
         dispatch(deleteProfileImage({ publicId: user.data.publicId }));
         setCroppedImage('');
     };
     const uploadUserImageHandler = () => {
         dispatch(addProfileImage({ file: croppedImage }));
-        setImage('');
     };
     const fileUploadHandler = async (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
@@ -113,9 +110,9 @@ const ProfileImage = () => {
                     select
                 </Button>
                 <Button
+                    isDisabled={!croppedImage || !!user?.data?.url}
                     isLoading={isUserProfileImageLoading}
                     onClick={uploadUserImageHandler}
-                    isDisabled={!image || !!user?.data?.url}
                     variant="primary"
                 >
                     upload
@@ -130,7 +127,7 @@ const ProfileImage = () => {
                     </Button>
                 ) : (
                     <Button
-                        isDisabled={!image}
+                        isDisabled={!croppedImage}
                         onClick={() => {
                             setImage('');
                             setCroppedImage('');

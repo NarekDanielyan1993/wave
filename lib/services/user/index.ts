@@ -5,7 +5,7 @@ import {
 import { USER_ERROR_TYPES } from '@constant/error';
 import prismaAdapter from '@lib/db';
 import { PrismaClient, UserRole } from '@prisma/client';
-import { ForbiddenError, NotFoundError } from '@utils/error-handler';
+import { ForbiddenError, InternalServerError } from '@utils/error-handler';
 import { compare, hashSync } from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
@@ -31,113 +31,111 @@ class UserService implements IUserService {
     }
 
     async getByEmail(email: string): Promise<IUserResponse | null> {
-        return await this.prisma.user.findUnique({
-            where: {
-                email,
-            },
-            select: prismaExclude(DATABASE_MODELS.USER, [
-                USER_MODEL_FIELDS.PASSWORD,
-            ]),
-        });
+        try {
+            return await this.prisma.user.findUnique({
+                where: {
+                    email,
+                },
+                select: prismaExclude(DATABASE_MODELS.USER, [
+                    USER_MODEL_FIELDS.PASSWORD,
+                ]),
+            });
+        } catch (error) {
+            throw new InternalServerError();
+        }
     }
 
     async getAllData(email: string): Promise<IUserResponseWIthPassword | null> {
-        return await this.prisma.user.findUnique({
-            where: {
-                email,
-            },
-        });
+        try {
+            return await this.prisma.user.findUnique({
+                where: {
+                    email,
+                },
+            });
+        } catch (error) {
+            throw new InternalServerError('Failed to get user.');
+        }
     }
 
     async createUser({ password, email }: AuthTypes): Promise<IUserResponse> {
-        const hashedPassword = await this.hashPassword(password);
+        try {
+            const hashedPassword = await this.hashPassword(password);
 
-        const user = await this.prisma.user.create({
-            data: {
-                password: hashedPassword,
-                email,
-                role: UserRole.ADMIN,
-            },
-        });
+            const user = await this.prisma.user.create({
+                data: {
+                    password: hashedPassword,
+                    email,
+                    role: UserRole.ADMIN,
+                },
+            });
 
-        return user;
+            return user;
+        } catch (error) {
+            throw new InternalServerError('Failed to create user.');
+        }
     }
 
-    async addToCart({ userId, productId }: ICart): Promise<ICart> {
-        const cart = await this.prisma.cart.create({
-            data: {
-                userId,
-                productId,
-            },
-            include: {
-                product: true,
-            },
-        });
-
-        return cart;
-    }
-
-    async addToHistory(history: IHistory[]): Promise<IHistory> {
-        const user = await this.prisma.history.createMany({
-            data: history,
-        });
-
-        return user;
-    }
-
-    async getHistory(userId: string): Promise<IHistory[] | null> {
-        return await this.prisma.history.findMany({
-            where: {
-                userId,
-            },
-        });
-    }
-
-    async removeCart(id: string[]): Promise<ICart> {
-        const user = await this.prisma.cart.deleteMany({
-            where: {
-                productId: { in: id },
-            },
-        });
-
-        return user;
-    }
-
-    async getCarts(userId: string): Promise<ICartsResponse[] | null> {
-        return await this.prisma.cart.findMany({
-            where: {
-                userId,
-            },
-            include: {
-                product: true,
-            },
-        });
+    async getProfile(email: string): Promise<IUserResponse | null> {
+        try {
+            const user = await this.prisma.user.findUnique({
+                where: {
+                    email,
+                },
+                select: prismaExclude('User', ['password']),
+            });
+            return user;
+        } catch (error) {
+            throw new ForbiddenError('Failed to get profile.');
+        }
     }
 
     async updateUserProfile(
         email: string,
         userData: IUserProfile
     ): Promise<IUserResponse> {
-        console.log(userData);
-        const updatedUser = await this.prisma.user.update({
-            where: {
-                email,
-            },
-            data: {
-                ...userData,
-            },
-            select: prismaExclude('User', ['password']),
-        });
-        console.log(updatedUser);
-
-        if (!updatedUser) {
-            throw new NotFoundError(
-                USER_ERROR_TYPES.USER_NOT_FOUND.msg,
-                USER_ERROR_TYPES.USER_NOT_FOUND.status
-            );
+        try {
+            const updatedUser = await this.prisma.user.update({
+                where: {
+                    email,
+                },
+                data: {
+                    ...userData,
+                },
+                select: prismaExclude('User', ['password']),
+            });
+            return updatedUser;
+        } catch (error) {
+            throw new InternalServerError('Failed to update profile.');
         }
+    }
 
-        return updatedUser;
+    async updateUserEmail(
+        newEmail: string,
+        oldEmail: string
+    ): Promise<IUserResponse> {
+        try {
+            if (await this.isEmailTaken(newEmail)) {
+                throw new ForbiddenError(
+                    USER_ERROR_TYPES.EMAIL_EXISTS.msg,
+                    USER_ERROR_TYPES.EMAIL_EXISTS.status
+                );
+            }
+            const updatedUser = await this.prisma.user.update({
+                where: {
+                    email: oldEmail,
+                },
+                data: {
+                    email: newEmail,
+                    verified: false,
+                },
+                select: prismaExclude('User', ['password']),
+            });
+            throw new Error();
+
+            return updatedUser;
+        } catch (error) {
+            throw new InternalServerError('Failed to update user email.');
+        }
     }
 
     async isEmailTaken(email: string): Promise<boolean> {
@@ -170,50 +168,74 @@ class UserService implements IUserService {
         return updatedUser;
     }
 
-    async updateUserEmail(
-        newEmail: string,
-        oldEmail: string
-    ): Promise<IUserResponse> {
+    async addToCart({ userId, productId }: ICart): Promise<ICart> {
         try {
-            if (await this.isEmailTaken(newEmail)) {
-                throw new ForbiddenError(
-                    USER_ERROR_TYPES.EMAIL_EXISTS.msg,
-                    USER_ERROR_TYPES.EMAIL_EXISTS.status
-                );
-            }
-            const updatedUser = await this.prisma.user.update({
-                where: {
-                    email: oldEmail,
-                },
+            const cart = await this.prisma.cart.create({
                 data: {
-                    email: newEmail,
-                    verified: false,
+                    userId,
+                    productId,
                 },
-                select: prismaExclude('User', ['password']),
+                include: {
+                    product: true,
+                },
             });
-
-            if (!updatedUser) {
-                throw new NotFoundError(
-                    USER_ERROR_TYPES.USER_NOT_FOUND.msg,
-                    USER_ERROR_TYPES.USER_NOT_FOUND.status
-                );
-            }
-
-            return updatedUser;
+            return cart;
         } catch (error) {
-            throw error;
+            throw new InternalServerError('Failed to add to cart.');
         }
     }
 
-    async getProfile(email: string): Promise<IUserResponse | null> {
-        const user = await this.prisma.user.findUnique({
-            where: {
-                email,
-            },
-            select: prismaExclude('User', ['password']),
-        });
+    async addToHistory(history: IHistory[]): Promise<IHistory> {
+        try {
+            const historyData = await this.prisma.history.createMany({
+                data: history,
+            });
+            return historyData;
+        } catch (error) {
+            throw new InternalServerError('Failed to add to the history.');
+        }
+    }
 
-        return user;
+    async getHistory(userId: string): Promise<IHistory[] | null> {
+        try {
+            const history = await this.prisma.history.findMany({
+                where: {
+                    userId,
+                },
+            });
+            return history;
+        } catch (error) {
+            throw new InternalServerError('Failed to get histories.');
+        }
+    }
+
+    async removeCart(id: string[]): Promise<ICart> {
+        try {
+            const user = await this.prisma.cart.deleteMany({
+                where: {
+                    productId: { in: id },
+                },
+            });
+            return user;
+        } catch (error) {
+            throw new InternalServerError('Failed to remove cart.');
+        }
+    }
+
+    async getCarts(userId: string): Promise<ICartsResponse[] | null> {
+        try {
+            const carts = await this.prisma.cart.findMany({
+                where: {
+                    userId,
+                },
+                include: {
+                    product: true,
+                },
+            });
+            return carts;
+        } catch (error) {
+            throw new InternalServerError('Failed to get carts.');
+        }
     }
 
     async verifyPassword(

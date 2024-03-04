@@ -1,6 +1,10 @@
 import { COMMON_ERROR_TYPES } from '@constant/error';
 import SiteService from '@lib/services/site';
-import { NotFoundError, handleError } from '@utils/error-handler';
+import {
+    ForbiddenError,
+    NotFoundError,
+    handleError,
+} from '@utils/error-handler';
 import { validateRequest } from '@utils/helper';
 import {
     siteCreateValidationSchema,
@@ -49,7 +53,7 @@ router.put(
             const updatedData = await siteService.updateSiteArgs(siteId, site);
 
             if (!updatedData) {
-                throw new NotFoundError('Site not found.');
+                throw new ForbiddenError('Failed to edit site configs.');
             }
 
             res.status(201).json(updatedData);

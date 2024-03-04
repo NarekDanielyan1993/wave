@@ -13,14 +13,18 @@ import ShopSideBar from 'module/shop/shopSideBar';
 import type { GetServerSidePropsContext } from 'next';
 import type { Session } from 'next-auth';
 import { getSession } from 'next-auth/react';
+import { useCallback } from 'react';
 import { END } from 'redux-saga';
 import type { GetPaginatedProductsActionPayload } from 'types';
 
 const ShopPage = () => {
     const dispatch = useAppDispatch();
-    const filterProducts = (data: GetPaginatedProductsActionPayload) => {
-        dispatch(getPaginatedProducts(data));
-    };
+    const filterProducts = useCallback(
+        (data: GetPaginatedProductsActionPayload) => {
+            dispatch(getPaginatedProducts(data));
+        },
+        []
+    );
 
     return (
         <DashboardLayout

@@ -73,7 +73,6 @@ export const validateRequest =
     ) =>
     async (req: NextApiRequest, res: NextApiResponse, next: () => void) => {
         try {
-            console.log(req);
             const validationData =
                 source === VALIDATION_SOURCES.BODY ? req.body : req.query;
             schema.parse(validationData);
@@ -169,7 +168,6 @@ export function parsePaginatedQueryParams<T extends string>({
     if (filters) {
         paginationData.filters = JSON.parse(filters);
     }
-    console.log(paginationData);
     return paginationData;
 }
 

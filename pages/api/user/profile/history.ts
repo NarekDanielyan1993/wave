@@ -75,7 +75,6 @@ router.delete(
                 authOptions(req, res)
             )) as Session;
             const { id } = req.query;
-            console.log('id', id);
             const user: IUserService = new UserService();
             const carts = await user.removeCart(id);
             if (!carts) {

@@ -38,7 +38,6 @@ function* signInGenerator(
     yield put(isAuthLoading(true));
     try {
         const data = yield call(signIn, 'credentials', {
-            // callbackUrl: '/',
             email,
             password,
             redirect: false,

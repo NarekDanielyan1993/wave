@@ -9,6 +9,7 @@ export type businessIconDetailTypes =
     | 'phone'
     | 'email'
     | 'business';
+
 export type BusinessDetailTypes = {
     iconName: businessIconDetailTypes;
     label: string;

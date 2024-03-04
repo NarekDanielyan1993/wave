@@ -10,12 +10,19 @@ export interface ILink extends LinkProps {
 
 export type IconButtonSizes = 'sm' | 'md' | 'lg';
 export type IconsTypes = Record<string, any>;
+export type iconNameTypes =
+    | 'shop'
+    | 'burger'
+    | 'close'
+    | 'gridOff'
+    | 'gridOn'
+    | 'truck'
+    | 'check';
 
 export interface IconButtonTypes extends Partial<IconButtonProps> {
     title?: string;
     tooltipText?: string;
-    iconName: string;
-    onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+    iconName: iconNameTypes;
 }
 
 export interface ButtonTypes extends ButtonProps {

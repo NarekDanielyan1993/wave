@@ -1,4 +1,5 @@
-import { Box, Button, Input } from '@chakra-ui/react';
+import { Box, Button } from '@chakra-ui/react';
+import NumericInput from '../numericInput';
 
 const NumberInput = ({
     onChange,
@@ -7,17 +8,17 @@ const NumberInput = ({
 }: {
     value: any;
     width?: string;
-    onChange: (value: '+' | '-') => void;
+    onChange: (type: '+' | '-' | 'val', value: number) => void;
 }) => {
     return (
         <Box w={width} display={'flex'} gap={2}>
-            <Button onClick={() => onChange('+')} variant="primary">
+            <Button onClick={() => onChange('+', 1)} variant="primary">
                 +
             </Button>
-            <Input value={value} type="number" />
+            <NumericInput value={value} width={width} onChange={onChange} />
             <Button
                 isDisabled={value === 1}
-                onClick={() => onChange('-')}
+                onClick={() => onChange('-', -1)}
                 variant="primary"
             >
                 -

@@ -13,7 +13,12 @@ const SliderComponent = () => {
     const { siteImages } = useAppSelector(siteSelector);
     return (
         <Box sx={{ w: '100%', h: '80vh', overflow: 'hidden' }}>
-            <Carousel>
+            <Carousel
+                allowTouchMove
+                autoplay={{ delay: 5000 }}
+                slidesPerView={1}
+                speed={1000}
+            >
                 {sliderPromotions.map((item, index) => (
                     <div
                         key={index}

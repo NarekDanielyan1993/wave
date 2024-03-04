@@ -29,8 +29,6 @@ const rootReducer = (
     action: AnyAction
 ): CombinedState<RootReducerStateTypes> => {
     if (action.type === HYDRATE) {
-        console.log(action);
-        console.log(state);
         const nextState = {
             ...state,
             ...action.payload,

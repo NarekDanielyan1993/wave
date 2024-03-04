@@ -16,7 +16,6 @@ const FileSelect = ({
 }: {
     onChange: (event: string) => void;
 }) => {
-    console.log(value);
     const imageUploader = useRef<HTMLInputElement>(null);
     const dispatch = useAppDispatch();
     const fileDeleteHandler = () => {

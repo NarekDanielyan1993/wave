@@ -5,7 +5,7 @@ import { z } from 'zod';
 export const createProductValidationSchema = z.object({
     model: z.string(),
     brandId: z.string(),
-    frets: z.number(),
+    fretId: z.number(),
     woodType: z.string(),
     description: z.string(),
     price: z.number(),

@@ -1,4 +1,3 @@
-import { useMediaQuery } from '@chakra-ui/react';
 import MobileMenu from '@components/layout/mobileMenu';
 import { LayoutTypes } from 'types';
 import {
@@ -9,17 +8,13 @@ import {
 } from './style';
 
 const DashboardLayout = ({ children, sideBar }: LayoutTypes) => {
-    const [isMobile] = useMediaQuery('(max-width: 975px)');
     return (
         <StyledDashboardContainer>
             <StyledDashboardWrapper>
-                {isMobile ? (
-                    <>
-                        <MobileMenu>{sideBar}</MobileMenu>
-                    </>
-                ) : (
-                    <StyledDashboardLeftSide>{sideBar}</StyledDashboardLeftSide>
-                )}
+                <MobileMenu>{sideBar}</MobileMenu>
+                <StyledDashboardLeftSide display={{ base: 'none', md: 'flex' }}>
+                    {sideBar}
+                </StyledDashboardLeftSide>
                 <StyledRightSide>{children}</StyledRightSide>
             </StyledDashboardWrapper>
         </StyledDashboardContainer>

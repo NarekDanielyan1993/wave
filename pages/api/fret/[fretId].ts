@@ -2,8 +2,8 @@ import { COMMON_ERROR_TYPES } from '@constant/error';
 import FretService from '@lib/services/fret';
 import ProductService from '@lib/services/product';
 import {
+    ForbiddenError,
     InternalServerError,
-    NotFoundError,
     handleError,
 } from '@utils/error-handler';
 import type { NextApiRequest, NextApiResponse } from 'next';
@@ -25,7 +25,6 @@ router.get(
     async (req, res) => {
         try {
             const { productId } = req.query as ProductGetQueryParamsTypes;
-            console.log(productId);
             const productService: IProductService = new ProductService();
 
             const productData = await productService.getProductById(productId);
@@ -55,8 +54,8 @@ router.put(
 
             const fret = await fretsService.updateFrets(fretId, fretsData);
 
-            if (!fret) {
-                throw new NotFoundError('Frets not Found');
+            if (fret) {
+                throw new ForbiddenError('Failed to edit fret.');
             }
 
             res.status(201).json(fret);
@@ -75,13 +74,12 @@ router.delete(
     async (req, res) => {
         try {
             const { fretId } = req.query as FretsGetQueryParamsTypes;
-            console.log(fretId);
             const fretsService = new FretService();
 
             const frets = await fretsService.deleteFrets(fretId);
 
             if (!frets) {
-                throw new NotFoundError('Frets not Found');
+                throw new ForbiddenError('Failed to delete frets.');
             }
 
             res.status(201).json(frets);

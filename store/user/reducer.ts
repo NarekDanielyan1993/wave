@@ -47,8 +47,6 @@ const userSlice = createSlice({
     reducers: {
         getUserInit: (state: IUsersState) => {
             state.user.data = {} as IUserResponse;
-            state.user.isLoading = true;
-            state.user.isFetched = false;
         },
         addToCartSuccess: (state: IUsersState) => {
             state.cart.quantity += 1;
@@ -103,19 +101,35 @@ const userSlice = createSlice({
         },
         calculateTotal: (
             state: IUsersState,
-            action: PayloadAction<{ productId: string; sign: '+' | '-' }>
+            action: PayloadAction<{
+                productId: string;
+                value: number;
+                type: '+' | '-' | 'val';
+            }>
         ) => {
             state.cart.products = state.cart.products.map(pr => {
                 if (pr.id === action.payload.productId) {
-                    if (pr && action.payload.sign === '+') {
+                    if (pr && action.payload.type === '+') {
                         pr.total += pr?.price;
                         pr.quantity += 1;
                         state.cart.subtotal += pr?.price;
                     }
-                    if (pr.id && action.payload.sign === '-') {
-                        pr.total -= pr?.price;
+                    if (pr.id && action.payload.type === '-') {
+                        pr.total -= pr.price;
                         pr.quantity -= 1;
-                        state.cart.subtotal -= pr?.price;
+                        state.cart.subtotal -= pr.price;
+                    }
+                    if (pr.id && action.payload.type === 'val') {
+                        state.cart.subtotal =
+                            state.cart.subtotal -
+                            pr.quantity * pr.price +
+                            action.payload.value * pr.price;
+                        state.cart.quantity =
+                            state.cart.quantity -
+                            pr.quantity +
+                            action.payload.value;
+                        pr.total = action.payload.value * pr.price;
+                        pr.quantity = action.payload.value;
                     }
                     return pr;
                 }
@@ -151,8 +165,6 @@ const userSlice = createSlice({
             action: PayloadAction<IUserResponse>
         ) => {
             state.user.data = action.payload;
-            state.user.isLoading = false;
-            state.user.isFetched = true;
         },
         updateUserSuccess: (
             state: IUsersState,

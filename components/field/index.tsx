@@ -15,7 +15,7 @@ import {
     StyledSelect,
 } from './style';
 
-function FormInput<T extends FieldValues>({
+const FormInput = <T extends FieldValues>({
     control,
     name,
     label,
@@ -24,7 +24,7 @@ function FormInput<T extends FieldValues>({
     options,
     views,
     disabled,
-}: IFormInputProps<T>): JSX.Element {
+}: IFormInputProps<T>): JSX.Element => {
     const defaultOptions: ChakraFieldDefaultOptions<T> = {
         isInvalid: !!error,
         size: 'md',
@@ -57,45 +57,6 @@ function FormInput<T extends FieldValues>({
                     )}
                 />
             );
-        // case 'multiple-select':
-        //     return (
-        //         <Controller
-        //             control={control}
-        //             defaultValue={defaultValue}
-        //             name={name}
-        //             render={({ field: { onChange, value } }) => (
-        //                 <StyledSelect
-        //                     isMulti
-        //                     onChange={val =>
-        //                         onChange(val as ChangeEvent<HTMLInputElement>)
-        //                     }
-        //                     options={options}
-        //                     value={value}
-        //                 />
-        //             )}
-        //         />
-        //     );
-        // case 'custom-date':
-        //     return (
-        //         <Controller
-        //             control={control}
-        //             name={name}
-        //             render={({ field: { value, onChange } }) => (
-        //                 <ReactDatePicker
-        //                     className="date-picker"
-        //                     dateFormat={dateFormat}
-        //                     onChange={(date, event) => {
-        //                         console.log(event, date);
-        //                         onChange(
-        //                             event as ChangeEvent<HTMLInputElement>
-        //                         );
-        //                     }}
-        //                     selected={value}
-        //                     wrapperClassName="date-picker-wrapper"
-        //                 />
-        //             )}
-        //         />
-        //     );
         case 'file':
             return (
                 <Controller
@@ -233,6 +194,6 @@ function FormInput<T extends FieldValues>({
                 />
             );
     }
-}
+};
 
 export default FormInput;

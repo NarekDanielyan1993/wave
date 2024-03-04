@@ -45,7 +45,6 @@ class AwsS3Service {
             await this.s3Client.send(uploadCommand);
             return params.Key;
         } catch (err) {
-            console.error('Error uploading file:', err);
             throw new Error('Error happened while creating file.');
         }
     }

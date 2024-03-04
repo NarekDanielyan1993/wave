@@ -26,7 +26,6 @@ const userPermissionsSlice = createSlice({
             state: IUserPermissionsState,
             action: PayloadAction<UserPermissionsResponseTypes[]>
         ) => {
-            console.log(action.payload);
             state.userPermissions = action.payload.reduce(
                 (permissions, permission: UserPermissionsResponseTypes) => {
                     const resource: UserPermissionResourcesTypes =

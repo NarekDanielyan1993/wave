@@ -4,7 +4,7 @@ import { wrapper, type SagaStore } from '@store/create-store';
 import { getFrets } from '@store/frets/action';
 import { getBrands, getPaginatedProducts } from '@store/products/action';
 import { getSite } from '@store/site/action';
-import { getUser } from '@store/user/action';
+import { getCarts, getUser } from '@store/user/action';
 import { getUserPermissions } from '@store/userPermission/action';
 import AdminProducts from 'module/dashboard/admin/products';
 import DashboardLayout from 'module/dashboard/dashboardLayout';
@@ -44,6 +44,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
             );
             store.dispatch(getFrets({ page: 0, limit: 10 }));
             store.dispatch(getSite());
+            store.dispatch(getCarts({ id: session.user.id }));
             store.dispatch(
                 getPaginatedProducts({
                     limit: 10,

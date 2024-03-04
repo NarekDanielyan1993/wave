@@ -1,5 +1,6 @@
 import { USER_PERMISSIONS_API } from '@constant/api';
 import { PayloadAction } from '@reduxjs/toolkit';
+import { showNotification } from '@store/notification/reducer';
 import { apiRequest } from '@utils/apiRequest';
 import { call, put, takeLatest } from 'redux-saga/effects';
 import { GetUserPermissionsPayloadType } from 'types';
@@ -18,10 +19,14 @@ function* getUserPermissionsGenerator(
                 role,
             }
         );
-        console.log(data);
         yield put(getUserPermissionsSuccess(data));
     } catch (error) {
-        console.log(error);
+        yield put(
+            showNotification({
+                message: error?.response?.data?.msg,
+                type: 'error',
+            })
+        );
     }
 }
 

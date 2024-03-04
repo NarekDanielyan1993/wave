@@ -1,5 +1,6 @@
 import { SITE_API } from '@constant/api';
 import type { PayloadAction } from '@reduxjs/toolkit';
+import { showNotification } from '@store/notification/reducer';
 import { apiRequest, apiSagaRequest } from '@utils/apiRequest';
 import { call, put, takeLatest } from 'redux-saga/effects';
 import type {
@@ -29,7 +30,12 @@ function* getSiteGenerator() {
         const { data } = yield call(apiRequest.get, SITE_API.GET_SITE);
         yield put(getSiteSuccess(data));
     } catch (error) {
-        console.log(error);
+        yield put(
+            showNotification({
+                message: error?.response?.data?.msg,
+                type: 'error',
+            })
+        );
     }
 }
 
@@ -38,7 +44,12 @@ function* getSiteImageGenerator() {
         const { data } = yield call(apiRequest.get, SITE_API.GET_SITE_IMAGE);
         yield put(getSiteImageSuccess(data));
     } catch (error) {
-        console.log(error);
+        yield put(
+            showNotification({
+                message: error?.response?.data?.msg,
+                type: 'error',
+            })
+        );
     }
 }
 
@@ -49,7 +60,12 @@ function* createSiteGenerator(action: PayloadAction<CreateSitePayloadType>) {
         });
         yield put(updateSiteSuccess(data));
     } catch (error) {
-        console.log(error);
+        yield put(
+            showNotification({
+                message: error?.response?.data?.msg,
+                type: 'error',
+            })
+        );
     }
 }
 
@@ -64,7 +80,12 @@ function* updateSiteGenerator(action: PayloadAction<UpdateSitePayloadType>) {
         );
         yield put(updateSiteSuccess(data));
     } catch (error) {
-        console.log(error);
+        yield put(
+            showNotification({
+                message: error?.response?.data?.msg,
+                type: 'error',
+            })
+        );
     }
 }
 
@@ -81,10 +102,15 @@ function* uploadSiteImageGenerator(
             }
         );
         yield put(uploadSiteImageSuccess(data));
-        yield put(isSiteLoading(false));
     } catch (error) {
-        console.log(error);
+        yield put(
+            showNotification({
+                message: error?.response?.data?.msg,
+                type: 'error',
+            })
+        );
     }
+    yield put(isSiteLoading(false));
 }
 
 function* deleteSiteImageGenerator(
@@ -102,7 +128,12 @@ function* deleteSiteImageGenerator(
         );
         yield put(deleteSiteImageSuccess(data));
     } catch (error) {
-        console.log(error);
+        yield put(
+            showNotification({
+                message: error?.response?.data?.msg,
+                type: 'error',
+            })
+        );
     }
     yield put(isSiteLoading(false));
 }

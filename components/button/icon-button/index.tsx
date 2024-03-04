@@ -1,27 +1,36 @@
-import { HamburgerIcon } from '@chakra-ui/icons';
 import { IconButton as ChakraIconButton, Tooltip } from '@chakra-ui/react';
-import ShoppingCart from 'public/shopping.svg';
-import { GrClose } from 'react-icons/gr';
+import CheckIcon from '@components/icons/checkIcon';
+import CloseIcon from '@components/icons/closeIcon';
+import GridOffIcon from '@components/icons/gridOffIcon';
+import GridOnIcon from '@components/icons/gridOnIcon';
+import HamburgerIcon from '@components/icons/hamburgerIcon';
+import ShoppingCartIcon from '@components/icons/shoppingCart';
+import TruckIcon from '@components/icons/truckIcon';
 import { IconButtonTypes, IconsTypes } from 'types';
+
 export const IconButton = ({
     iconName,
     tooltipText = '',
-    onClick,
     ...props
 }: IconButtonTypes) => {
     const icons: IconsTypes = {
-        shop: ShoppingCart,
+        shop: ShoppingCartIcon,
         burger: HamburgerIcon,
-        close: GrClose,
+        close: CloseIcon,
+        gridOff: GridOffIcon,
+        gridOn: GridOnIcon,
+        truck: TruckIcon,
+        check: CheckIcon,
     };
+
     const Icon = icons[iconName];
+
     return (
-        <Tooltip title={tooltipText}>
+        <Tooltip label={tooltipText}>
             <ChakraIconButton
-                {...props}
-                aria-label="icon-button-cart"
+                aria-label="icon-button"
                 icon={<Icon />}
-                onClick={onClick}
+                {...props}
             />
         </Tooltip>
     );

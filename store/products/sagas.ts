@@ -1,5 +1,6 @@
 import { BRAND_API, PRODUCTS_API } from '@constant/api';
 import type { PayloadAction } from '@reduxjs/toolkit';
+import { showNotification } from '@store/notification/reducer';
 import { apiRequest } from '@utils/apiRequest';
 import type { AxiosResponse } from 'axios';
 import { call, put, takeLatest } from 'redux-saga/effects';
@@ -68,7 +69,6 @@ function* getProductsGenerator(
                 },
             }
         );
-        console.log(data);
         yield put(getProductsSuccess(data));
     } catch (error) {
         console.log(error);
@@ -100,7 +100,12 @@ function* getBrandsGenerator() {
         );
         yield put(getBrandsSuccess(data));
     } catch (error) {
-        console.log(error);
+        yield put(
+            showNotification({
+                message: error?.response?.data?.msg,
+                type: 'error',
+            })
+        );
     }
     yield put(isProductsLoading(false));
 }
@@ -124,7 +129,12 @@ function* getPaginatedProductsGenerator(
         );
         yield put(getPaginatedProductsSuccess(data));
     } catch (error) {
-        console.log(error);
+        yield put(
+            showNotification({
+                message: error?.response?.data?.msg,
+                type: 'error',
+            })
+        );
     }
     yield put(isProductsLoading(false));
 }
@@ -147,7 +157,12 @@ const getProductsSortBy = (key: ProductCardSectionUnion) =>
             );
             yield put(getProductsSortBySuccess({ key, data }));
         } catch (error) {
-            console.log(error);
+            yield put(
+                showNotification({
+                    message: error?.response?.data?.msg,
+                    type: 'error',
+                })
+            );
         }
         yield put(isProductCardsLoading({ key, isLoading: false }));
     };
@@ -163,7 +178,12 @@ function* editProductGenerator(action: PayloadAction<editProductPayloadTypes>) {
         );
         yield put(editProductSuccess(data));
     } catch (error) {
-        console.log(error);
+        yield put(
+            showNotification({
+                message: error?.response?.data?.msg,
+                type: 'error',
+            })
+        );
     }
     yield put(isProductsLoading(false));
 }
@@ -185,7 +205,12 @@ function* addProductGenerator(action: PayloadAction<IAddProductPayload>) {
             })
         );
     } catch (error) {
-        console.log(error);
+        yield put(
+            showNotification({
+                message: error?.response?.data?.msg,
+                type: 'error',
+            })
+        );
     }
     yield put(isProductsLoading(false));
 }
@@ -194,7 +219,6 @@ function* deleteProductGenerator(
     action: PayloadAction<DeleteProductPayloadTypes>
 ) {
     const { id } = action.payload;
-    console.log(id);
 
     try {
         yield put(isProductsLoading(true));
@@ -213,14 +237,18 @@ function* deleteProductGenerator(
             })
         );
     } catch (error) {
-        console.log(error);
+        yield put(
+            showNotification({
+                message: error?.response?.data?.msg,
+                type: 'error',
+            })
+        );
     }
     yield put(isProductsLoading(false));
 }
 
 function* deleteImageGenerator(action: PayloadAction<DeleteImagePayloadTypes>) {
     const { id, productId, publicId } = action.payload;
-    console.log(id);
 
     try {
         yield put(isProductsLoading(true));
@@ -233,7 +261,12 @@ function* deleteImageGenerator(action: PayloadAction<DeleteImagePayloadTypes>) {
         );
         yield put(deleteImageSuccess(data));
     } catch (error) {
-        console.log(error);
+        yield put(
+            showNotification({
+                message: error?.response?.data?.msg,
+                type: 'error',
+            })
+        );
     }
     yield put(isProductsLoading(false));
 }

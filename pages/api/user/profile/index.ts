@@ -1,11 +1,12 @@
 import { authOptions } from '@api/auth/[...nextauth]';
-import { COMMON_ERROR_TYPES } from '@constant/error';
+import { COMMON_ERROR_TYPES, USER_ERROR_TYPES } from '@constant/error';
 import { PERMISSION_ACTION, PERMISSION_RESOURCES } from '@constant/permission';
 import UserService from '@lib/services/user';
 import CloudinaryService from '@lib/upload';
 import {
     ForbiddenError,
     InternalServerError,
+    NotFoundError,
     handleError,
 } from '@utils/error-handler';
 import { validateRequest } from '@utils/helper';
@@ -18,31 +19,25 @@ import { updateProfileSchema } from './validationSchema';
 
 const router = createRouter<NextApiRequest, NextApiResponse>();
 
-router.get(
-    // permissionMiddleware({
-    //     resource: PERMISSION_RESOURCES.PROFILE,
-    //     permissions: [PERMISSION_ACTION.READ],
-    // }),
-    async (req, res) => {
-        try {
-            const { email } = req.query as UserGetQueryParams;
-            if (!email) {
-                throw new ForbiddenError();
-            }
-
-            const user: IUserService = new UserService();
-
-            const userData = await user.getProfile(email);
-            if (!userData) {
-                throw new InternalServerError();
-            }
-
-            res.status(201).json(userData);
-        } catch (error) {
-            handleError(error, res);
+router.get(async (req, res) => {
+    try {
+        const { email } = req.query as UserGetQueryParams;
+        if (!email) {
+            throw new ForbiddenError();
         }
+
+        const userService: IUserService = new UserService();
+
+        const userData = await userService.getProfile(email);
+        if (!userData) {
+            throw new InternalServerError();
+        }
+
+        res.status(201).json(userData);
+    } catch (error) {
+        handleError(error, res);
     }
-);
+});
 
 router.put(
     permissionMiddleware({
@@ -72,7 +67,10 @@ router.put(
                 userData
             );
             if (!updatedUser) {
-                throw new InternalServerError();
+                throw new NotFoundError(
+                    USER_ERROR_TYPES.USER_NOT_FOUND.msg,
+                    USER_ERROR_TYPES.USER_NOT_FOUND.status
+                );
             }
             res.status(201).json(updatedUser);
         } catch (error) {

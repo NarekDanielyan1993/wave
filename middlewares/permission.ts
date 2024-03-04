@@ -1,10 +1,6 @@
 import { authOptions } from '@api/auth/[...nextauth]';
 import UserPermissionService from '@lib/services/userPermission';
-import {
-    ForbiddenError,
-    UnauthorizedError,
-    handleError,
-} from '@utils/error-handler';
+import { ForbiddenError, handleError } from '@utils/error-handler';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { Session, getServerSession } from 'next-auth';
 import {
@@ -23,7 +19,7 @@ const permissionMiddleware =
                 res,
                 authOptions(req, res)
             );
-            console.log(session);
+            console.log('session', session);
             if (!session) {
                 throw new ForbiddenError();
             }
@@ -40,7 +36,9 @@ const permissionMiddleware =
             );
 
             if (!hasPermission) {
-                throw new UnauthorizedError();
+                res.redirect('/');
+                return;
+                // throw new UnauthorizedError();
             }
 
             return next();

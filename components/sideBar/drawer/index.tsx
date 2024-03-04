@@ -13,19 +13,19 @@ const Drawer = ({
     onClose: () => void;
 }) => {
     return (
-        <Box
-            w={isOpen ? '60vw' : 0}
-            maxW={'20rem'}
-            pos={'fixed'}
-            bottom={0}
-            top={0}
-            left={0}
-            zIndex={1300}
-            overflow={'hidden'}
-            transition={'0.5s'}
-        >
-            {isOpen && <DrawerOverlay onClick={onClose} />}
-            <StyledDrawer>
+        <Box>
+            <DrawerOverlay
+                sx={{
+                    transform: `translateX(${isOpen ? 0 : -100}%)`,
+                    backgroundColor: isOpen
+                        ? `rgba(0,0,0,0.5)`
+                        : `rgba(0,0,0,0)`,
+                }}
+                onClick={onClose}
+            />
+            <StyledDrawer
+                sx={{ transform: `translateX(${isOpen ? 0 : -100}%)` }}
+            >
                 <IconButton
                     mr={'1'}
                     marginLeft={'auto'}

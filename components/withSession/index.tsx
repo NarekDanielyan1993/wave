@@ -1,3 +1,4 @@
+/* eslint-disable react/function-component-definition */
 import Loader from '@components/loader';
 import { SESSION_STATUS } from '@constant/auth';
 import { useSession } from 'next-auth/react';
@@ -7,7 +8,6 @@ export function WithSession<P extends object>(
 ) {
     return function Layout(props: P) {
         const { status, data: session } = useSession();
-        console.log(status);
         return status === SESSION_STATUS.LOADING ||
             status === SESSION_STATUS.UNAUTHENTICATED ? (
             <Loader />

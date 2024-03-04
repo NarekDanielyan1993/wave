@@ -9,7 +9,6 @@ export const usePermissions = (
     resource: UserPermissionResourcesTypes
 ): UserPermissionActionsTypes => {
     const permissions = useAppSelector(userPermissionsSelector);
-    console.log(permissions);
     return permissions?.userPermissions[resource];
 };
 

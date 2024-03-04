@@ -22,14 +22,6 @@ const errorSlice = createSlice({
             );
         },
     },
-    // extraReducers: {
-    //     [HYDRATE]: (state, action) => {
-    //         return {
-    //             ...state,
-    //             ...action.payload.errors,
-    //         };
-    //     },
-    // },
 });
 
 export const { setError, clearError } = errorSlice.actions;

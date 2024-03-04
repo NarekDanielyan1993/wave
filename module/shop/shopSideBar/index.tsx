@@ -48,7 +48,6 @@ const ShopSideBar = ({
     });
 
     const onSubmit = (data: FilterProductSchemaType) => {
-        console.log(data);
         const formData: GetPaginatedProductsActionPayload = {
             page: 0,
             limit: 10,

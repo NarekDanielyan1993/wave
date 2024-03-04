@@ -19,7 +19,7 @@ export type UserPermissionActionsTypes = {
     delete: boolean;
 };
 
-export type UserPermissionResourcesTypes = 'adminPage' | 'profile';
+export type UserPermissionResourcesTypes = 'adminPage' | 'profile' | 'product';
 
 export type GET_USER_PERMISSIONS_TYPES = typeof GET_USER_PERMISSIONS;
 

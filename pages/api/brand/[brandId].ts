@@ -35,7 +35,7 @@ router.get(
 
             const brand = await brandService.getBrand(id);
 
-            if (!brand) {
+            if (brand) {
                 throw new NotFoundError('Brand not found');
             }
 
@@ -60,8 +60,8 @@ router.post(
 
             const newBrandData = await brandService.createBrand(brand);
 
-            if (!newBrandData) {
-                throw new InternalServerError();
+            if (newBrandData) {
+                throw new InternalServerError('Failed to add brand');
             }
 
             res.status(201).json(newBrandData);

@@ -1,5 +1,6 @@
 import { FRETS_API } from '@constant/api';
 import type { PayloadAction } from '@reduxjs/toolkit';
+import { showNotification } from '@store/notification/reducer';
 import { apiRequest } from '@utils/apiRequest';
 import type { AxiosResponse } from 'axios';
 import { call, put, takeLatest } from 'redux-saga/effects';
@@ -27,21 +28,6 @@ import {
     isFretsLoading,
 } from './reducer';
 
-// function* getProductGenerator(action: PayloadAction<GetProductActionPayload>) {
-//     try {
-//         const { id } = action.payload;
-//         yield put(isProductsLoading(true));
-//         const { data }: AxiosResponse<IProductResponse> = yield call(
-//             apiRequest.get,
-//             `${PRODUCTS_API.GET_PRODUCT}/${id}`
-//         );
-//         yield put(getProductSuccess(data));
-//     } catch (error) {
-//         console.log(error);
-//     }
-//     yield put(isFretsLoading(false));
-// }
-
 function* getPaginatedFretsGenerator(
     action: PayloadAction<GetPaginatedFretsActionPayload>
 ) {
@@ -61,7 +47,12 @@ function* getPaginatedFretsGenerator(
         );
         yield put(getPaginatedFretsSuccess(data));
     } catch (error) {
-        console.log(error);
+        yield put(
+            showNotification({
+                message: error?.response?.data?.msg,
+                type: 'error',
+            })
+        );
     }
     yield put(isFretsLoading(false));
 }
@@ -77,7 +68,12 @@ function* editFretsGenerator(action: PayloadAction<IEditFretsPayload>) {
         );
         yield put(editFretsSuccess(data));
     } catch (error) {
-        console.log(error);
+        yield put(
+            showNotification({
+                message: error?.response?.data?.msg,
+                type: 'error',
+            })
+        );
     }
     yield put(isFretsLoading(false));
 }
@@ -99,14 +95,18 @@ function* addFretsGenerator(action: PayloadAction<IAddProductPayload>) {
             })
         );
     } catch (error) {
-        console.log(error);
+        yield put(
+            showNotification({
+                message: error?.response?.data?.msg,
+                type: 'error',
+            })
+        );
     }
     yield put(isFretsLoading(false));
 }
 
 function* deleteFretsGenerator(action: PayloadAction<IDeleteFretsPayload>) {
     const { id } = action.payload;
-    console.log(id);
 
     try {
         yield put(isFretsLoading(true));
@@ -125,7 +125,12 @@ function* deleteFretsGenerator(action: PayloadAction<IDeleteFretsPayload>) {
             })
         );
     } catch (error) {
-        console.log(error);
+        yield put(
+            showNotification({
+                message: error?.response?.data?.msg,
+                type: 'error',
+            })
+        );
     }
     yield put(isFretsLoading(false));
 }

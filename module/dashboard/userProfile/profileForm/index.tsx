@@ -27,10 +27,8 @@ function ProfileForm() {
             defaultValues,
         });
 
-    const formSubmitHandler = (data: UserProfileValidationTypes) => {
-        console.log(data);
-        return dispatch(updateUserProfile(data));
-    };
+    const formSubmitHandler = (data: UserProfileValidationTypes) =>
+        dispatch(updateUserProfile(data));
 
     return (
         <form onSubmit={handleSubmit(formSubmitHandler)}>

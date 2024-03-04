@@ -47,7 +47,6 @@ const AddEditFretsDialog = ({
     const dispatch = useAppDispatch();
 
     const formSubmitHandler = (dat: addEditFretsSchemaTypes) => {
-        console.log(dat);
         const newData = {
             frets: dat.frets,
         };

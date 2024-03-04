@@ -13,7 +13,7 @@ class StripePaymentService {
     async createPaymentIntent(amount: number) {
         try {
             const paymentIntent = await this.stripe.paymentIntents.create({
-                amount: amount,
+                amount,
                 currency: 'USD',
                 payment_method: 'pm_card_visa',
                 confirm: true,
@@ -24,7 +24,6 @@ class StripePaymentService {
             });
             return paymentIntent;
         } catch (err) {
-            console.error('Error uploading file:', err);
             throw new Error('Error happened while creating payment intent.');
         }
     }

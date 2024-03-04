@@ -2,7 +2,7 @@ import { authOptions } from '@api/auth/[...nextauth]';
 import { COMMON_ERROR_TYPES } from '@constant/error';
 import UserService from '@lib/services/user';
 import CloudinaryService from '@lib/upload';
-import { InternalServerError, handleError } from '@utils/error-handler';
+import { handleError } from '@utils/error-handler';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { Session, getServerSession } from 'next-auth';
 import { createRouter } from 'next-connect';
@@ -25,7 +25,7 @@ router.delete(
             )) as Session;
             const file = req.query;
             const cloudinaryService = new CloudinaryService();
-            const img = await cloudinaryService.deleteFile(file);
+            await cloudinaryService.deleteFile(file);
             const user: IUserService = new UserService();
             const updatedUser = await user.updateUserProfile(
                 session.user.email,
@@ -34,9 +34,6 @@ router.delete(
                     publicId: '',
                 }
             );
-            if (!updatedUser) {
-                throw new InternalServerError();
-            }
             res.status(201).json(updatedUser);
         } catch (error) {
             handleError(error, res);

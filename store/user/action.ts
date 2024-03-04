@@ -49,7 +49,6 @@ export function getCarts(data: GetCartsPayloadType): GetCartsActionTypes {
 }
 
 export function addToCart(data: AddToCartPayloadType): AddToCartActionTypes {
-    console.log(data);
     return {
         type: ADD_TO_CART,
         payload: data,

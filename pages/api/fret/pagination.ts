@@ -37,7 +37,6 @@ router.get(
                 sortBy: data.sortBy,
                 filters: data.filters,
             });
-            console.log('fretsData', fretsData);
 
             if (!fretsData) {
                 throw new NotFoundError('Frets not found.');

@@ -20,16 +20,14 @@ class CloudinaryService {
                 publicId: result.public_id,
             };
         } catch (err) {
-            console.error('Error uploading file:', err);
             throw new Error('Error happened while creating file.');
         }
     }
 
-    async deleteFile(publicId: string): Promise<string> {
+    async deleteFile(publicId: string) {
         try {
-            cloudinary.uploader.destroy(publicId);
+            await cloudinary.uploader.destroy(publicId);
         } catch (err) {
-            console.error('Error deleting files:', err);
             throw new Error('Error happened while deleteing files.');
         }
     }

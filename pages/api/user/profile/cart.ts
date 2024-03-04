@@ -18,7 +18,6 @@ router.post(
     async (req: NextApiRequest, res: NextApiResponse) => {
         try {
             const data = req.body;
-            console.log(data);
             const userService: IUserService = new UserService();
             const createdUser = await userService.addToCart(data);
             if (!createdUser) {
@@ -71,7 +70,6 @@ router.delete(
                 authOptions(req, res)
             )) as Session;
             const data = req.body;
-            console.log(data);
             const user: IUserService = new UserService();
             const carts = await user.removeCart(data.ids);
             if (!carts) {

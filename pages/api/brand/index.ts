@@ -13,7 +13,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>();
 router.get(
     // permissionMiddleware({
     //     resource: PERMISSION_RESOURCES.PROFILE,
-    //     permissions: [IPERMISSION_ACTION.READ_OWN],
+    //     permissions: [PERMISSION_ACTION.READ_OWN],
     // }),
     validateRequest(brandsValidationSchema, VALIDATION_SOURCES.QUERY),
     async (req, res) => {
@@ -35,7 +35,7 @@ router.get(
             });
 
             if (!brandData) {
-                throw new NotFoundError('Brand not found');
+                throw new NotFoundError('Brands not found');
             }
 
             res.status(201).json(brandData);

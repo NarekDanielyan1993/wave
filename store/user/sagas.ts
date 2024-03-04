@@ -1,5 +1,6 @@
 import { USER_API } from '@constant/api';
 import { PayloadAction } from '@reduxjs/toolkit';
+import { showNotification } from '@store/notification/reducer';
 import { apiRequest } from '@utils/apiRequest';
 import { call, put, takeLatest } from 'redux-saga/effects';
 import {
@@ -31,7 +32,6 @@ import {
     deleteProfileImageSuccess,
     getCartsSuccess,
     getHistorySuccess,
-    getUserInit,
     getUserSuccess,
     isCartLoading,
     isUserEmailLoading,
@@ -47,14 +47,18 @@ function* getUserProfileGenerator(
     action: PayloadAction<GetUserProfilePayloadType>
 ) {
     const { email } = action.payload;
-    yield put(getUserInit());
     try {
         const { data } = yield call(apiRequest.get, USER_API.GET_USER, {
             params: { email },
         });
         yield put(getUserSuccess(data));
     } catch (error) {
-        console.log(error);
+        yield put(
+            showNotification({
+                message: error?.response?.data?.msg,
+                type: 'error',
+            })
+        );
     }
 }
 
@@ -66,7 +70,12 @@ function* getCartsGenerator(action: PayloadAction<GetCartsPayloadType>) {
         });
         yield put(getCartsSuccess(data));
     } catch (error) {
-        console.log(error);
+        yield put(
+            showNotification({
+                message: error?.response?.data?.msg,
+                type: 'error',
+            })
+        );
     }
 }
 
@@ -78,7 +87,12 @@ function* addToCartGenerator(action: PayloadAction<AddToCartPayloadType>) {
         });
         yield put(addToCartSuccess(data));
     } catch (error) {
-        console.log(error);
+        yield put(
+            showNotification({
+                message: error?.response?.data?.msg,
+                type: 'error',
+            })
+        );
     }
     yield put(isCartLoading(false));
 }
@@ -97,7 +111,12 @@ function* addProfileImageGenerator(
         );
         yield put(addProfileImageSuccess(data));
     } catch (error) {
-        console.log(error);
+        yield put(
+            showNotification({
+                message: error?.response?.data?.msg,
+                type: 'error',
+            })
+        );
     }
     yield put(isUserProfileImageLoading(false));
 }
@@ -116,7 +135,12 @@ function* deleteProfileImageGenerator(
         );
         yield put(deleteProfileImageSuccess(data));
     } catch (error) {
-        console.log(error);
+        yield put(
+            showNotification({
+                message: error?.response?.data?.msg,
+                type: 'error',
+            })
+        );
     }
     yield put(isUserProfileImageDeleteLoading(false));
 }
@@ -128,9 +152,14 @@ function* removeCartGenerator(action: PayloadAction<RemoveCartPayloadType>) {
         const { data } = yield call(apiRequest.delete, USER_API.REMOVE_CART, {
             data: { ids: id },
         });
-        yield put(removeCartSuccess({ quantity: data, id: id }));
+        yield put(removeCartSuccess({ quantity: data, id }));
     } catch (error) {
-        console.log(error);
+        yield put(
+            showNotification({
+                message: error?.response?.data?.msg,
+                type: 'error',
+            })
+        );
     }
     yield put(isCartLoading(false));
 }
@@ -139,13 +168,16 @@ function* addToHistoryGenerator(
     action: PayloadAction<AddToHistoryPayloadType>
 ) {
     try {
-        const { data } = yield call(apiRequest.post, USER_API.ADD_TO_HISTORY, {
+        yield call(apiRequest.post, USER_API.ADD_TO_HISTORY, {
             history: action.payload,
         });
-        console.log(data);
-        // yield put(removeCartSuccess(id));
     } catch (error) {
-        console.log(error);
+        yield put(
+            showNotification({
+                message: error?.response?.data?.msg,
+                type: 'error',
+            })
+        );
     }
 }
 
@@ -155,10 +187,14 @@ function* getHistoryGenerator(action: PayloadAction<GetHistoryPayloadType>) {
         const { data } = yield call(apiRequest.get, USER_API.GET_HISTORY, {
             params: { userId: id },
         });
-        console.log(data);
         yield put(getHistorySuccess(data));
     } catch (error) {
-        console.log(error);
+        yield put(
+            showNotification({
+                message: error?.response?.data?.msg,
+                type: 'error',
+            })
+        );
     }
 }
 
@@ -177,7 +213,12 @@ function* updateUserEmailGenerator(
         );
         yield put(updateUserEmailSuccess(data));
     } catch (error) {
-        console.log(error);
+        yield put(
+            showNotification({
+                message: error?.response?.data?.msg,
+                type: 'error',
+            })
+        );
     }
     yield put(isUserEmailLoading(false));
 }
@@ -191,7 +232,12 @@ function* updateUserGenerator(action: PayloadAction<UpdateUserPayloadType>) {
         });
         yield put(updateUserSuccess(data));
     } catch (error) {
-        console.log(error);
+        yield put(
+            showNotification({
+                message: error?.response?.data?.msg,
+                type: 'error',
+            })
+        );
     }
     yield put(isUserLoading(false));
 }

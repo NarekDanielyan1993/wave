@@ -1,6 +1,10 @@
 import { COMMON_ERROR_TYPES } from '@constant/error';
 import SiteService from '@lib/services/site';
-import { NotFoundError, handleError } from '@utils/error-handler';
+import {
+    ForbiddenError,
+    NotFoundError,
+    handleError,
+} from '@utils/error-handler';
 import { validateRequest } from '@utils/helper';
 import { siteCreateValidationSchema } from 'common/validation/site';
 import { NextApiRequest, NextApiResponse } from 'next';
@@ -20,7 +24,7 @@ router.get(
             const siteData = await siteService.getSiteArgs();
 
             if (!siteData) {
-                throw new NotFoundError('Product not found.');
+                throw new NotFoundError('Failed to get site configs.');
             }
 
             res.status(201).json(siteData);
@@ -42,8 +46,8 @@ router.post(
             const siteService = new SiteService();
             const siteData = await siteService.createSite(site);
 
-            if (!siteData) {
-                throw new NotFoundError('Site not found.');
+            if (siteData) {
+                throw new ForbiddenError('Failed to create site configs.');
             }
 
             res.status(201).json(siteData);

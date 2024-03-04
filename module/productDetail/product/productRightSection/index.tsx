@@ -1,7 +1,6 @@
-import { Box, Button, Flex, Icon, Text } from '@chakra-ui/react';
-import { AiOutlineCheck } from 'react-icons/ai';
-import { BsCart4 } from 'react-icons/bs';
-import { ImTruck } from 'react-icons/im';
+import { Box, Button, Flex, Text } from '@chakra-ui/react';
+import IconButton from '@components/button/icon-button';
+import ShoppingCartIcon from '@components/icons/shoppingCart';
 import { IProductResponse } from 'types/product';
 
 const ProductRightSection = ({
@@ -16,9 +15,9 @@ const ProductRightSection = ({
             {product.model}
         </Text>
         <Text my={2}>{product.description}</Text>
-        <Box textTransform="uppercase" py={4}>
+        <Box py={4} textTransform="uppercase">
             <Flex alignItems="center" gap={2}>
-                <Icon as={ImTruck} boxSize={8} color="brand.primary.main" />
+                <IconButton boxSize={8} fontSize="2rem" iconName="check" />
                 <Text color="brand.primary.main">
                     free shipping for
                     <br />
@@ -26,11 +25,7 @@ const ProductRightSection = ({
                 </Text>
             </Flex>
             <Flex alignItems="center" gap={2} textTransform="uppercase">
-                <Icon
-                    as={AiOutlineCheck}
-                    boxSize={8}
-                    color="brand.primary.main"
-                />
+                <IconButton boxSize={8} fontSize="2rem" iconName="truck" />
                 <Text color="brand.primary.main">
                     {product.available} product/s in
                     <br /> wharehouse
@@ -41,8 +36,8 @@ const ProductRightSection = ({
         <Box borderY="1px solid lightgray" py={4}>
             <Text fontSize="xl">${product.price}</Text>
             <Button
+                leftIcon={<ShoppingCartIcon />}
                 onClick={() => addToCartHandler(product.id)}
-                leftIcon={<BsCart4 />}
                 variant="secondary"
             >
                 add to cart

@@ -44,7 +44,6 @@ class UserPermissionService implements IUserPermissionService {
                     actions: true,
                 },
             })) as UserPermissionsResponseTypes[];
-        console.log(userPermissionActions);
         return userPermissionActions;
     }
 }

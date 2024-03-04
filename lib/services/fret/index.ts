@@ -54,7 +54,6 @@ class FretService implements IFretService {
     }
 
     async createFrets(frets: IFret): Promise<IFretResponse> {
-        console.log(frets);
         const newFrets = await this.prisma.frets.create({
             data: frets,
         });

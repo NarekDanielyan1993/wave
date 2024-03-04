@@ -28,8 +28,8 @@ const MyApp = ({ Component, pageProps: { session, ...rest } }: IAppProps) => {
                         </LayoutComponent>
                     )}
                 </ChakraProvider>
-                <Notification />
             </SessionProvider>
+            <Notification />
         </Provider>
     );
 };

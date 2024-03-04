@@ -6,6 +6,7 @@ import { useAppDispatch } from '@store/create-store';
 import { getFrets } from '@store/frets/action';
 import { getPaginatedProducts } from '@store/products/action';
 import React, { useState } from 'react';
+import { SearchFilter } from 'types';
 
 const FretsSearchForm = () => {
     const dispatch = useAppDispatch();
@@ -13,17 +14,18 @@ const FretsSearchForm = () => {
     const { debounce } = useDebounce(search, 1000);
 
     useDidUpdate(() => {
+        const search: SearchFilter[] = [];
+        if (debounce)
+            search.push({
+                name: 'frets',
+                value: debounce,
+                keyword: 'equals',
+            });
         dispatch(
             getFrets({
                 filters: {
                     baseFilters: {
-                        search: [
-                            {
-                                name: 'frets',
-                                value: debounce,
-                                keyword: 'contains',
-                            },
-                        ],
+                        search: [...search],
                     },
                 },
             })

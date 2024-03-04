@@ -1,5 +1,4 @@
 import { COMMON_ERROR_TYPES } from '@constant/error';
-import { VALIDATION_SOURCES } from '@constant/validation';
 import ImageService from '@lib/services/image';
 import ProductService from '@lib/services/product';
 import CloudinaryService from '@lib/upload';
@@ -9,10 +8,7 @@ import {
     handleError,
 } from '@utils/error-handler';
 import { validateRequest } from '@utils/helper';
-import {
-    deleteProductValidationSchema,
-    updateProductValidationSchema,
-} from 'common/validation/product';
+import { updateProductValidationSchema } from 'common/validation/product';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
 import type {
@@ -32,7 +28,6 @@ router.get(
     async (req, res) => {
         try {
             const { productId } = req.query as ProductGetQueryParamsTypes;
-            console.log(productId);
             const productService: IProductService = new ProductService();
 
             const productData = await productService.getProductById(productId);
@@ -94,7 +89,7 @@ router.delete(
     //     resource: PERMISSION_RESOURCES.PROFILE,
     //     permissions: [PERMISSION_ACTION.READ_OWN],
     // }),
-    validateRequest(deleteProductValidationSchema, VALIDATION_SOURCES.QUERY),
+    // validateRequest(deleteProductValidationSchema, VALIDATION_SOURCES.QUERY),
     async (req, res) => {
         try {
             const { productId } = req.query as ProductGetQueryParamsTypes;

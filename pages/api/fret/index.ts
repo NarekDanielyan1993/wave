@@ -1,6 +1,6 @@
 import { COMMON_ERROR_TYPES } from '@constant/error';
 import FretService from '@lib/services/fret';
-import { InternalServerError, handleError } from '@utils/error-handler';
+import { ForbiddenError, handleError } from '@utils/error-handler';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
 import { IFretBody, IFretService } from 'types/fret';
@@ -21,7 +21,7 @@ router.post(
                 ...fretsData,
             });
             if (!newFretData) {
-                throw new InternalServerError();
+                throw new ForbiddenError('Failed to add frets.');
             }
 
             res.status(201).json(newFretData);
