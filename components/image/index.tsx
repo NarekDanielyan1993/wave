@@ -3,6 +3,7 @@ import { IMAGE_ROUTES } from '@constant/route';
 import Image, { ImageProps } from 'next/image';
 const ImageComponent = ({ src, ...props }: ImageProps) => (
     <Image
+        alt=""
         src={
             src
                 ? `${FILE_UPLOAD_BASE_URL}/${src}`

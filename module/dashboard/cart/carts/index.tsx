@@ -15,9 +15,10 @@ const Carts = () => {
         cart: { products, subtotal },
         isCartLoading,
     } = useAppSelector(usersSelector);
+
     return (
-        <Box display="flex" flexDir="column" gap={4} flexGrow={1}>
-            {isCartLoading && <Loader />}
+        <Box display="flex" flexDir="column" flexGrow={1} gap={4}>
+            {isCartLoading && <Loader fixed />}
             <CartList cart={products} removeCartHandler={removeCartHandler} />
             {products.length > 0 ? (
                 <Box>{`Total Amount: ${withCurrency(subtotal)}`}</Box>

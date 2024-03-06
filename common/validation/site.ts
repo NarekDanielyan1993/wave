@@ -15,6 +15,17 @@ export const siteUpdateValidationSchema = z.object({
     phone: z.string().optional(),
 });
 
+export const siteImageCreateValidationSchema = z.object({
+    name: z.string(),
+    url: z.string(),
+    publicId: z.string(),
+});
+
+export const siteImageDeleteValidationSchema = z.object({
+    id: z.string(),
+    publicId: z.string(),
+});
+
 export type siteCreateValidationSchemaTypes = z.infer<
     typeof siteCreateValidationSchema
 >;

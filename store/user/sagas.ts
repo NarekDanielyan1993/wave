@@ -52,7 +52,7 @@ function* getUserProfileGenerator(
             params: { email },
         });
         yield put(getUserSuccess(data));
-    } catch (error) {
+    } catch (error: any) {
         yield put(
             showNotification({
                 message: error?.response?.data?.msg,
@@ -69,7 +69,7 @@ function* getCartsGenerator(action: PayloadAction<GetCartsPayloadType>) {
             params: { userId: id },
         });
         yield put(getCartsSuccess(data));
-    } catch (error) {
+    } catch (error: any) {
         yield put(
             showNotification({
                 message: error?.response?.data?.msg,
@@ -86,7 +86,7 @@ function* addToCartGenerator(action: PayloadAction<AddToCartPayloadType>) {
             ...action.payload,
         });
         yield put(addToCartSuccess(data));
-    } catch (error) {
+    } catch (error: any) {
         yield put(
             showNotification({
                 message: error?.response?.data?.msg,
@@ -110,7 +110,7 @@ function* addProfileImageGenerator(
             }
         );
         yield put(addProfileImageSuccess(data));
-    } catch (error) {
+    } catch (error: any) {
         yield put(
             showNotification({
                 message: error?.response?.data?.msg,
@@ -130,11 +130,11 @@ function* deleteProfileImageGenerator(
             apiRequest.delete,
             USER_API.DELETE_PROFILE_IMAGE,
             {
-                data: { params: { ...action.payload } },
+                data: { ...action.payload },
             }
         );
         yield put(deleteProfileImageSuccess(data));
-    } catch (error) {
+    } catch (error: any) {
         yield put(
             showNotification({
                 message: error?.response?.data?.msg,
@@ -153,7 +153,7 @@ function* removeCartGenerator(action: PayloadAction<RemoveCartPayloadType>) {
             data: { ids: id },
         });
         yield put(removeCartSuccess({ quantity: data, id }));
-    } catch (error) {
+    } catch (error: any) {
         yield put(
             showNotification({
                 message: error?.response?.data?.msg,
@@ -171,7 +171,7 @@ function* addToHistoryGenerator(
         yield call(apiRequest.post, USER_API.ADD_TO_HISTORY, {
             history: action.payload,
         });
-    } catch (error) {
+    } catch (error: any) {
         yield put(
             showNotification({
                 message: error?.response?.data?.msg,
@@ -188,7 +188,7 @@ function* getHistoryGenerator(action: PayloadAction<GetHistoryPayloadType>) {
             params: { userId: id },
         });
         yield put(getHistorySuccess(data));
-    } catch (error) {
+    } catch (error: any) {
         yield put(
             showNotification({
                 message: error?.response?.data?.msg,
@@ -212,7 +212,7 @@ function* updateUserEmailGenerator(
             }
         );
         yield put(updateUserEmailSuccess(data));
-    } catch (error) {
+    } catch (error: any) {
         yield put(
             showNotification({
                 message: error?.response?.data?.msg,
@@ -231,7 +231,7 @@ function* updateUserGenerator(action: PayloadAction<UpdateUserPayloadType>) {
             ...userData,
         });
         yield put(updateUserSuccess(data));
-    } catch (error) {
+    } catch (error: any) {
         yield put(
             showNotification({
                 message: error?.response?.data?.msg,

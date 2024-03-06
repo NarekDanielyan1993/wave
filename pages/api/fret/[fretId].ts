@@ -1,4 +1,5 @@
 import { COMMON_ERROR_TYPES } from '@constant/error';
+import { VALIDATION_SOURCES } from '@constant/validation';
 import FretService from '@lib/services/fret';
 import ProductService from '@lib/services/product';
 import {
@@ -6,6 +7,11 @@ import {
     InternalServerError,
     handleError,
 } from '@utils/error-handler';
+import { validateRequest } from '@utils/helper';
+import {
+    createUpdateFretsValidationSchema,
+    deleteFretsValidationSchema,
+} from 'common/validation/frets';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
 import { FretsGetQueryParamsTypes, IFretBody, IFretService } from 'types/fret';
@@ -16,36 +22,29 @@ import type {
 
 const router = createRouter<NextApiRequest, NextApiResponse>();
 
-router.get(
-    // permissionMiddleware({
-    //     resource: PERMISSION_RESOURCES.PROFILE,
-    //     permissions: [PERMISSION_ACTION.READ_OWN],
-    // }),
-    // validateRequest(getProductValidationSchema, VALIDATION_SOURCES.QUERY),
-    async (req, res) => {
-        try {
-            const { productId } = req.query as ProductGetQueryParamsTypes;
-            const productService: IProductService = new ProductService();
+router.get(async (req, res) => {
+    try {
+        const { productId } = req.query as ProductGetQueryParamsTypes;
+        const productService: IProductService = new ProductService();
 
-            const productData = await productService.getProductById(productId);
+        const productData = await productService.getProductById(productId);
 
-            if (!productData) {
-                throw new InternalServerError();
-            }
-
-            res.status(201).json(productData);
-        } catch (error) {
-            handleError(error, res);
+        if (!productData) {
+            throw new InternalServerError();
         }
+
+        res.status(201).json(productData);
+    } catch (error) {
+        handleError(error, res);
     }
-);
+});
 
 router.put(
     // permissionMiddleware({
     //     resource: PERMISSION_RESOURCES.PROFILE,
     //     permissions: [PERMISSION_ACTION.READ_OWN],
     // }),
-    // validateRequest(updateProductValidationSchema),
+    validateRequest(createUpdateFretsValidationSchema),
     async (req, res) => {
         try {
             const fretsData: IFretBody = req.body;
@@ -70,17 +69,13 @@ router.delete(
     //     resource: PERMISSION_RESOURCES.PROFILE,
     //     permissions: [PERMISSION_ACTION.READ_OWN],
     // }),
-    // validateRequest(deleteProductValidationSchema, VALIDATION_SOURCES.QUERY),
+    validateRequest(deleteFretsValidationSchema, VALIDATION_SOURCES.QUERY),
     async (req, res) => {
         try {
             const { fretId } = req.query as FretsGetQueryParamsTypes;
             const fretsService = new FretService();
 
             const frets = await fretsService.deleteFrets(fretId);
-
-            if (!frets) {
-                throw new ForbiddenError('Failed to delete frets.');
-            }
 
             res.status(201).json(frets);
         } catch (error) {

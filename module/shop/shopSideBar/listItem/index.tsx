@@ -22,23 +22,20 @@ const Item = ({
 
     return (
         <label
-            htmlFor={`${type}.${index}.name`}
             onChange={() => onClickHandler(index)}
             style={{
                 display: 'flex',
                 flexGrow: 1,
                 justifyContent: 'space-between',
                 cursor: 'pointer',
-                padding: 4,
+                padding: 8,
             }}
         >
             <Text>{brand.name}</Text>
             <input
-                style={{ cursor: 'pointer' }}
                 checked={brand.checked}
-                id={`${type}.${index}.name`}
+                style={{ cursor: 'pointer' }}
                 type="checkbox"
-                readOnly
             />
             <input name={`${type}.${index}.checked`} type="hidden" />
         </label>

@@ -20,6 +20,7 @@ import {
     deleteSiteImageSuccess,
     getSiteImageSuccess,
     getSiteSuccess,
+    isSiteImageLoading,
     isSiteLoading,
     updateSiteSuccess,
     uploadSiteImageSuccess,
@@ -29,7 +30,7 @@ function* getSiteGenerator() {
     try {
         const { data } = yield call(apiRequest.get, SITE_API.GET_SITE);
         yield put(getSiteSuccess(data));
-    } catch (error) {
+    } catch (error: any) {
         yield put(
             showNotification({
                 message: error?.response?.data?.msg,
@@ -43,7 +44,7 @@ function* getSiteImageGenerator() {
     try {
         const { data } = yield call(apiRequest.get, SITE_API.GET_SITE_IMAGE);
         yield put(getSiteImageSuccess(data));
-    } catch (error) {
+    } catch (error: any) {
         yield put(
             showNotification({
                 message: error?.response?.data?.msg,
@@ -54,55 +55,13 @@ function* getSiteImageGenerator() {
 }
 
 function* createSiteGenerator(action: PayloadAction<CreateSitePayloadType>) {
+    yield put(isSiteLoading(true));
     try {
         const { data } = yield call(apiRequest.post, SITE_API.CREATE_SITE, {
             ...action.payload.site,
         });
         yield put(updateSiteSuccess(data));
-    } catch (error) {
-        yield put(
-            showNotification({
-                message: error?.response?.data?.msg,
-                type: 'error',
-            })
-        );
-    }
-}
-
-function* updateSiteGenerator(action: PayloadAction<UpdateSitePayloadType>) {
-    try {
-        const { data } = yield call(
-            apiRequest.put,
-            `${SITE_API.UPDATE_SITE}/${action.payload.id}`,
-            {
-                ...action.payload.site,
-            }
-        );
-        yield put(updateSiteSuccess(data));
-    } catch (error) {
-        yield put(
-            showNotification({
-                message: error?.response?.data?.msg,
-                type: 'error',
-            })
-        );
-    }
-}
-
-function* uploadSiteImageGenerator(
-    action: PayloadAction<UpdateSitePayloadType>
-) {
-    try {
-        yield put(isSiteLoading(true));
-        const { data } = yield call(
-            apiRequest.post,
-            SITE_API.UPLOAD_SITE_IMAGE,
-            {
-                ...action.payload,
-            }
-        );
-        yield put(uploadSiteImageSuccess(data));
-    } catch (error) {
+    } catch (error: any) {
         yield put(
             showNotification({
                 message: error?.response?.data?.msg,
@@ -111,6 +70,52 @@ function* uploadSiteImageGenerator(
         );
     }
     yield put(isSiteLoading(false));
+}
+
+function* updateSiteGenerator(action: PayloadAction<UpdateSitePayloadType>) {
+    try {
+        yield put(isSiteLoading(true));
+        const { data } = yield call(
+            apiRequest.put,
+            `${SITE_API.UPDATE_SITE}/${action.payload.id}`,
+            {
+                ...action.payload.site,
+            }
+        );
+        yield put(updateSiteSuccess(data));
+    } catch (error: any) {
+        yield put(
+            showNotification({
+                message: error?.response?.data?.msg,
+                type: 'error',
+            })
+        );
+    }
+    yield put(isSiteLoading(false));
+}
+
+function* uploadSiteImageGenerator(
+    action: PayloadAction<UpdateSitePayloadType>
+) {
+    try {
+        yield put(isSiteImageLoading(true));
+        const { data } = yield call(
+            apiRequest.post,
+            SITE_API.UPLOAD_SITE_IMAGE,
+            {
+                ...action.payload,
+            }
+        );
+        yield put(uploadSiteImageSuccess(data));
+    } catch (error: any) {
+        yield put(
+            showNotification({
+                message: error?.response?.data?.msg,
+                type: 'error',
+            })
+        );
+    }
+    yield put(isSiteImageLoading(false));
 }
 
 function* deleteSiteImageGenerator(
@@ -127,7 +132,7 @@ function* deleteSiteImageGenerator(
             }
         );
         yield put(deleteSiteImageSuccess(data));
-    } catch (error) {
+    } catch (error: any) {
         yield put(
             showNotification({
                 message: error?.response?.data?.msg,

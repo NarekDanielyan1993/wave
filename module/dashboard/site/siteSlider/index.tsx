@@ -16,7 +16,7 @@ import AttachmentList from './fileList';
 const SiteSlider = () => {
     const fileRef = useRef<HTMLInputElement>(null);
     const dispatch = useAppDispatch();
-    const { isSiteLoading } = useAppSelector(siteSelector);
+    const { isSiteImageLoading } = useAppSelector(siteSelector);
     const fileDeleteHandler = (image: ISiteImageResponse) => {
         dispatch(deleteSiteImage({ id: image.id, publicId: image.publicId }));
     };
@@ -52,7 +52,7 @@ const SiteSlider = () => {
                 type="file"
             />
             <Button
-                isLoading={isSiteLoading}
+                isLoading={isSiteImageLoading}
                 onClick={() => fileRef?.current?.click()}
                 variant="primary"
             >

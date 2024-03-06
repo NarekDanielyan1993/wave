@@ -38,11 +38,11 @@ const MobileMenMenuNavigation = () => {
                                     aria-current={
                                         asPath === link.url ? 'page' : undefined
                                     }
-                                    variant={'secondary'}
                                     color="black"
                                     href={link.url}
                                     key={index}
                                     sx={{ width: '100%' }}
+                                    variant="secondary"
                                 >
                                     {link.url === '/dashboard/cart' &&
                                     quantity > 0
@@ -54,13 +54,13 @@ const MobileMenMenuNavigation = () => {
                         );
                     }
                     return (
-                        <MenuItem as={'div'} key={index}>
+                        <MenuItem as="div" key={index}>
                             <Button
-                                variant={'ghost'}
                                 color="black"
                                 key={index}
                                 onClick={link.click}
                                 sx={{ pl: '8px' }}
+                                variant="ghost"
                             >
                                 {link.text}
                             </Button>

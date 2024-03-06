@@ -10,7 +10,6 @@ import type {
     GetBrandsResponseTypes,
     GetPaginatedProductsActionPayload,
     GetProductActionPayload,
-    GetProductsResponseTypes,
     IAddProductPayload,
     ProductCardSectionUnion,
     editProductPayloadTypes,
@@ -18,6 +17,7 @@ import type {
 import { IImageResponse } from 'types/image';
 import type {
     IPaginatedProductResponse,
+    IPaginatedProductResponseClient,
     IProductResponse,
     IProductResponseClient,
     IProductsQueryParams,
@@ -44,7 +44,6 @@ import {
     getProductSuccess,
     getProductsSortBySuccess,
     getProductsSuccess,
-    isProductCardsLoading,
     isProductsLoading,
 } from './reducer';
 
@@ -99,7 +98,7 @@ function* getBrandsGenerator() {
             BRAND_API.GET_BRANDS
         );
         yield put(getBrandsSuccess(data));
-    } catch (error) {
+    } catch (error: any) {
         yield put(
             showNotification({
                 message: error?.response?.data?.msg,
@@ -115,20 +114,17 @@ function* getPaginatedProductsGenerator(
 ) {
     try {
         yield put(isProductsLoading(true));
-        const { data }: AxiosResponse<GetProductsResponseTypes> = yield call(
-            apiRequest.get,
-            PRODUCTS_API.GET_PAGINATED_PRODUCTS,
-            {
+        const { data }: AxiosResponse<IPaginatedProductResponseClient> =
+            yield call(apiRequest.get, PRODUCTS_API.GET_PAGINATED_PRODUCTS, {
                 params: {
                     ...action.payload,
                     ...(action.payload.filters && {
                         filters: JSON.stringify(action.payload.filters),
                     }),
                 },
-            }
-        );
+            });
         yield put(getPaginatedProductsSuccess(data));
-    } catch (error) {
+    } catch (error: any) {
         yield put(
             showNotification({
                 message: error?.response?.data?.msg,
@@ -141,22 +137,22 @@ function* getPaginatedProductsGenerator(
 
 const getProductsSortBy = (key: ProductCardSectionUnion) =>
     function* (action: PayloadAction<IProductsQueryParams<number>>) {
-        yield put(isProductCardsLoading({ key, isLoading: true }));
         const { limit, sortBy, order } = action.payload;
         try {
-            const { data }: AxiosResponse<IProductResponse[]> = yield call(
-                apiRequest.get,
-                PRODUCTS_API.GET_PRODUCTS,
-                {
-                    params: {
-                        ...(limit && { limit }),
-                        ...(sortBy && { sortBy }),
-                        ...(order && { order }),
-                    },
-                }
-            );
+            const { data }: AxiosResponse<IPaginatedProductResponseClient> =
+                yield call(
+                    apiRequest.get,
+                    PRODUCTS_API.GET_PAGINATED_PRODUCTS,
+                    {
+                        params: {
+                            ...(limit && { limit }),
+                            ...(sortBy && { sortBy }),
+                            ...(order && { order }),
+                        },
+                    }
+                );
             yield put(getProductsSortBySuccess({ key, data }));
-        } catch (error) {
+        } catch (error: any) {
             yield put(
                 showNotification({
                     message: error?.response?.data?.msg,
@@ -164,7 +160,6 @@ const getProductsSortBy = (key: ProductCardSectionUnion) =>
                 })
             );
         }
-        yield put(isProductCardsLoading({ key, isLoading: false }));
     };
 
 function* editProductGenerator(action: PayloadAction<editProductPayloadTypes>) {
@@ -177,7 +172,7 @@ function* editProductGenerator(action: PayloadAction<editProductPayloadTypes>) {
             product
         );
         yield put(editProductSuccess(data));
-    } catch (error) {
+    } catch (error: any) {
         yield put(
             showNotification({
                 message: error?.response?.data?.msg,
@@ -204,7 +199,7 @@ function* addProductGenerator(action: PayloadAction<IAddProductPayload>) {
                 page: action.payload.paginationData.page,
             })
         );
-    } catch (error) {
+    } catch (error: any) {
         yield put(
             showNotification({
                 message: error?.response?.data?.msg,
@@ -236,7 +231,7 @@ function* deleteProductGenerator(
                 page: 0,
             })
         );
-    } catch (error) {
+    } catch (error: any) {
         yield put(
             showNotification({
                 message: error?.response?.data?.msg,
@@ -260,7 +255,7 @@ function* deleteImageGenerator(action: PayloadAction<DeleteImagePayloadTypes>) {
             }
         );
         yield put(deleteImageSuccess(data));
-    } catch (error) {
+    } catch (error: any) {
         yield put(
             showNotification({
                 message: error?.response?.data?.msg,

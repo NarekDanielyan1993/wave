@@ -1,14 +1,14 @@
 import { COMMON_ERROR_TYPES } from '@constant/error';
+import { VALIDATION_SOURCES } from '@constant/validation';
 import ImageService from '@lib/services/image';
 import ProductService from '@lib/services/product';
 import CloudinaryService from '@lib/upload';
-import {
-    InternalServerError,
-    NotFoundError,
-    handleError,
-} from '@utils/error-handler';
+import { InternalServerError, handleError } from '@utils/error-handler';
 import { validateRequest } from '@utils/helper';
-import { updateProductValidationSchema } from 'common/validation/product';
+import {
+    createUpdateProductValidationSchema,
+    deleteProductValidationSchema,
+} from 'common/validation/product';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
 import type {
@@ -48,7 +48,7 @@ router.put(
     //     resource: PERMISSION_RESOURCES.PROFILE,
     //     permissions: [PERMISSION_ACTION.READ_OWN],
     // }),
-    validateRequest(updateProductValidationSchema),
+    validateRequest(createUpdateProductValidationSchema),
     async (req, res) => {
         try {
             const { file, ...productData }: IProductBody = req.body;
@@ -63,7 +63,6 @@ router.put(
             if (file?.publicId) {
                 const cloudinaryService = new CloudinaryService();
                 const image = await cloudinaryService.uploadFile(file.url);
-                console.log(image);
                 const imageService = new ImageService();
                 img = await imageService.createImage({
                     name: file.name,
@@ -71,10 +70,6 @@ router.put(
                     publicId: image.publicId,
                     productId: product.id,
                 });
-            }
-
-            if (!product) {
-                throw new NotFoundError('Product not Found');
             }
 
             res.status(201).json({ product, image: img });
@@ -89,17 +84,13 @@ router.delete(
     //     resource: PERMISSION_RESOURCES.PROFILE,
     //     permissions: [PERMISSION_ACTION.READ_OWN],
     // }),
-    // validateRequest(deleteProductValidationSchema, VALIDATION_SOURCES.QUERY),
+    validateRequest(deleteProductValidationSchema, VALIDATION_SOURCES.QUERY),
     async (req, res) => {
         try {
             const { productId } = req.query as ProductGetQueryParamsTypes;
             const productService = new ProductService();
 
             const product = await productService.deleteProduct(productId);
-
-            if (!product) {
-                throw new NotFoundError('Product not Found');
-            }
 
             res.status(201).json(product);
         } catch (error) {

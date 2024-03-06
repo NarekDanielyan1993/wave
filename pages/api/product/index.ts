@@ -2,13 +2,9 @@ import { COMMON_ERROR_TYPES } from '@constant/error';
 import ImageService from '@lib/services/image';
 import ProductService from '@lib/services/product';
 import CloudinaryService from '@lib/upload';
-import {
-    ForbiddenError,
-    NotFoundError,
-    handleError,
-} from '@utils/error-handler';
+import { NotFoundError, handleError } from '@utils/error-handler';
 import { parseQueryParams, validateRequest } from '@utils/helper';
-import { addEditProductSchema } from 'common/validation/product';
+import { createUpdateProductValidationSchema } from 'common/validation/product';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
 import type {
@@ -20,50 +16,38 @@ import type {
 
 const router = createRouter<NextApiRequest, NextApiResponse>();
 
-router.get(
-    // permissionMiddleware({
-    //     resource: PERMISSION_RESOURCES.PRODUCT,
-    //     permissions: [PERMISSION_ACTION.READ],
-    // }),
-    async (req, res) => {
-        try {
-            // const session: Session | null = await getServerSession(
-            //     req,
-            //     res,
-            //     authOptions(req, res)
-            // );
-            // console.log(session);
-            const { limit, order, sortBy } =
-                req.query as IProductsQueryParams<string>;
-            const data: IProductsQueryParams<number> =
-                parseQueryParams<IProductModelFields>({
-                    limit,
-                    order,
-                    sortBy,
-                });
-            const productService = new ProductService();
-            const productData = await productService.getProducts({
-                limit: data.limit,
-                order: data.order,
-                sortBy: data.sortBy,
+router.get(async (req, res) => {
+    try {
+        const { limit, order, sortBy } =
+            req.query as IProductsQueryParams<string>;
+        const data: IProductsQueryParams<number> =
+            parseQueryParams<IProductModelFields>({
+                limit,
+                order,
+                sortBy,
             });
+        const productService = new ProductService();
+        const productData = await productService.getProducts({
+            limit: data.limit,
+            order: data.order,
+            sortBy: data.sortBy,
+        });
 
-            if (!productData) {
-                throw new NotFoundError('Product not found.');
-            }
-            res.status(201).json(productData);
-        } catch (error) {
-            handleError(error, res);
+        if (!productData) {
+            throw new NotFoundError('Product not found.');
         }
+        res.status(201).json(productData);
+    } catch (error) {
+        handleError(error, res);
     }
-);
+});
 
 router.post(
     // permissionMiddleware({
     //     resource: PERMISSION_RESOURCES.PRODUCT,
     //     permissions: [PERMISSION_ACTION.CREATE],
     // }),
-    validateRequest(addEditProductSchema),
+    validateRequest(createUpdateProductValidationSchema),
     async (req, res) => {
         try {
             const { file, ...productData }: IProductBody = req.body;
@@ -82,9 +66,6 @@ router.post(
                     publicId: img.publicId,
                     productId: newProductData.id,
                 });
-            }
-            if (newProductData) {
-                throw new ForbiddenError('Failed to add product.');
             }
 
             res.status(201).json({ product: newProductData, image });

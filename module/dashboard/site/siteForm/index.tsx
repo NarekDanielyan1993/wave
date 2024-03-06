@@ -10,8 +10,8 @@ import {
 
 const SiteForm = () => {
     const dispatch = useAppDispatch();
-    const { site } = useAppSelector(siteSelector);
-    const { FormField, handleSubmit } =
+    const { site, isSiteLoading } = useAppSelector(siteSelector);
+    const { FormField, handleSubmit, formState } =
         useForm<siteCreateValidationSchemaTypes>({
             defaultValues: {
                 hours: site.hours || '',
@@ -48,7 +48,12 @@ const SiteForm = () => {
                 name: 'hours',
                 label: 'Hours',
             })}
-            <Button type="submit" variant="primary">
+            <Button
+                isDisabled={!(formState.isDirty && formState.isValid)}
+                isLoading={isSiteLoading}
+                type="submit"
+                variant="primary"
+            >
                 edit site
             </Button>
         </form>

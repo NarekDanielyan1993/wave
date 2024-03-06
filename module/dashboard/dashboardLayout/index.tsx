@@ -7,18 +7,16 @@ import {
     StyledRightSide,
 } from './style';
 
-const DashboardLayout = ({ children, sideBar }: LayoutTypes) => {
-    return (
-        <StyledDashboardContainer>
-            <StyledDashboardWrapper>
-                <MobileMenu>{sideBar}</MobileMenu>
-                <StyledDashboardLeftSide display={{ base: 'none', md: 'flex' }}>
-                    {sideBar}
-                </StyledDashboardLeftSide>
-                <StyledRightSide>{children}</StyledRightSide>
-            </StyledDashboardWrapper>
-        </StyledDashboardContainer>
-    );
-};
+const DashboardLayout = ({ children, sideBar }: LayoutTypes) => (
+    <StyledDashboardContainer>
+        <StyledDashboardWrapper>
+            <MobileMenu hideFrom="lg">{sideBar}</MobileMenu>
+            <StyledDashboardLeftSide hideBelow="lg">
+                {sideBar}
+            </StyledDashboardLeftSide>
+            <StyledRightSide>{children}</StyledRightSide>
+        </StyledDashboardWrapper>
+    </StyledDashboardContainer>
+);
 
 export default DashboardLayout;

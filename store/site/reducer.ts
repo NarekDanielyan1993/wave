@@ -9,12 +9,14 @@ interface ISiteState {
     site: ISiteResponse;
     siteImages: ISiteImageResponse[];
     isSiteLoading: boolean;
+    isSiteImageLoading: boolean;
 }
 
 const initialState: ISiteState = {
     site: {} as ISiteResponse,
     siteImages: [],
     isSiteLoading: false,
+    isSiteImageLoading: false,
 };
 
 const siteSlice = createSlice({
@@ -29,6 +31,12 @@ const siteSlice = createSlice({
         },
         isSiteLoading: (state: ISiteState, action: PayloadAction<boolean>) => {
             state.isSiteLoading = action.payload;
+        },
+        isSiteImageLoading: (
+            state: ISiteState,
+            action: PayloadAction<boolean>
+        ) => {
+            state.isSiteImageLoading = action.payload;
         },
         uploadSiteImageSuccess: (
             state: ISiteState,
@@ -66,6 +74,7 @@ export const {
     uploadSiteImageSuccess,
     getSiteImageSuccess,
     isSiteLoading,
+    isSiteImageLoading,
 } = siteSlice.actions;
 
 export default siteSlice.reducer;

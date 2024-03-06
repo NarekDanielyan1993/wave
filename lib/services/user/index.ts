@@ -4,7 +4,7 @@ import {
 } from '@constant/auth';
 import { USER_ERROR_TYPES } from '@constant/error';
 import prismaAdapter from '@lib/db';
-import { PrismaClient, UserRole } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { ForbiddenError, InternalServerError } from '@utils/error-handler';
 import { compare, hashSync } from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -47,6 +47,7 @@ class UserService implements IUserService {
 
     async getAllData(email: string): Promise<IUserResponseWIthPassword | null> {
         try {
+            console.log(email);
             return await this.prisma.user.findUnique({
                 where: {
                     email,
@@ -65,7 +66,6 @@ class UserService implements IUserService {
                 data: {
                     password: hashedPassword,
                     email,
-                    role: UserRole.ADMIN,
                 },
             });
 
@@ -130,7 +130,6 @@ class UserService implements IUserService {
                 },
                 select: prismaExclude('User', ['password']),
             });
-            throw new Error();
 
             return updatedUser;
         } catch (error) {
@@ -148,10 +147,14 @@ class UserService implements IUserService {
     }
 
     generateToken = (id: string) => {
-        const token = jwt.sign({ id }, config.NEXTAUTH_SECRET, {
-            expiresIn: JWT_TOKEN_EXPIRATION_TIME,
-        });
-        return token;
+        try {
+            const token = jwt.sign({ id }, config.NEXTAUTH_SECRET, {
+                expiresIn: JWT_TOKEN_EXPIRATION_TIME,
+            });
+            return token;
+        } catch (error) {
+            throw new InternalServerError();
+        }
     };
 
     async verifyEmail(id: string): Promise<IUserResponse> {

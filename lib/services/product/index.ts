@@ -1,6 +1,7 @@
 import { PAGINATION_QUERY_PARAMS_DEFAULT } from '@constant/db';
 import prismaAdapter from '@lib/db';
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
+import { InternalServerError } from '@utils/error-handler';
 import { generatePrismaFilters } from '@utils/helper';
 import type {
     IPaginatedProductResponse,
@@ -80,31 +81,56 @@ class ProductService implements IProductService {
     }
 
     async createProduct(product: IProduct): Promise<IProductResponse> {
-        const newProduct = await this.prisma.product.create({
-            data: product,
-            include: {
-                brand: true,
-                frets: true,
-            },
-        });
-        return newProduct;
+        try {
+            const newProduct = await this.prisma.product.create({
+                data: product,
+                include: {
+                    brand: true,
+                    frets: true,
+                },
+            });
+            return newProduct;
+        } catch (error) {
+            throw new InternalServerError('Failed to add product.');
+        }
     }
 
     async updateProduct(
         id: string,
         product: IProductOptional
     ): Promise<IProductResponse> {
-        const updatedProduct = await this.prisma.product.update({
-            where: {
-                id,
-            },
-            data: product,
-            include: {
-                brand: true,
-                frets: true,
-            },
-        });
-        return updatedProduct;
+        try {
+            const updatedProduct = await this.prisma.product.update({
+                where: {
+                    id,
+                },
+                data: product,
+                include: {
+                    brand: true,
+                    frets: true,
+                },
+            });
+            return updatedProduct;
+        } catch (error) {
+            throw new InternalServerError('Failed to edit product.');
+        }
+    }
+
+    async updateMultipleProducts(
+        ids: string[],
+        product: Prisma.ProductUpdateInput
+    ): Promise<Prisma.BatchPayload> {
+        try {
+            const updatedProduct = await this.prisma.product.updateMany({
+                where: {
+                    id: { in: ids },
+                },
+                data: product,
+            });
+            return updatedProduct;
+        } catch (error) {
+            throw new InternalServerError('Failed to edit product.');
+        }
     }
 
     async getProductById(id: string): Promise<IProductResponse | null> {
@@ -121,16 +147,20 @@ class ProductService implements IProductService {
     }
 
     async deleteProduct(id: string): Promise<IProductResponse> {
-        const deletedProduct = await this.prisma.product.delete({
-            where: {
-                id,
-            },
-            include: {
-                brand: true,
-                frets: true,
-            },
-        });
-        return deletedProduct;
+        try {
+            const deletedProduct = await this.prisma.product.delete({
+                where: {
+                    id,
+                },
+                include: {
+                    brand: true,
+                    frets: true,
+                },
+            });
+            return deletedProduct;
+        } catch (error) {
+            throw new InternalServerError('Failed to delete product.');
+        }
     }
 }
 

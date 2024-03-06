@@ -1,7 +1,5 @@
-import type {
-    AddToCartPayloadType,
-    ProductCardSectionUnion,
-} from 'types/client';
+import { Prisma } from '@prisma/client';
+import type { IProductCard, ProductCardSectionUnion } from 'types/client';
 import type {
     IItemsQueryParams,
     IPaginatedDataResponse,
@@ -11,6 +9,7 @@ import type {
 } from 'types/common';
 import type { Keys } from 'types/database';
 import { IImage, IImageResponse } from 'types/image';
+import { IProductCart } from 'types/user';
 
 export type ProductGetQueryParamsTypes = {
     productId: string;
@@ -30,6 +29,11 @@ export interface IProduct {
 
 export interface IProductBody extends IProduct {
     file: IImage;
+}
+
+export interface IProductPaymentBody extends IProduct {
+    amount: number;
+    products: IProductCart[];
 }
 
 export interface IProductResponseClient {
@@ -55,10 +59,10 @@ export interface IProductResponse extends IProduct {
     updatedAt: Date | string;
 }
 
-export interface IProductCard {
-    product: IProductResponse;
-    addToCartHandler: (data: AddToCartPayloadType) => void;
-}
+export type ProductImageDeleteQueryParamsTypes = {
+    id: string;
+    publicId: string;
+};
 
 export interface IProductTable
     extends Exclude<IProduct, 'images'>,
@@ -70,8 +74,6 @@ export interface IProductCardsLoading {
 }
 
 export type IProductCardStoreState = {
-    isLoading: boolean;
-    isFetched: boolean;
     data: IProductCard[];
 };
 
@@ -100,16 +102,25 @@ export type IParsedPaginatedProductsQueryParams<K> =
 export type IPaginatedProductResponse = IPaginatedDataResponse<
     IProductModelFields,
     number
+> & { products: IProductResponse[] };
+
+export type IPaginatedProductResponseClient = IPaginatedDataResponse<
+    IProductModelFields,
+    number
 > & { products: IProductResponse[]; images: IImageResponse[] };
 
-export interface IPaginatedProductResponseClient {
-    pageCount: number;
-    products: IProductResponse[];
-}
+// export interface IPaginatedProductResponseClient {
+//     pageCount: number;
+//     products: IProductResponse[];
+// }
 
 export interface IProductService {
     createProduct(product: IProduct): Promise<IProductResponse>;
     getProductById(id: string): Promise<IProductResponse | null>;
+    updateMultipleProducts(
+        ids: string[],
+        product: Prisma.ProductUpdateInput
+    ): Promise<Prisma.BatchPayload>;
     updateProduct(
         id: string,
         product: IProductOptional

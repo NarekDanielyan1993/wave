@@ -1,11 +1,18 @@
 import { authOptions } from '@api/auth/[...nextauth]';
 import { COMMON_ERROR_TYPES } from '@constant/error';
+import { VALIDATION_SOURCES } from '@constant/validation';
 import UserService from '@lib/services/user';
 import { InternalServerError, handleError } from '@utils/error-handler';
+import { validateRequest } from '@utils/helper';
+import {
+    cartCreateSchema,
+    cartDeleteSchema,
+    cartGetSchema,
+} from 'common/validation/user';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession, type Session } from 'next-auth';
 import { createRouter } from 'next-connect';
-import type { IUserService } from 'types';
+import type { CartCreateBody, CartDeleteBody, IUserService } from 'types';
 
 const router = createRouter<NextApiRequest, NextApiResponse>();
 
@@ -14,10 +21,10 @@ router.post(
     //     resource: PERMISSION_RESOURCES.PROFILE,
     //     permissions: [PERMISSION_ACTION.UPDATE],
     // }),
-    // validateRequest(updateProfileSchema),
+    validateRequest(cartCreateSchema),
     async (req: NextApiRequest, res: NextApiResponse) => {
         try {
-            const data = req.body;
+            const data = req.body as CartCreateBody;
             const userService: IUserService = new UserService();
             const createdUser = await userService.addToCart(data);
             if (!createdUser) {
@@ -35,7 +42,7 @@ router.get(
     //     resource: PERMISSION_RESOURCES.PROFILE,
     //     permissions: [PERMISSION_ACTION.UPDATE],
     // }),
-    // validateRequest(updateProfileSchema),
+    validateRequest(cartGetSchema, VALIDATION_SOURCES.QUERY),
     async (req: NextApiRequest, res: NextApiResponse) => {
         try {
             const session = (await getServerSession(
@@ -61,7 +68,7 @@ router.delete(
     //     resource: PERMISSION_RESOURCES.PROFILE,
     //     permissions: [PERMISSION_ACTION.UPDATE],
     // }),
-    // validateRequest(updateProfileSchema),
+    validateRequest(cartDeleteSchema),
     async (req: NextApiRequest, res: NextApiResponse) => {
         try {
             const session = (await getServerSession(
@@ -69,7 +76,7 @@ router.delete(
                 res,
                 authOptions(req, res)
             )) as Session;
-            const data = req.body;
+            const data = req.body as CartDeleteBody;
             const user: IUserService = new UserService();
             const carts = await user.removeCart(data.ids);
             if (!carts) {

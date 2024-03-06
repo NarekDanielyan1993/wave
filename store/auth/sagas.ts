@@ -24,11 +24,15 @@ function* signUpGenerator(action: PayloadAction<AuthTypes>) {
                 type: 'success',
             })
         );
-        yield put(isAuthLoading(false));
-    } catch (error) {
-        console.log(error);
-        yield put(isAuthLoading(false));
+    } catch (error: any) {
+        yield put(
+            showNotification({
+                message: error?.response?.data?.msg,
+                type: 'error',
+            })
+        );
     }
+    yield put(isAuthLoading(false));
 }
 
 function* signInGenerator(

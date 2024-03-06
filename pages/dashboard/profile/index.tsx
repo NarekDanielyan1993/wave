@@ -1,6 +1,7 @@
 import Sidebar from '@components/sideBar';
 import { AUTH_ROUTES } from '@constant/route';
 import { SagaStore, wrapper } from '@store/create-store';
+import { getSite } from '@store/site/action';
 import { getUser } from '@store/user/action';
 import { getUserPermissions } from '@store/userPermission/action';
 import DashboardLayout from 'module/dashboard/dashboardLayout';
@@ -14,7 +15,7 @@ import PageTitle from '../../../module/dashboard/dashboardLayout/pageTitle';
 
 const UserProfilePage: CustomNextPage = () => (
     <DashboardLayout sideBar={<Sidebar />}>
-        <PageTitle>user information</PageTitle>
+        <PageTitle>My account</PageTitle>
         <UserProfile />
     </DashboardLayout>
 );
@@ -32,6 +33,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
                 };
             }
             store.dispatch(getUser({ email: session.user.email }));
+            store.dispatch(getSite());
             store.dispatch(
                 getUserPermissions({
                     role: session.user.role,

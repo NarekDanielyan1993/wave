@@ -11,6 +11,7 @@ import {
 } from '@utils/helper';
 import Image from 'next/image';
 import { ChangeEvent, useRef, useState } from 'react';
+import { StyledProfileImage } from './style';
 
 const ProfileImage = () => {
     const imageUploader = useRef<HTMLInputElement>(null);
@@ -21,13 +22,21 @@ const ProfileImage = () => {
     const user = useAppSelector(userSelector);
     const { isUserProfileImageLoading, isUserProfileImageDeleteLoading } =
         useAppSelector(usersSelector);
+
     const fileDeleteHandler = () => {
         dispatch(deleteProfileImage({ publicId: user.data.publicId }));
         setCroppedImage('');
     };
+
+    const fileCancelHandler = () => {
+        setImage('');
+        setCroppedImage('');
+    };
+
     const uploadUserImageHandler = () => {
         dispatch(addProfileImage({ file: croppedImage }));
     };
+
     const fileUploadHandler = async (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
             const file = e.target.files[0];
@@ -51,23 +60,7 @@ const ProfileImage = () => {
     };
     return (
         <>
-            <Box
-                sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    flexDir: 'column',
-                    width: '200px',
-                    height: '200px',
-                    aspectRatio: 1,
-                    margin: '0 auto',
-                    position: 'relative',
-                    mb: 6,
-                    overflow: 'hidden',
-                    borderRadius: '50%',
-                    boxShadow: 'md',
-                }}
-            >
+            <StyledProfileImage>
                 {croppedImage || user?.data.url ? (
                     <Image
                         alt=""
@@ -82,7 +75,7 @@ const ProfileImage = () => {
                 ) : (
                     <Text>No Image</Text>
                 )}
-            </Box>
+            </StyledProfileImage>
             <input
                 accept={ALLOWED_FILE_TYPES.join(',')}
                 hidden
@@ -95,7 +88,7 @@ const ProfileImage = () => {
                     display: 'flex',
                     gap: 6,
                     justifyContent: 'center',
-                    marginBottom: 10,
+                    marginBottom: '2rem',
                 }}
             >
                 <Button
@@ -128,10 +121,7 @@ const ProfileImage = () => {
                 ) : (
                     <Button
                         isDisabled={!croppedImage}
-                        onClick={() => {
-                            setImage('');
-                            setCroppedImage('');
-                        }}
+                        onClick={fileCancelHandler}
                         variant="primary"
                     >
                         cancel

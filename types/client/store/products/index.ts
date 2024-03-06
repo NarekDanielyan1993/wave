@@ -56,7 +56,7 @@ export type GetProductActionTypes = {
 
 export type GetProductsSortBySoldActionTypes = {
     type: GET_PRODUCTS_BY_SOLD_TYPE;
-    payload: GetProductsActionPayload;
+    payload: GetPaginatedProductsActionPayload;
 };
 
 export type GetProductsSortByCreatedDateActionTypes = {

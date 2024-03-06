@@ -24,6 +24,7 @@ class StripePaymentService {
             });
             return paymentIntent;
         } catch (err) {
+            console.log(err);
             throw new Error('Error happened while creating payment intent.');
         }
     }

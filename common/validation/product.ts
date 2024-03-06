@@ -2,7 +2,7 @@ import { DEFAULT_VALIDATION_ERRORS } from '@constant/error';
 import { positiveNumberSchema } from '@utils/validator';
 import { z } from 'zod';
 
-export const createProductValidationSchema = z.object({
+export const createUpdateProductValidationSchema = z.object({
     model: z.string(),
     brandId: z.string(),
     fretId: z.number(),
@@ -12,28 +12,25 @@ export const createProductValidationSchema = z.object({
     available: z.number(),
     itemsSold: z.number(),
     shipping: z.boolean().optional(),
-    images: z.array(z.string()).default([]),
+    file: z
+        .object({
+            name: z.string(),
+            url: z.string(),
+        })
+        .nullable(),
 });
 
 export const getProductValidationSchema = z.object({
     id: z.string(),
 });
 
-export const updateProductValidationSchema = z.object({
-    model: z.string().optional(),
-    brandId: z.string().optional(),
-    frets: z.number().optional(),
-    woodType: z.string().optional(),
-    description: z.string().optional(),
-    price: z.number().optional(),
-    available: z.number().optional(),
-    itemsSold: z.number().optional(),
-    shipping: z.boolean().optional(),
-    images: z.array(z.string()).optional(),
-});
-
 export const deleteProductValidationSchema = z.object({
     productId: z.string(),
+});
+
+export const deleteProductImageValidationSchema = z.object({
+    id: z.string(),
+    publicId: z.string(),
 });
 
 export const productsValidationSchema = z.object({

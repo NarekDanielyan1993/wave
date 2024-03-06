@@ -48,7 +48,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   carts         Cart[]
-  role          UserRole
+  role          UserRole  @default(USER)
   History       History[]
 
   @@map("users")

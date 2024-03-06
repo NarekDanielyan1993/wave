@@ -3,11 +3,11 @@ import { SideBarMenuItem, SideBarMenuSectionTypesUnion } from 'types';
 const useSideBarMenuItems = (which: SideBarMenuSectionTypesUnion) => {
     const userMenuItems: SideBarMenuItem[] = [
         {
-            text: 'My account',
+            text: 'Purchase History',
             href: '/dashboard/account',
         },
         {
-            text: 'User information',
+            text: 'My account',
             href: '/dashboard/profile',
         },
         {

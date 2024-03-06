@@ -20,7 +20,7 @@ function* getUserPermissionsGenerator(
             }
         );
         yield put(getUserPermissionsSuccess(data));
-    } catch (error) {
+    } catch (error: any) {
         yield put(
             showNotification({
                 message: error?.response?.data?.msg,

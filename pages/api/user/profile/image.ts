@@ -3,10 +3,12 @@ import { COMMON_ERROR_TYPES } from '@constant/error';
 import UserService from '@lib/services/user';
 import CloudinaryService from '@lib/upload';
 import { handleError } from '@utils/error-handler';
+import { validateRequest } from '@utils/helper';
+import { profileImageDeleteSchema } from 'common/validation/user';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { Session, getServerSession } from 'next-auth';
 import { createRouter } from 'next-connect';
-import { IUserService } from 'types';
+import { IUserService, ProfileImageDeleteBody } from 'types';
 
 const router = createRouter<NextApiRequest, NextApiResponse>();
 
@@ -15,7 +17,7 @@ router.delete(
     //     resource: PERMISSION_RESOURCES.PROFILE,
     //     permissions: [PERMISSION_ACTION.UPDATE],
     // }),
-    // validateRequest(updateProfileSchema),
+    validateRequest(profileImageDeleteSchema),
     async (req: NextApiRequest, res: NextApiResponse) => {
         try {
             const session = (await getServerSession(
@@ -23,9 +25,9 @@ router.delete(
                 res,
                 authOptions(req, res)
             )) as Session;
-            const file = req.query;
+            const { publicId } = req.body as ProfileImageDeleteBody;
             const cloudinaryService = new CloudinaryService();
-            await cloudinaryService.deleteFile(file);
+            await cloudinaryService.deleteFile(publicId);
             const user: IUserService = new UserService();
             const updatedUser = await user.updateUserProfile(
                 session.user.email,

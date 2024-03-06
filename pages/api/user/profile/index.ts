@@ -1,49 +1,47 @@
 import { authOptions } from '@api/auth/[...nextauth]';
 import { COMMON_ERROR_TYPES, USER_ERROR_TYPES } from '@constant/error';
-import { PERMISSION_ACTION, PERMISSION_RESOURCES } from '@constant/permission';
+import { VALIDATION_SOURCES } from '@constant/validation';
 import UserService from '@lib/services/user';
 import CloudinaryService from '@lib/upload';
-import {
-    ForbiddenError,
-    InternalServerError,
-    NotFoundError,
-    handleError,
-} from '@utils/error-handler';
+import { NotFoundError, handleError } from '@utils/error-handler';
 import { validateRequest } from '@utils/helper';
-import permissionMiddleware from 'middlewares/permission';
+import { profileGetSchema, updateProfileSchema } from 'common/validation/user';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { Session, getServerSession } from 'next-auth';
 import { createRouter } from 'next-connect';
 import { IUserService, UserGetQueryParams } from 'types';
-import { updateProfileSchema } from './validationSchema';
 
 const router = createRouter<NextApiRequest, NextApiResponse>();
 
-router.get(async (req, res) => {
-    try {
-        const { email } = req.query as UserGetQueryParams;
-        if (!email) {
-            throw new ForbiddenError();
+router.get(
+    // permissionMiddleware({
+    //     resource: PERMISSION_RESOURCES.PROFILE,
+    //     permissions: [PERMISSION_ACTION.UPDATE],
+    // }),
+    validateRequest(profileGetSchema, VALIDATION_SOURCES.QUERY),
+    async (req, res) => {
+        try {
+            const { email } = req.query as UserGetQueryParams;
+
+            const userService: IUserService = new UserService();
+
+            const userData = await userService.getProfile(email);
+            if (!userData) {
+                throw new NotFoundError('Profile not found.');
+            }
+
+            res.status(201).json(userData);
+        } catch (error) {
+            handleError(error, res);
         }
-
-        const userService: IUserService = new UserService();
-
-        const userData = await userService.getProfile(email);
-        if (!userData) {
-            throw new InternalServerError();
-        }
-
-        res.status(201).json(userData);
-    } catch (error) {
-        handleError(error, res);
     }
-});
+);
 
 router.put(
-    permissionMiddleware({
-        resource: PERMISSION_RESOURCES.PROFILE,
-        permissions: [PERMISSION_ACTION.UPDATE],
-    }),
+    // permissionMiddleware({
+    //     resource: PERMISSION_RESOURCES.PROFILE,
+    //     permissions: [PERMISSION_ACTION.UPDATE],
+    // }),
     validateRequest(updateProfileSchema),
     async (req: NextApiRequest, res: NextApiResponse) => {
         try {

@@ -8,7 +8,7 @@ import type {
 import type { Keys } from 'types/database';
 
 export interface IFret {
-    frets: number;
+    frets: string;
 }
 
 export type IFretBody = IFret;

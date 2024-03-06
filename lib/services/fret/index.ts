@@ -1,6 +1,7 @@
 import { PAGINATION_QUERY_PARAMS_DEFAULT } from '@constant/db';
 import prismaAdapter from '@lib/db';
 import { PrismaClient } from '@prisma/client';
+import { InternalServerError } from '@utils/error-handler';
 import { generatePrismaFilters } from '@utils/helper';
 import {
     IFret,
@@ -25,58 +26,74 @@ class FretService implements IFretService {
         order = PAGINATION_QUERY_PARAMS_DEFAULT.order,
         filters,
     }: IParsedPaginatedFretsQueryParams<number>): Promise<IPaginatedFretsResponse | null> {
-        let filterInput = {};
-        if (filters) {
-            filterInput = generatePrismaFilters(filters);
+        try {
+            let filterInput = {};
+            if (filters) {
+                filterInput = generatePrismaFilters(filters);
+            }
+            const skip = page * limit;
+            const frets: IFretResponse[] = await this.prisma.frets.findMany({
+                skip,
+                orderBy: {
+                    [sortBy]: order,
+                },
+                take: limit,
+                where: filterInput,
+            });
+
+            const totalItems = await this.prisma.frets.count({
+                where: filterInput,
+            });
+
+            const paginationData: IPaginatedFretsResponse = {
+                totalItems,
+                limit,
+                page,
+                frets,
+                ...(filters && { filters }),
+            };
+            return paginationData;
+        } catch (error) {
+            throw new InternalServerError('Failed to get frets.');
         }
-        const skip = page * limit;
-        const frets: IFretResponse[] = await this.prisma.frets.findMany({
-            skip,
-            orderBy: {
-                [sortBy]: order,
-            },
-            take: limit,
-            where: filterInput,
-        });
-
-        const totalItems = await this.prisma.frets.count({
-            where: filterInput,
-        });
-
-        const paginationData: IPaginatedFretsResponse = {
-            totalItems,
-            limit,
-            page,
-            frets,
-            ...(filters && { filters }),
-        };
-        return paginationData;
     }
 
     async createFrets(frets: IFret): Promise<IFretResponse> {
-        const newFrets = await this.prisma.frets.create({
-            data: frets,
-        });
-        return newFrets;
+        try {
+            const newFrets = await this.prisma.frets.create({
+                data: frets,
+            });
+            return newFrets;
+        } catch (error) {
+            throw new InternalServerError('Failed to update frets.');
+        }
     }
 
     async updateFrets(id: string, frets: IFret): Promise<IFretResponse> {
-        const updatedFrets = await this.prisma.frets.update({
-            where: {
-                id,
-            },
-            data: frets,
-        });
-        return updatedFrets;
+        try {
+            const updatedFrets = await this.prisma.frets.update({
+                where: {
+                    id,
+                },
+                data: frets,
+            });
+            return updatedFrets;
+        } catch (error) {
+            throw new InternalServerError('Failed to update frets.');
+        }
     }
 
     async deleteFrets(id: string): Promise<IFretResponse> {
-        const deletedFrets = await this.prisma.frets.delete({
-            where: {
-                id,
-            },
-        });
-        return deletedFrets;
+        try {
+            const deletedFrets = await this.prisma.frets.delete({
+                where: {
+                    id,
+                },
+            });
+            return deletedFrets;
+        } catch (error) {
+            throw new InternalServerError('Failed to delete frets.');
+        }
     }
 }
 

@@ -1,5 +1,4 @@
 import CardList from '@components/card/cardList';
-import Loader from '@components/loader';
 import { useAppSelector } from '@store/create-store';
 import { takeProductCardsSectionSelector } from '@store/products/selectors';
 import type { ProductCards } from 'types';
@@ -14,12 +13,8 @@ export const ProductCardsSection = ({
     title,
     addToCartHandler,
 }: ProductCards) => {
-    const { data: products, isLoading } = useAppSelector(
-        takeProductCardsSectionSelector(which)
-    );
-    return isLoading ? (
-        <Loader />
-    ) : (
+    const products = useAppSelector(takeProductCardsSectionSelector(which));
+    return (
         <StyledProductCardsContainer>
             <StyledProductCardsTitle fontSize={{ base: 'xl', sm: '2xl' }}>
                 {title}

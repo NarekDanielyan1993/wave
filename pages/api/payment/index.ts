@@ -13,7 +13,11 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { Session, getServerSession } from 'next-auth';
 import { createRouter } from 'next-connect';
 import { IUserService } from 'types';
-import type { IProductModelFields, IProductsQueryParams } from 'types/product';
+import type {
+    IProductModelFields,
+    IProductPaymentBody,
+    IProductsQueryParams,
+} from 'types/product';
 
 const router = createRouter<NextApiRequest, NextApiResponse>();
 
@@ -62,21 +66,30 @@ router.post(
                 res,
                 authOptions(req, res)
             )) as Session;
-            const { amount, products } = req.body;
+            const { amount, products } = req.body as IProductPaymentBody;
             const stripeService = new StripePaymentService();
             const paymentIntent = await stripeService.createPaymentIntent(
                 amount
             );
+
+            console.log(paymentIntent);
+
             const history = products.map(ca => ({
                 userId: session.user.id,
                 amount: ca.total,
                 product: ca.model,
             }));
+            const productIds = products.map(pr => pr.id);
+            const productService = new ProductService();
+            await productService.updateMultipleProducts(productIds, {
+                itemsSold: { increment: 1 },
+            });
             const user: IUserService = new UserService();
             const updatedHistory = await user.addToHistory(history);
             if (!updatedHistory) {
                 throw new InternalServerError();
             }
+
             const cartsDeleted = await user.removeCart(
                 products.map(pr => pr.id)
             );

@@ -28,7 +28,7 @@ class CloudinaryService {
         try {
             await cloudinary.uploader.destroy(publicId);
         } catch (err) {
-            throw new Error('Error happened while deleteing files.');
+            throw new Error('Error happened while deleting files.');
         }
     }
 }

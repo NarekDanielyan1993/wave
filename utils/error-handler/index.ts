@@ -267,8 +267,8 @@ export class ErrorHandler {
 }
 
 export const handleError = (error: any, res: NextApiResponse) => {
+    console.log(error);
     const err = ErrorHandler.handleError(error);
-
     res.status(
         err.status || COMMON_ERROR_TYPES.INTERNAL_SERVER_ERROR.status
     ).json(err);

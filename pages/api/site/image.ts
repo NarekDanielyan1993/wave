@@ -2,6 +2,11 @@ import { COMMON_ERROR_TYPES } from '@constant/error';
 import SiteImageService from '@lib/services/siteImage';
 import CloudinaryService from '@lib/upload';
 import { ForbiddenError, handleError } from '@utils/error-handler';
+import { validateRequest } from '@utils/helper';
+import {
+    siteImageCreateValidationSchema,
+    siteImageDeleteValidationSchema,
+} from 'common/validation/site';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
 import { ISiteDeleteImageBody, ISiteImage } from 'types/site';
@@ -13,7 +18,6 @@ router.get(
     //     resource: PERMISSION_RESOURCES.PROFILE,
     //     permissions: [PERMISSION_ACTION.READ_OWN],
     // }),
-    // validateRequest(siteCreateValidationSchema),
     async (req, res) => {
         try {
             const siteImageService = new SiteImageService();
@@ -30,7 +34,7 @@ router.post(
     //     resource: PERMISSION_RESOURCES.PROFILE,
     //     permissions: [PERMISSION_ACTION.READ_OWN],
     // }),
-    // validateRequest(siteCreateValidationSchema),
+    validateRequest(siteImageCreateValidationSchema),
     async (req, res) => {
         try {
             const site = req.body as ISiteImage;
@@ -58,7 +62,7 @@ router.delete(
     //     resource: PERMISSION_RESOURCES.PROFILE,
     //     permissions: [PERMISSION_ACTION.READ_OWN],
     // }),
-    // validateRequest(siteCreateValidationSchema),
+    validateRequest(siteImageDeleteValidationSchema),
     async (req, res) => {
         try {
             const { id, publicId } = req.body as ISiteDeleteImageBody;

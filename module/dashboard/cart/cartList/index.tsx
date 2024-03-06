@@ -1,11 +1,11 @@
-import { IProductCard } from 'types/product';
+import { IProductCart } from 'types';
 import CartItem from '../cartItem';
 
 const CartList = ({
     removeCartHandler,
     cart,
 }: {
-    cart: IProductCard[];
+    cart: IProductCart[];
     removeCartHandler: (id: string[]) => void;
 }) =>
     cart.map(c => (

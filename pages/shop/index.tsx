@@ -1,18 +1,14 @@
+import { authOptions } from '@api/auth/[...nextauth]';
 import { useAppDispatch, wrapper, type SagaStore } from '@store/create-store';
 import { getFrets } from '@store/frets/action';
-import {
-    getBrands,
-    getPaginatedProducts,
-    getProducts,
-} from '@store/products/action';
+import { getBrands, getPaginatedProducts } from '@store/products/action';
 import { getSite } from '@store/site/action';
 import { getCarts, getUser } from '@store/user/action';
 import DashboardLayout from 'module/dashboard/dashboardLayout';
 import Products from 'module/shop/products';
 import ShopSideBar from 'module/shop/shopSideBar';
 import type { GetServerSidePropsContext } from 'next';
-import type { Session } from 'next-auth';
-import { getSession } from 'next-auth/react';
+import { getServerSession, type Session } from 'next-auth';
 import { useCallback } from 'react';
 import { END } from 'redux-saga';
 import type { GetPaginatedProductsActionPayload } from 'types';
@@ -39,8 +35,12 @@ ShopPage.requiredAuth = false;
 
 export const getServerSideProps = wrapper.getServerSideProps(
     (store: SagaStore) =>
-        async ({ req }: GetServerSidePropsContext) => {
-            const session: Session | null = await getSession({ req });
+        async ({ req, res }: GetServerSidePropsContext) => {
+            const session: Session | null = await getServerSession(
+                req,
+                res,
+                authOptions(req, res)
+            );
             if (session) {
                 store.dispatch(getCarts({ id: session.user.id }));
                 store.dispatch(getUser({ email: session.user.email }));
@@ -49,8 +49,8 @@ export const getServerSideProps = wrapper.getServerSideProps(
             store.dispatch(getBrands());
             store.dispatch(getFrets({ page: 0, limit: 10 }));
             store.dispatch(
-                getProducts({
-                    limit: 4,
+                getPaginatedProducts({
+                    limit: 6,
                     page: 0,
                 })
             );

@@ -1,6 +1,7 @@
 import { EMAIL_VERIFICATION_TOKEN_EXPIRATION_DATE } from '@constant/auth';
 import prismaAdapter from '@lib/db';
 import { PrismaClient } from '@prisma/client';
+import { InternalServerError } from '@utils/error-handler';
 import {
     IVerificationToken,
     IVerificationTokenResponse,
@@ -18,14 +19,18 @@ class VerificationTokenService implements IVerificationTokenService {
         userId: string,
         token: string
     ): Promise<IVerificationTokenResponse | null> {
-        const tokenData = await this.prisma.verificationToken.create({
-            data: {
-                identifier: userId,
-                token,
-                expires: EMAIL_VERIFICATION_TOKEN_EXPIRATION_DATE,
-            },
-        });
-        return tokenData;
+        try {
+            const tokenData = await this.prisma.verificationToken.create({
+                data: {
+                    identifier: userId,
+                    token,
+                    expires: EMAIL_VERIFICATION_TOKEN_EXPIRATION_DATE,
+                },
+            });
+            return tokenData;
+        } catch (error) {
+            throw new InternalServerError();
+        }
     }
 
     async getByIdentifier(userId: string): Promise<IVerificationToken | null> {

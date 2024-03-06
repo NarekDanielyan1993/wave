@@ -19,10 +19,10 @@ import type {
 import type { ZodRawShape, z } from 'zod';
 import { config } from './config';
 
-export async function readFile(f: File) {
+export async function readFile(f: File): Promise<string> {
     return new Promise(resolve => {
         const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result);
+        reader.onloadend = () => resolve(reader.result as string);
         reader.readAsDataURL(f);
     });
 }
@@ -78,6 +78,7 @@ export const validateRequest =
             schema.parse(validationData);
             await next();
         } catch (error: any) {
+            console.log(error);
             if (
                 error.name ===
                 COMMON_ERROR_TYPES.VALIDATION_ERROR.types.zod.name

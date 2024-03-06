@@ -1,11 +1,19 @@
-import { authOptions } from '@api/auth/[...nextauth]';
 import { COMMON_ERROR_TYPES } from '@constant/error';
+import { VALIDATION_SOURCES } from '@constant/validation';
 import UserService from '@lib/services/user';
 import { InternalServerError, handleError } from '@utils/error-handler';
+import { validateRequest } from '@utils/helper';
+import {
+    profileHistoryCreateSchema,
+    profileHistoryGetSchema,
+} from 'common/validation/user';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { getServerSession, type Session } from 'next-auth';
 import { createRouter } from 'next-connect';
-import type { IUserService } from 'types';
+import type {
+    IProfileHistoryCreateBody,
+    IProfileHistoryGetQueryParams,
+    IUserService,
+} from 'types';
 
 const router = createRouter<NextApiRequest, NextApiResponse>();
 
@@ -14,20 +22,12 @@ router.post(
     //     resource: PERMISSION_RESOURCES.PROFILE,
     //     permissions: [PERMISSION_ACTION.UPDATE],
     // }),
-    // validateRequest(updateProfileSchema),
+    validateRequest(profileHistoryCreateSchema),
     async (req: NextApiRequest, res: NextApiResponse) => {
         try {
-            const session = (await getServerSession(
-                req,
-                res,
-                authOptions(req, res)
-            )) as Session;
-            const { history } = req.body;
+            const history = req.body as IProfileHistoryCreateBody[];
             const user: IUserService = new UserService();
             const updatedUser = await user.addToHistory(history);
-            if (!updatedUser) {
-                throw new InternalServerError();
-            }
             res.status(201).json(updatedUser);
         } catch (error) {
             handleError(error, res);
@@ -40,43 +40,12 @@ router.get(
     //     resource: PERMISSION_RESOURCES.PROFILE,
     //     permissions: [PERMISSION_ACTION.UPDATE],
     // }),
-    // validateRequest(updateProfileSchema),
+    validateRequest(profileHistoryGetSchema, VALIDATION_SOURCES.QUERY),
     async (req: NextApiRequest, res: NextApiResponse) => {
         try {
-            const session = (await getServerSession(
-                req,
-                res,
-                authOptions(req, res)
-            )) as Session;
-            const { userId } = req.query;
+            const { userId } = req.query as IProfileHistoryGetQueryParams;
             const user: IUserService = new UserService();
             const carts = await user.getHistory(userId);
-            if (!carts) {
-                throw new InternalServerError();
-            }
-            res.status(201).json(carts);
-        } catch (error) {
-            handleError(error, res);
-        }
-    }
-);
-
-router.delete(
-    // permissionMiddleware({
-    //     resource: PERMISSION_RESOURCES.PROFILE,
-    //     permissions: [PERMISSION_ACTION.UPDATE],
-    // }),
-    // validateRequest(updateProfileSchema),
-    async (req: NextApiRequest, res: NextApiResponse) => {
-        try {
-            const session = (await getServerSession(
-                req,
-                res,
-                authOptions(req, res)
-            )) as Session;
-            const { id } = req.query;
-            const user: IUserService = new UserService();
-            const carts = await user.removeCart(id);
             if (!carts) {
                 throw new InternalServerError();
             }

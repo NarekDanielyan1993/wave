@@ -10,6 +10,7 @@ const options = {
     mode: 'setup',
     currency: 'usd',
 } as const;
+
 const Payment = () => (
     <StyledPayment>
         <Elements options={options} stripe={stripePromise}>

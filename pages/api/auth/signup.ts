@@ -33,21 +33,11 @@ router.post(validateRequest(authValidationSchema), async (req, res) => {
             email,
             password,
         });
-        if (!newUser) {
-            throw new InternalServerError();
-        }
+
         const emailToken: string = userService.generateToken(newUser.id);
-        if (!emailToken) {
-            throw new InternalServerError();
-        }
         const verificationToken = new VerificationTokenService();
-        const storedTokenData = await verificationToken.storeVerificationToken(
-            newUser.id,
-            emailToken
-        );
-        if (!storedTokenData) {
-            throw new InternalServerError();
-        }
+        await verificationToken.storeVerificationToken(newUser.id, emailToken);
+
         const emailService = new EmailService();
         await emailService.sendVerificationRequest(newUser.email, emailToken);
 
@@ -63,7 +53,7 @@ router.post(validateRequest(authValidationSchema), async (req, res) => {
         if (!newAccount) {
             throw new InternalServerError();
         }
-        
+
         return res.redirect(AUTH_ROUTES.BASE);
     } catch (error) {
         handleError(error, res);

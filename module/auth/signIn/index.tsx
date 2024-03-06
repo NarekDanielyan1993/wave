@@ -2,6 +2,7 @@ import { Button } from '@chakra-ui/react';
 import { AUTH_ROUTES } from '@constant/route';
 import useForm from '@hooks/useForm';
 import { authValidationSchema, type AuthTypes } from 'common/validation/auth';
+import SocialSignInButtons from '../socialSignInButtons';
 import {
     StyledAuthContainer,
     StyledAuthTitle,
@@ -53,6 +54,7 @@ const SignInModule = ({
                     redirectToText="Sign Up"
                     text="Not registered yet?"
                 />
+                <SocialSignInButtons />
             </StyledAuthWrapper>
         </StyledAuthContainer>
     );

@@ -1,6 +1,8 @@
 import { COMMON_ERROR_TYPES } from '@constant/error';
 import FretService from '@lib/services/fret';
 import { ForbiddenError, handleError } from '@utils/error-handler';
+import { validateRequest } from '@utils/helper';
+import { createUpdateFretsValidationSchema } from 'common/validation/frets';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
 import { IFretBody, IFretService } from 'types/fret';
@@ -8,11 +10,7 @@ import { IFretBody, IFretService } from 'types/fret';
 const router = createRouter<NextApiRequest, NextApiResponse>();
 
 router.post(
-    // permissionMiddleware({
-    //     resource: PERMISSION_RESOURCES.PROFILE,
-    //     permissions: [PERMISSION_ACTION.READ_OWN],
-    // }),
-    // validateRequest(createProductValidationSchema),
+    validateRequest(createUpdateFretsValidationSchema),
     async (req, res) => {
         try {
             const fretsData: IFretBody = req.body;

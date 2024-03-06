@@ -1,13 +1,15 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { DateFns } from '@utils/date';
-import type { GetBrandsResponseTypes, IPaginatedDataResponse } from 'types';
-import { type IProductSortBy } from 'types/client/store/products';
+import type {
+    GetBrandsResponseTypes,
+    IPaginatedDataResponse,
+    ProductCardSectionUnion,
+} from 'types';
 import { IImageResponse } from 'types/image';
 import {
+    IPaginatedProductResponseClient,
     IProductResponseClient,
     type IPaginatedProductResponse,
-    type IProductCardsLoading,
-    type IProductCardStoreState,
     type IProductModelFields,
     type IProductResponse,
 } from 'types/product';
@@ -19,8 +21,8 @@ interface IProductsState {
     images: IImageResponse[];
     product: IProductResponse;
     paginationData: IPaginatedDataResponse<IProductModelFields, number>;
-    bestSellingProducts: IProductCardStoreState;
-    latestProducts: IProductCardStoreState;
+    bestSellingProducts: IProductResponse[];
+    latestProducts: IProductResponse[];
     brands: GetBrandsResponseTypes[];
 }
 
@@ -36,16 +38,8 @@ const initialState: IProductsState = {
         sortBy: 'createdAt',
     },
     isProductsLoading: false,
-    bestSellingProducts: {
-        isLoading: false,
-        isFetched: false,
-        data: [],
-    },
-    latestProducts: {
-        isLoading: false,
-        isFetched: false,
-        data: [],
-    },
+    bestSellingProducts: [],
+    latestProducts: [],
     brands: [],
 };
 
@@ -74,7 +68,7 @@ const productsSlice = createSlice({
             state.paginationData.page = action.payload.page;
             state.paginationData.totalItems = action.payload.totalItems;
             state.paginationData.filters = action.payload.filters;
-            state.images = action.payload.images;
+            // state.images = action.payload.images;
         },
         getProductSuccess: (
             state: IProductsState,
@@ -86,12 +80,11 @@ const productsSlice = createSlice({
             state: IProductsState,
             action: PayloadAction<GetBrandsResponseTypes[]>
         ) => {
-            console.log(action.payload);
             state.brands = action.payload;
         },
         getPaginatedProductsSuccess: (
             state: IProductsState,
-            action: PayloadAction<IPaginatedProductResponse>
+            action: PayloadAction<IPaginatedProductResponseClient>
         ) => {
             const dateFns = new DateFns();
             state.products = action.payload.products.map(item => ({
@@ -109,12 +102,6 @@ const productsSlice = createSlice({
             state.paginationData.filters = action.payload.filters;
             state.images = action.payload.images;
         },
-        isProductCardsLoading: (
-            state: IProductsState,
-            action: PayloadAction<IProductCardsLoading>
-        ) => {
-            state[action.payload.key].isLoading = action.payload.isLoading;
-        },
         isProductsLoading: (
             state: IProductsState,
             action: PayloadAction<boolean>
@@ -123,11 +110,13 @@ const productsSlice = createSlice({
         },
         getProductsSortBySuccess: (
             state: IProductsState,
-            action: PayloadAction<IProductSortBy>
+            action: PayloadAction<{
+                key: ProductCardSectionUnion;
+                data: IPaginatedProductResponseClient;
+            }>
         ) => {
-            state[action.payload.key].data = action.payload.data;
-            state[action.payload.key].isFetched = true;
-            state[action.payload.key].isLoading = true;
+            state[action.payload.key] = action.payload.data.products;
+            state.images = action.payload.data.images;
         },
         editProductSuccess: (
             state: IProductsState,
@@ -205,7 +194,6 @@ export const {
     getBrandsSuccess,
     getPaginatedProductsSuccess,
     getProductsSortBySuccess,
-    isProductCardsLoading,
     isProductsLoading,
     addProductSuccess,
     editProductSuccess,

@@ -46,7 +46,7 @@ function* getPaginatedFretsGenerator(
             }
         );
         yield put(getPaginatedFretsSuccess(data));
-    } catch (error) {
+    } catch (error: any) {
         yield put(
             showNotification({
                 message: error?.response?.data?.msg,
@@ -67,7 +67,7 @@ function* editFretsGenerator(action: PayloadAction<IEditFretsPayload>) {
             frets
         );
         yield put(editFretsSuccess(data));
-    } catch (error) {
+    } catch (error: any) {
         yield put(
             showNotification({
                 message: error?.response?.data?.msg,
@@ -94,7 +94,7 @@ function* addFretsGenerator(action: PayloadAction<IAddProductPayload>) {
                 page: action.payload.paginationData.page,
             })
         );
-    } catch (error) {
+    } catch (error: any) {
         yield put(
             showNotification({
                 message: error?.response?.data?.msg,
@@ -124,7 +124,7 @@ function* deleteFretsGenerator(action: PayloadAction<IDeleteFretsPayload>) {
                 page: 0,
             })
         );
-    } catch (error) {
+    } catch (error: any) {
         yield put(
             showNotification({
                 message: error?.response?.data?.msg,

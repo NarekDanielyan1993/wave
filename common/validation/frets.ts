@@ -1,7 +1,15 @@
 import { DEFAULT_VALIDATION_ERRORS } from '@constant/error';
 import { z } from 'zod';
 
-export const deleteProductValidationSchema = z.object({
+export const createUpdateFretsValidationSchema = z.object({
+    frets: z.string(),
+});
+
+export const getProductValidationSchema = z.object({
+    id: z.string(),
+});
+
+export const deleteFretsValidationSchema = z.object({
     productId: z.string(),
 });
 

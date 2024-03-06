@@ -6,6 +6,7 @@ import GridOnIcon from '@components/icons/gridOnIcon';
 import HamburgerIcon from '@components/icons/hamburgerIcon';
 import ShoppingCartIcon from '@components/icons/shoppingCart';
 import TruckIcon from '@components/icons/truckIcon';
+import GoogleIcon from 'public/google.svg';
 import { IconButtonTypes, IconsTypes } from 'types';
 
 export const IconButton = ({
@@ -21,6 +22,7 @@ export const IconButton = ({
         gridOn: GridOnIcon,
         truck: TruckIcon,
         check: CheckIcon,
+        google: GoogleIcon,
     };
 
     const Icon = icons[iconName];

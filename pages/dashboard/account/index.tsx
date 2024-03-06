@@ -1,3 +1,4 @@
+import { authOptions } from '@api/auth/[...nextauth]';
 import Sidebar from '@components/sideBar';
 import { AUTH_ROUTES } from '@constant/route';
 import { SagaStore, wrapper } from '@store/create-store';
@@ -7,8 +8,7 @@ import { getUserPermissions } from '@store/userPermission/action';
 import Account from 'module/dashboard/account';
 import DashboardLayout from 'module/dashboard/dashboardLayout';
 import { GetServerSidePropsContext } from 'next';
-import { Session } from 'next-auth';
-import { getSession } from 'next-auth/react';
+import { Session, getServerSession } from 'next-auth';
 import { END } from 'redux-saga';
 import { CustomNextPage } from 'types';
 import PageTitle from '../../../module/dashboard/dashboardLayout/pageTitle';
@@ -24,8 +24,12 @@ AccountPage.requiredAuth = true;
 
 export const getServerSideProps = wrapper.getServerSideProps(
     (store: SagaStore) =>
-        async ({ req }: GetServerSidePropsContext) => {
-            const session: Session | null = await getSession({ req });
+        async ({ req, res }: GetServerSidePropsContext) => {
+            const session: Session | null = await getServerSession(
+                req,
+                res,
+                authOptions(req, res)
+            );
             if (!session) {
                 return {
                     redirect: {

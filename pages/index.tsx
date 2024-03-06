@@ -1,18 +1,17 @@
+import { authOptions } from '@api/auth/[...nextauth]';
 import { ProductCardsSection } from '@components/productCards';
 import SlimPromotion from '@components/promotion/slimPromotion';
 import SliderComponent from '@components/slider';
-import { PRODUCT_MODEL_FIELDS } from '@constant/db';
 import { PRODUCT_CARDS_QUERY_DEFAULT_PARAMS } from '@constant/default';
 import { SagaStore, useAppDispatch, wrapper } from '@store/create-store';
 import {
-    getPaginatedProducts,
     getProductsByCreatedDate,
     getProductsBySold,
 } from '@store/products/action';
 import { getSite, getSiteImages } from '@store/site/action';
-import { addToCart, getUser } from '@store/user/action';
+import { addToCart, getCarts, getUser } from '@store/user/action';
 import { GetServerSidePropsContext } from 'next';
-import { getSession } from 'next-auth/react';
+import { getServerSession } from 'next-auth';
 import { useCallback } from 'react';
 import { END } from 'redux-saga';
 import { AddToCartPayloadType } from 'types';
@@ -29,13 +28,13 @@ const Home = () => {
             <ProductCardsSection
                 addToCartHandler={addToCartHandler}
                 title="latest guitars on the shop"
-                which="bestSellingProducts"
+                which="latestProducts"
             />
             <SlimPromotion />
             <ProductCardsSection
                 addToCartHandler={addToCartHandler}
-                title="latest guitars on the shop"
-                which="latestProducts"
+                title="Bestselling guitars on the shop"
+                which="bestSellingProducts"
             />
         </>
     );
@@ -43,23 +42,24 @@ const Home = () => {
 
 export const getServerSideProps = wrapper.getServerSideProps(
     (store: SagaStore) => async (ctx: GetServerSidePropsContext) => {
-        const session = await getSession({ req: ctx.req });
+        const session = await getServerSession(
+            ctx.req,
+            ctx.res,
+            authOptions(ctx.req, ctx.res)
+        );
+        if (session) {
+            store.dispatch(getUser({ email: session?.user.email }));
+            store.dispatch(getCarts({ id: session.user.id }));
+        }
         store.dispatch(
             getProductsBySold({
                 ...PRODUCT_CARDS_QUERY_DEFAULT_PARAMS,
-                sortBy: PRODUCT_MODEL_FIELDS.ITEMSSOLD,
+                sortBy: 'itemsSold',
             })
         );
-        store.dispatch(getUser({ email: session?.user.email }));
         store.dispatch(
             getProductsByCreatedDate({
                 ...PRODUCT_CARDS_QUERY_DEFAULT_PARAMS,
-            })
-        );
-        store.dispatch(
-            getPaginatedProducts({
-                limit: 10,
-                page: 0,
             })
         );
         store.dispatch(getSite());

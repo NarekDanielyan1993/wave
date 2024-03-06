@@ -4,7 +4,6 @@ import { CANCEL } from 'redux-saga';
 export const apiRequest = axios.create({
     baseURL: config.NEXT_PUBLIC_BASE_URL,
     timeout: 30000,
-    withCredentials: true,
 });
 
 export const request = axios.create({

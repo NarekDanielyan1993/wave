@@ -1,16 +1,20 @@
 import { Box, Button } from '@chakra-ui/react';
 
-const NumberInput = ({
+const CartItemQuantity = ({
     onChange,
     value,
     width,
 }: {
-    value: any;
+    value: number;
     width?: string;
     onChange: (type: '+' | '-') => void;
 }) => (
     <Box alignItems="flex-start" display="flex" gap={2} w={width}>
-        <Button onClick={() => onChange('+')} variant="primary">
+        <Button
+            isDisabled={value === 100}
+            onClick={() => onChange('+')}
+            variant="primary"
+        >
             +
         </Button>
         <Box
@@ -32,4 +36,4 @@ const NumberInput = ({
     </Box>
 );
 
-export default NumberInput;
+export default CartItemQuantity;

@@ -1,12 +1,17 @@
-import { Box, Button, Text } from '@chakra-ui/react';
-import NumberInput from '@components/field/numberInput';
+import { Box, Button, Flex } from '@chakra-ui/react';
 import ImageComponent from '@components/image';
 import { useAppDispatch, useAppSelector } from '@store/create-store';
 import { productsSelector } from '@store/products/selectors';
 import { calculateTotal } from '@store/user/reducer';
 import { withCurrency } from '@utils/helper';
 import { IProductCart } from 'types';
-import { StyledCartWrapper } from './style';
+import CartItemQuantity from './cartItemQuantity';
+import CartItemText from './cartItemText';
+import {
+    StyledCartItemContent,
+    StyledCartItemImage,
+    StyledCartWrapper,
+} from './style';
 
 const CartItem = ({
     cart,
@@ -18,55 +23,37 @@ const CartItem = ({
     const { images } = useAppSelector(productsSelector);
     const image = images.find(img => img.productId === cart.id);
     const dispatch = useAppDispatch();
-    const calculateTotalHandler = (type: '+' | '-' | 'val', value: number) => {
-        dispatch(calculateTotal({ productId: cart.id, type: type, value }));
+    const calculateTotalHandler = (type: '+' | '-') => {
+        dispatch(calculateTotal({ productId: cart.id, type }));
     };
     return (
         <StyledCartWrapper>
-            <Box flexDir={{ base: 'column', md: 'row' }} display="flex" gap={4}>
-                <Box
-                    alignSelf={'center'}
-                    pos="relative"
-                    height="10rem"
-                    w="10rem"
-                >
+            <Box display="flex" flexDir={{ base: 'column', md: 'row' }} gap={4}>
+                <StyledCartItemImage>
                     <ImageComponent layout="fill" src={image?.url} />
-                </Box>
-                <Box
-                    display={'flex'}
-                    flexDir={{ base: 'column', md: 'row' }}
-                    flexGrow={1}
-                    gap={2}
-                    justifyContent="space-between"
-                >
+                </StyledCartItemImage>
+                <StyledCartItemContent flexDir={{ base: 'column', md: 'row' }}>
                     <Box>
-                        <Text fontWeight="bold">Product name</Text>
-                        <Text>{cart.model}</Text>
-                        <Box my={4}>
-                            <Text fontWeight="bold">Price</Text>
-                            <Text>{withCurrency(cart.price)}</Text>
-                        </Box>
+                        <CartItemText text="Model">{cart.model}</CartItemText>
+                        <CartItemText text="Price">
+                            {withCurrency(cart.price)}
+                        </CartItemText>
                     </Box>
-                    <Box
-                        width={'16rem'}
-                        overflow="hidden"
-                        display={'flex'}
-                        gap={3}
-                    >
-                        <NumberInput
+                    <Flex gap={3}>
+                        <CartItemQuantity
                             onChange={calculateTotalHandler}
                             value={cart.quantity}
-                            width="10rem"
                         />
-                        <Box overflow={'hidden'}>
-                            <Text fontWeight="bold">Total</Text>
-                            <Text isTruncated>{withCurrency(cart.total)}</Text>
+                        <Box>
+                            <CartItemText text="Total">
+                                {withCurrency(cart.total)}
+                            </CartItemText>
                         </Box>
-                    </Box>
-                </Box>
+                    </Flex>
+                </StyledCartItemContent>
             </Box>
             <Button
-                marginLeft={'auto'}
+                marginLeft="auto"
                 onClick={() => removeCartHandler([cart.id])}
                 variant="delete"
             >

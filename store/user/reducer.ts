@@ -103,8 +103,7 @@ const userSlice = createSlice({
             state: IUsersState,
             action: PayloadAction<{
                 productId: string;
-                value: number;
-                type: '+' | '-' | 'val';
+                type: '+' | '-';
             }>
         ) => {
             state.cart.products = state.cart.products.map(pr => {
@@ -113,23 +112,13 @@ const userSlice = createSlice({
                         pr.total += pr?.price;
                         pr.quantity += 1;
                         state.cart.subtotal += pr?.price;
+                        state.cart.quantity += 1;
                     }
                     if (pr.id && action.payload.type === '-') {
                         pr.total -= pr.price;
                         pr.quantity -= 1;
                         state.cart.subtotal -= pr.price;
-                    }
-                    if (pr.id && action.payload.type === 'val') {
-                        state.cart.subtotal =
-                            state.cart.subtotal -
-                            pr.quantity * pr.price +
-                            action.payload.value * pr.price;
-                        state.cart.quantity =
-                            state.cart.quantity -
-                            pr.quantity +
-                            action.payload.value;
-                        pr.total = action.payload.value * pr.price;
-                        pr.quantity = action.payload.value;
+                        state.cart.quantity -= 1;
                     }
                     return pr;
                 }

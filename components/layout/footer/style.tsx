@@ -13,7 +13,7 @@ export const StyledFooterContainer = chakra('footer', {
 export const StyledFooterWrapper = chakra('div', {
     baseStyle: {
         width: '100%',
-        maxWidth: '4xl',
+        maxWidth: '6xl',
         margin: '0 auto',
     },
 });
@@ -44,7 +44,7 @@ export const StyledFooterLeft = chakra('div', {
     baseStyle: {
         display: 'flex',
         flexDirection: 'column',
-        maxW: '20rem',
+        maxW: '30rem',
         w: 'full',
         flexShrink: 0,
     },

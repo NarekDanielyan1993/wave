@@ -5,9 +5,9 @@ import { useRouter } from 'next/router';
 import type { NavLinkTypes } from 'types';
 
 const useGenerateNavLinks = () => {
-    const { status, data: session } = useSession();
+    const { status } = useSession();
     const router = useRouter();
-    const links = [
+    let links = [
         {
             text: 'Home',
             url: '/',
@@ -23,7 +23,7 @@ const useGenerateNavLinks = () => {
             url: AUTH_ROUTES.BASE,
             type: 'link',
         },
-    ];
+    ] as NavLinkTypes[];
     const navLinksUpperWithSignIn: NavLinkTypes[] = [
         {
             text: 'MY Cart',
@@ -32,14 +32,13 @@ const useGenerateNavLinks = () => {
         },
         {
             text: 'MY Account',
-            url: '/dashboard/account',
+            url: '/dashboard/profile',
             type: 'link',
         },
         {
             text: 'LOG OUT',
             url: '/',
             type: 'button',
-            renderAs: 'text',
             click: () =>
                 signOut({ redirect: false }).then(() => {
                     router.push(AUTH_ROUTES.BASE);
@@ -64,14 +63,13 @@ const useGenerateNavLinks = () => {
             text: 'Log In',
             url: AUTH_ROUTES.BASE,
             type: 'link',
-            renderAs: 'text',
         },
     ];
 
     let navLinksUpper: NavLinkTypes[] = signOutNavLinksUpper;
     if (status === SESSION_STATUS.AUTHENTICATED) {
         navLinksUpper = navLinksUpperWithSignIn;
-        links.unshift(
+        links = [
             {
                 text: 'MY Cart',
                 url: '/dashboard/cart',
@@ -81,10 +79,10 @@ const useGenerateNavLinks = () => {
                 text: 'MY Account',
                 url: '/dashboard/account',
                 type: 'link',
-            }
-        );
-        links.pop();
-        links.push({
+            },
+            ...links,
+        ];
+        links.splice(links.length - 1, 1, {
             text: 'LOG OUT',
             url: '/',
             type: 'button',

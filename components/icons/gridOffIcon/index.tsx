@@ -3,9 +3,9 @@ import * as React from 'react';
 export default function GridOffIcon(props: React.SVGProps<SVGSVGElement>) {
     return (
         <svg
-            viewBox="0 0 24 24"
             fill="black"
             height="1em"
+            viewBox="0 0 24 24"
             width="1em"
             {...props}
         >

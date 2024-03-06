@@ -17,7 +17,6 @@ const PaymentForm = () => {
     const { cart } = useAppSelector(usersSelector);
     const [errorMessage, setErrorMessage] = useState<string>('');
     const [isLoading, setIsLoading] = useState(false);
-    // const dispatch = useDispatch();
     const router = useRouter();
 
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -27,7 +26,6 @@ const PaymentForm = () => {
             if (elements == null) {
                 return;
             }
-
             const { error: submitError } = await elements.submit();
             if (submitError?.message) {
                 setErrorMessage(submitError.message);
@@ -42,7 +40,7 @@ const PaymentForm = () => {
                     amount: cart.subtotal,
                 },
             });
-            router.push('/shop');
+            // router.push('/shop');
         } catch (error) {
             console.log(error);
         } finally {
@@ -51,7 +49,7 @@ const PaymentForm = () => {
     };
     return (
         <form onSubmit={onSubmit}>
-            <PaymentElement />
+            <PaymentElement options={{ wallets: { applePay: 'never' } }} />
             <Button
                 isDisabled={cart.products.length < 1 || !stripe || !elements}
                 isLoading={isLoading}

@@ -1,4 +1,6 @@
 import { SESSION_PROVIDERS } from '@constant/auth';
+import { Awaitable } from 'next-auth';
+import { AdapterUser } from 'next-auth/adapters';
 
 export interface Account {
     userId: string;
@@ -16,4 +18,8 @@ export interface Account {
 
 export interface IAccountService {
     createAccount: (account: Account) => Promise<void>;
+    getUserByAccount({
+        provider,
+        providerAccountId,
+    }: Account): Awaitable<AdapterUser | null>;
 }

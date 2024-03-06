@@ -2,8 +2,11 @@ import { COMMON_ERROR_TYPES } from '@constant/error';
 import ImageService from '@lib/services/image';
 import CloudinaryService from '@lib/upload';
 import { handleError } from '@utils/error-handler';
+import { validateRequest } from '@utils/helper';
+import { deleteProductImageValidationSchema } from 'common/validation/product';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
+import { ProductImageDeleteQueryParamsTypes } from 'types/product';
 
 const router = createRouter<NextApiRequest, NextApiResponse>();
 
@@ -12,16 +15,17 @@ router.delete(
     //     resource: PERMISSION_RESOURCES.PROFILE,
     //     permissions: [PERMISSION_ACTION.READ_OWN],
     // }),
-    // validateRequest(createProductValidationSchema),
+    validateRequest(deleteProductImageValidationSchema),
     async (req, res) => {
         try {
-            const { id, publicId } = req.query;
+            const { id, publicId } =
+                req.query as ProductImageDeleteQueryParamsTypes;
             let image;
             if (id) {
                 const imageService = new ImageService();
                 image = await imageService.deleteImage(id);
-                const coudinaryService = new CloudinaryService();
-                await coudinaryService.deleteFile(publicId);
+                const cloudinaryService = new CloudinaryService();
+                await cloudinaryService.deleteFile(publicId);
             }
             res.status(201).json(image);
         } catch (error) {

@@ -1,13 +1,21 @@
+import { IProductResponse } from 'types/product';
+import { AddToCartPayloadType } from '../store';
+
 export type CardItemTypes = {
     img: string;
     title: string;
     textPrimary: string;
     textSecondary: string;
-    desc: string
+    desc: string;
 };
 
 export type cardViewTypesUnion = 'home' | 'shop';
 
 export type CardListTypes = {
-    cards: CardItemTypes[] 
+    cards: CardItemTypes[];
 };
+
+export interface IProductCard {
+    product: IProductResponse;
+    addToCartHandler: (data: AddToCartPayloadType) => void;
+}

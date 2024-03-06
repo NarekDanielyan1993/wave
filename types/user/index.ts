@@ -90,6 +90,33 @@ export interface IHistory {
 export type UserGetQueryParams = {
     email: string;
 };
+
+export type CartCreateBody = {
+    userId: string;
+    productId: string;
+};
+
+export type CartDeleteBody = {
+    ids: string[];
+};
+
+export type ProfileEmailUpdateBody = {
+    email: string;
+};
+
+export interface IProfileHistoryCreateBody {
+    userId: string;
+    product: string;
+    amount: number;
+}
+
+export type IProfileHistoryGetQueryParams = {
+    userId: string;
+};
+
+export type ProfileImageDeleteBody = {
+    publicId: string;
+};
 export interface IUserResponseWIthPassword extends IUserResponse {
     password: string;
 }
