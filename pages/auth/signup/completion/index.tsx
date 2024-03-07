@@ -1,4 +1,5 @@
 import DefaultLayout from '@components/layout/defaultLayout';
+import { AUTH_ROUTES } from '@constant/route';
 import { config } from '@utils/config';
 import bcrypt from 'bcryptjs';
 import Cookies from 'cookies';
@@ -14,13 +15,13 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     const authToken = cookies.get('authToken') || '';
     try {
         const isTokenValid = await bcrypt.compare(
-            config.NEXTAUTH_SECRET,
+            config.NEXTAUTH_SECRET as string,
             authToken
         );
         if (!isTokenValid) {
             return {
                 redirect: {
-                    destination: '/',
+                    destination: AUTH_ROUTES.BASE,
                     permanent: false,
                 },
             };
@@ -32,7 +33,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     } catch (error) {
         return {
             redirect: {
-                destination: '/',
+                destination: AUTH_ROUTES.BASE,
                 permanent: false,
             },
         };

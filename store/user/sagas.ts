@@ -1,4 +1,5 @@
 import { USER_API } from '@constant/api';
+import { NOTIFICATION_MESSAGES } from '@constant/notification';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { showNotification } from '@store/notification/reducer';
 import { apiRequest } from '@utils/apiRequest';
@@ -39,17 +40,16 @@ import {
     isUserProfileImageDeleteLoading,
     isUserProfileImageLoading,
     removeCartSuccess,
-    updateUserEmailSuccess,
     updateUserSuccess,
 } from './reducer';
 
 function* getUserProfileGenerator(
     action: PayloadAction<GetUserProfilePayloadType>
 ) {
-    const { email } = action.payload;
+    const { id } = action.payload;
     try {
         const { data } = yield call(apiRequest.get, USER_API.GET_USER, {
-            params: { email },
+            params: { id },
         });
         yield put(getUserSuccess(data));
     } catch (error: any) {
@@ -152,7 +152,7 @@ function* removeCartGenerator(action: PayloadAction<RemoveCartPayloadType>) {
         const { data } = yield call(apiRequest.delete, USER_API.REMOVE_CART, {
             data: { ids: id },
         });
-        yield put(removeCartSuccess({ quantity: data, id }));
+        yield put(removeCartSuccess({ quantity: data.count, id }));
     } catch (error: any) {
         yield put(
             showNotification({
@@ -211,7 +211,12 @@ function* updateUserEmailGenerator(
                 email,
             }
         );
-        yield put(updateUserEmailSuccess(data));
+        yield put(
+            showNotification({
+                message: NOTIFICATION_MESSAGES.SUCCESS.EMAIL_CHANGE,
+                type: 'success',
+            })
+        );
     } catch (error: any) {
         yield put(
             showNotification({

@@ -38,8 +38,8 @@ model User {
   url           String?
   publicId      String?
   password      String
-  firstname     String?    @default("")
-  lastname      String?    @default("")
+  firstName     String    @default("")
+  lastName      String    @default("")
   emailVerified DateTime? @map("email_verified")
   verified      Boolean   @default(false)
   history       String[]  @default([])

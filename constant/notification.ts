@@ -11,6 +11,8 @@ export const NOTIFICATION_TYPES: NotificationMessageTypesUnion =
 
 export const NOTIFICATION_MESSAGES = {
     SUCCESS: {
+        EMAIL_CHANGE:
+            'A confirmation link has been sent to your email. Please check your inbox to change your email.',
         SIGN_UP:
             'A verification link has been sent to your email. Please check your inbox to verify your account.',
     },

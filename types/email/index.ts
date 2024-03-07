@@ -13,7 +13,7 @@ export interface IEmailService {
 
 export interface IMailGenOptions {
     theme?: string;
-    bodyName?: string;
+    subject?: string;
     productOptions?: IProductOptions;
     actionInstructions?: string;
     buttonOptions: IMailGenButtonOptions;

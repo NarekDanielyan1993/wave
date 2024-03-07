@@ -1,6 +1,6 @@
 import Link from '@components/button/link';
-import ImageComponent from '@components/image';
 import { AUTH_ROUTES } from '@constant/route';
+import Image from 'next/image';
 import {
     StyledSignUpCompletionContainer,
     StyledSignUpCompletionHeader,
@@ -11,7 +11,7 @@ import {
 const CompletionSignUp = () => (
     <StyledSignUpCompletionContainer>
         <StyledSignUpCompletionWrapper>
-            <ImageComponent
+            <Image
                 alt="signUp"
                 height={260}
                 src="/images/signUpCompletion.svg"

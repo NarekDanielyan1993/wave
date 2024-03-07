@@ -11,16 +11,20 @@ import {
     handleError,
 } from '@utils/error-handler';
 import { validateRequest } from '@utils/helper';
-import { AuthTypes, authValidationSchema } from 'common/validation/auth';
+import {
+    AuthSignUpTypes,
+    authSignUpValidationSchema,
+} from 'common/validation/auth';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
 import { IUserResponse } from 'types';
 
 const router = createRouter<NextApiRequest, NextApiResponse>();
 
-router.post(validateRequest(authValidationSchema), async (req, res) => {
+router.post(validateRequest(authSignUpValidationSchema), async (req, res) => {
     try {
-        const { email, password }: AuthTypes = req.body;
+        const { email, password, firstName, lastName }: AuthSignUpTypes =
+            req.body;
         const userService = new UserService();
         const isEmailExists = await userService.getByEmail(email);
         if (isEmailExists) {
@@ -32,6 +36,8 @@ router.post(validateRequest(authValidationSchema), async (req, res) => {
         const newUser: IUserResponse = await userService.createUser({
             email,
             password,
+            firstName,
+            lastName,
         });
 
         const emailToken: string = userService.generateToken(newUser.id);

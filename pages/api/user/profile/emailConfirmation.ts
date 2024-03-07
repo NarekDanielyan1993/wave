@@ -45,30 +45,44 @@ router.get(async (req, res) => {
         );
 
         if (!isValid) {
+            await verificationTokenService.removeVerificationToken(
+                verificationTokenData.id
+            );
             throw new InternalServerError();
         }
 
-        const isExpired =
-            verificationTokenService.isEmailVerificationTokenExpired(
-                decodedToken.exp,
-                verificationTokenData.expires
-            );
+        const isExpired = verificationTokenService.isEmailChangeTokenExpired(
+            verificationTokenData.expires
+        );
 
         if (isExpired) {
+            await verificationTokenService.removeVerificationToken(
+                verificationTokenData.id
+            );
             throw new InternalServerError('Token is expired.');
         }
+        console.log(decodedToken);
         const userService = new UserService();
-        await userService.verifyEmail(decodedToken.id);
+        await userService.updateById(decodedToken.id, {
+            email: decodedToken.email,
+        });
 
-        //TODO REMOVE VERIFICATION TOKEN FROM TABLE
-        // await verificationTokenService.removeVerificationToken(decodedToken.id);
+        await verificationTokenService.removeVerificationToken(
+            verificationTokenData.id
+        );
+
         const hashToken = await generateBcryptToken(
             config.NEXTAUTH_SECRET as string
         );
+
         createCookie(req, res, 'authToken', hashToken, {
             expires: expiresInMinute,
         });
-        return res.redirect(AUTH_ROUTES.SIGN_UP_COMPLETION);
+        res.setHeader('Set-Cookie', [
+            'next-auth.session-token=deleted; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT',
+            '__Secure-next-auth.session-token=deleted; path=/; Secure; expires=Thu, 01 Jan 1970 00:00:00 GMT',
+        ]);
+        return res.redirect(AUTH_ROUTES.BASE);
     } catch (error) {
         handleError(error, res);
     }

@@ -4,6 +4,7 @@ export const StyledBusinessInfoContent = chakra('div', {
     baseStyle: {
         display: 'flex',
         flexWrap: 'wrap',
+        gap: '1rem',
         justifyContent: 'space-between',
     },
 });

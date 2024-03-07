@@ -11,9 +11,9 @@ export const MAIL_GEN_DEFAULT_PARAMETERS = {
     },
     PRODUCT_PARAMETERS: {
         name: 'Wave company',
-        link: config.BASE_URL,
+        link: config.NEXT_PUBLIC_BASE_URL,
     },
-    BODY_NAME: generateEmailVerificationDefaultSubject(),
+    SUBJECT: generateEmailVerificationDefaultSubject(),
 };
 
 export const USER_PERMISSIONS_DEFAULT: UserPermissionActionsTypes = {

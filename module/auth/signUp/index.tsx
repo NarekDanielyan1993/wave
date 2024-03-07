@@ -1,7 +1,10 @@
 import { Button } from '@chakra-ui/react';
 import { AUTH_ROUTES } from '@constant/route';
 import useForm from '@hooks/useForm';
-import { AuthTypes, authValidationSchema } from 'common/validation/auth';
+import {
+    AuthSignUpTypes,
+    authSignUpValidationSchema,
+} from 'common/validation/auth';
 import {
     StyledAuthContainer,
     StyledAuthTitle,
@@ -13,23 +16,40 @@ const SignUpModule = ({
     onSubmit,
     isLoading,
 }: {
-    onSubmit: (data: AuthTypes) => void;
+    onSubmit: (data: AuthSignUpTypes) => void;
     isLoading: boolean;
 }) => {
-    const authDefaultData: AuthTypes = {
+    const authDefaultData: AuthSignUpTypes = {
         email: '',
         password: '',
+        firstName: '',
+        lastName: '',
     };
 
-    const { handleSubmit, FormField } = useForm<AuthTypes>({
-        validationSchema: authValidationSchema,
+    const { handleSubmit, FormField, reset } = useForm<AuthSignUpTypes>({
+        validationSchema: authSignUpValidationSchema,
         defaultValues: authDefaultData,
     });
 
+    const formSubmitHandler = (data: AuthSignUpTypes) => {
+        onSubmit(data);
+        reset();
+    };
+
     return (
         <StyledAuthContainer>
-            <StyledAuthWrapper onSubmit={handleSubmit(onSubmit)}>
+            <StyledAuthWrapper onSubmit={handleSubmit(formSubmitHandler)}>
                 <StyledAuthTitle as="h3">sign up</StyledAuthTitle>
+                {FormField({
+                    disabled: isLoading,
+                    name: 'firstName',
+                    label: 'First Name',
+                })}
+                {FormField({
+                    disabled: isLoading,
+                    name: 'lastName',
+                    label: 'Last Name',
+                })}
                 {FormField({
                     disabled: isLoading,
                     name: 'email',

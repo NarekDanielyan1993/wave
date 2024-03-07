@@ -1,33 +1,33 @@
 import { Button } from '@chakra-ui/react';
 import useForm from '@hooks/useForm';
-import { useAppDispatch, useAppSelector } from '@store/create-store';
-import { updateUserEmail } from '@store/user/action';
-import { usersSelector } from '@store/user/selectors';
 import {
     UserProfileEmailValidationTypes,
     userProfileEmailValidationSchema,
 } from 'common/validation/user';
+import { IUser } from 'types';
 
-// eslint-disable-next-line react/function-component-definition
-function EmailForm() {
-    const {
-        user: { data: userData },
-        isEmailLoading,
-    } = useAppSelector(usersSelector);
-    const dispatch = useAppDispatch();
-
+const EmailForm = ({
+    isEmailLoading,
+    userData,
+    updateUserEmail,
+}: {
+    updateUserEmail: (data: UserProfileEmailValidationTypes) => void;
+    userData: IUser;
+    isEmailLoading: boolean;
+}) => {
     const defaultValues: UserProfileEmailValidationTypes = {
         email: userData?.email || '',
     };
-    
+
     const { handleSubmit, FormField, formState } =
         useForm<UserProfileEmailValidationTypes>({
             validationSchema: userProfileEmailValidationSchema,
             defaultValues,
         });
 
-    const formSubmitHandler = (data: UserProfileEmailValidationTypes) =>
-        dispatch(updateUserEmail(data));
+    const formSubmitHandler = (data: UserProfileEmailValidationTypes) => {
+        updateUserEmail(data);
+    };
 
     return (
         <form onSubmit={handleSubmit(formSubmitHandler)}>
@@ -45,6 +45,6 @@ function EmailForm() {
             </Button>
         </form>
     );
-}
+};
 
 export default EmailForm;

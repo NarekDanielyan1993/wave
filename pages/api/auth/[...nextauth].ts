@@ -3,12 +3,14 @@ import { AUTH_SESSION_OPTIONS_SERVER } from '@constant/auth';
 import { USER_ERROR_TYPES } from '@constant/error';
 import prismaAdapter from '@lib/db';
 import UserService from '@lib/services/user';
-import { ForbiddenError, ValidationError } from '@utils/error-handler';
-import { authValidationSchema, type AuthTypes } from 'common/validation/auth';
+import {
+    AuthSignInTypes,
+    authSignInValidationSchema,
+} from 'common/validation/auth';
 import { config } from 'lib';
-import type { NextApiRequest, NextApiResponse } from 'next';
-import type { AuthOptions, Session, User } from 'next-auth';
-import NextAuth from 'next-auth';
+import { NextApiRequest, NextApiResponse } from 'next';
+import type { Session, User } from 'next-auth';
+import NextAuth, { getServerSession } from 'next-auth';
 import type { Adapter } from 'next-auth/adapters';
 import { type JWT } from 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
@@ -18,10 +20,7 @@ import { validateAuthData } from './auth.validator';
 
 export const adapter = PrismaAdapter(prismaAdapter) as Adapter;
 
-export const authOptions = (
-    req: NextApiRequest,
-    res: NextApiResponse
-): AuthOptions => ({
+export const authOptions = {
     session: {
         ...AUTH_SESSION_OPTIONS_SERVER,
     },
@@ -38,74 +37,35 @@ export const authOptions = (
             console.log({ type: 'inside debug logger', code, metadata });
         },
     },
-    // jwt: {
-    //     encode: async ({ token, secret, maxAge }) => {
-    //         if (
-    //             req.query &&
-    //             req.query.nextauth &&
-    //             req.query.nextauth.includes('callback') &&
-    //             req.query.nextauth.includes('credentials') &&
-    //             req.method === 'POST'
-    //         ) {
-    //             const cookies = new Cookies(req, res);
-    //             const cookie = cookies.get('next-auth.session-token');
-
-    //             if (cookie) {
-    //                 return cookie;
-    //             }
-    //             return '';
-    //         }
-    //         return encode({ token, secret, maxAge });
-    //     },
-    //     decode: async ({ token, secret }) => {
-    //         if (
-    //             req.query &&
-    //             req.query.nextauth &&
-    //             req.query.nextauth.includes('callback') &&
-    //             req.query.nextauth.includes('credentials') &&
-    //             req.method === 'POST'
-    //         ) {
-    //             return null;
-    //         }
-
-    //         return decode({ token, secret });
-    //     },
-    // },
     adapter,
     providers: [
         CredentialsProvider({
             name: 'Credentials',
             credentials: {},
-            async authorize({ email, password }: AuthTypes) {
-                const isError = await validateAuthData(authValidationSchema, {
-                    email,
-                    password,
-                });
+            async authorize({ email, password }: AuthSignInTypes) {
+                const isError = await validateAuthData(
+                    authSignInValidationSchema,
+                    {
+                        email,
+                        password,
+                    }
+                );
 
                 if (isError) {
-                    throw new ForbiddenError(
-                        USER_ERROR_TYPES.INVALID_CREDENTIALS.msg
-                    );
+                    throw new Error(USER_ERROR_TYPES.INVALID_CREDENTIALS.msg);
                 }
-
                 const userService = new UserService();
                 const currentUser: IUserResponseWIthPassword | null =
                     await userService.getAllData(email);
                 if (!currentUser) {
-                    throw new ForbiddenError(
-                        USER_ERROR_TYPES.USER_NOT_FOUND.msg,
-                        USER_ERROR_TYPES.USER_NOT_FOUND.status
-                    );
+                    throw new Error(USER_ERROR_TYPES.USER_NOT_FOUND.msg);
                 }
                 const isValid = await userService.verifyPassword(
                     currentUser.password,
                     password
                 );
                 if (!isValid) {
-                    throw new ValidationError(
-                        USER_ERROR_TYPES.WRONG_PASSWORD.msg,
-                        USER_ERROR_TYPES.USER_NOT_FOUND.status
-                    );
+                    throw new Error(USER_ERROR_TYPES.WRONG_PASSWORD.msg);
                 }
                 const userAuth: User = {
                     id: currentUser.id,
@@ -128,40 +88,15 @@ export const authOptions = (
         }),
     ],
     callbacks: {
-        async signIn({ user, account, profile, email, credentials }) {
-            // if (
-            //     req.query &&
-            //     req.query.nextauth &&
-            //     req.query.nextauth.includes('callback') &&
-            //     req.query.nextauth.includes('credentials') &&
-            //     req.method === 'POST'
-            // ) {
-            //     if (user) {
-            //         const sessionToken = await encode({
-            //             token: {
-            //                 user: {
-            //                     email: user.email,
-            //                     id: user.id,
-            //                     role: user.role,
-            //                 } as User,
-            //             } as JWT,
-            //             secret: config.NEXTAUTH_SECRET,
-            //         });
-            //         const sessionExpiry = createExpiryFromDate(
-            //             AUTH_SESSION_OPTIONS_SERVER.maxAge
-            //         );
-            //         await adapter.createSession({
-            //             sessionToken,
-            //             userId: user.id,
-            //             expires: sessionExpiry,
-            //         });
-            //         const cookies = new Cookies(req, res);
-            //         cookies.set('next-auth.session-token', sessionToken, {
-            //             expires: sessionExpiry,
-            //         });
-            //     }
-            //     return true;
-            // }
+        async signIn({
+            user,
+            account,
+            profile,
+        }: {
+            user: any;
+            account: any;
+            profile?: any;
+        }) {
             if (account?.provider === 'google' && profile) {
                 const userService = new UserService();
                 let userData: IUserResponse | null =
@@ -170,7 +105,9 @@ export const authOptions = (
                     const { email } = profile;
                     userData = await userService.createUser!({
                         email: email as string,
-                        password: account?.providerAccountId,
+                        password: account?.providerAccountId as string,
+                        firstName: profile.given_name,
+                        lastName: profile.family_name,
                     });
                 }
                 const userAccount = await adapter.getUserByAccount!({
@@ -210,6 +147,9 @@ export const authOptions = (
             token: JWT;
             user: User;
         }) {
+            console.log(user);
+            console.log(session);
+            console.log(token);
             session = {
                 ...session,
                 user: {
@@ -228,13 +168,8 @@ export const authOptions = (
         verifyRequest: undefined,
         newUser: undefined,
     },
-});
+};
 
-export default async function handler(
-    req: NextApiRequest,
-    res: NextApiResponse
-) {
-    const options = authOptions(req, res);
-
-    return await NextAuth(req, res, options);
-}
+export default NextAuth(authOptions);
+export const getAuth = async (req: NextApiRequest, res: NextApiResponse) =>
+    await getServerSession(req, res, authOptions);

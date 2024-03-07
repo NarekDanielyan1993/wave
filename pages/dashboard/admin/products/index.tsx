@@ -36,7 +36,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
                     },
                 };
             }
-            store.dispatch(getUser({ email: session.user.email }));
+            store.dispatch(getUser({ id: session.user.id }));
             store.dispatch(
                 getUserPermissions({
                     role: session.user.role,

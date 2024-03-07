@@ -1,4 +1,4 @@
-import { authOptions } from '@api/auth/[...nextauth]';
+import { getAuth } from '@api/auth/[...nextauth]';
 import { COMMON_ERROR_TYPES } from '@constant/error';
 import StripePaymentService from '@lib/payment';
 import ProductService from '@lib/services/product';
@@ -10,7 +10,6 @@ import {
 } from '@utils/error-handler';
 import { parseQueryParams } from '@utils/helper';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { Session, getServerSession } from 'next-auth';
 import { createRouter } from 'next-connect';
 import { IUserService } from 'types';
 import type {
@@ -61,11 +60,7 @@ router.post(
     // validateRequest(createProductValidationSchema),
     async (req, res) => {
         try {
-            const session = (await getServerSession(
-                req,
-                res,
-                authOptions(req, res)
-            )) as Session;
+            const session = await getAuth(req, res);
             const { amount, products } = req.body as IProductPaymentBody;
             const stripeService = new StripePaymentService();
             const paymentIntent = await stripeService.createPaymentIntent(

@@ -1,5 +1,7 @@
-import { VALIDATION_ERRORS } from '@constant/error';
-import { emailSchema } from '@utils/validator';
+import {
+    emailSchema,
+    stringRequiredWithMaxLengthSchema,
+} from '@utils/validator';
 import { z } from 'zod';
 
 export const profileSchema = z.object({
@@ -7,7 +9,7 @@ export const profileSchema = z.object({
 });
 
 export const profileGetSchema = z.object({
-    email: emailSchema,
+    id: z.string(),
 });
 
 export const updateProfileSchema = z.object({
@@ -54,25 +56,10 @@ export const getUserPermissionsSchema = z.object({
     role: z.string(),
 });
 
-export const userProfileValidationSchema = z
-    .object({
-        firstname: z.string(),
-        lastname: z.string(),
-    })
-    .superRefine((values, ctx) => {
-        if (!values.firstname && !values.lastname) {
-            ctx.addIssue({
-                message: VALIDATION_ERRORS.PROFILE.UNION,
-                code: z.ZodIssueCode.custom,
-                path: ['firstname'],
-            });
-            ctx.addIssue({
-                message: VALIDATION_ERRORS.PROFILE.UNION,
-                code: z.ZodIssueCode.custom,
-                path: ['lastname'],
-            });
-        }
-    });
+export const userProfileValidationSchema = z.object({
+    firstName: stringRequiredWithMaxLengthSchema(20),
+    lastName: stringRequiredWithMaxLengthSchema(20),
+});
 
 export type UserProfileValidationTypes = z.infer<
     typeof userProfileValidationSchema

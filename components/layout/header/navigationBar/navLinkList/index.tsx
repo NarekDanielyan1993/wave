@@ -32,10 +32,10 @@ const NavLinkList = ({ list }: { list: NavLinkTypes[] }) => {
                 }
                 return (
                     <Button
-                        variant={'text'}
-                        pr={2}
                         key={index}
                         onClick={link.click}
+                        pr={2}
+                        variant="text"
                     >
                         {link.text}
                     </Button>

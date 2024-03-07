@@ -1,3 +1,5 @@
+import { ALLOWED_FILE_TYPES } from './file';
+
 export const AUTH_ERRORS_MESSAGES = {
     AUTH_FAILED: 'Authentication failed.',
 };
@@ -92,7 +94,7 @@ export const FILE_ERROR_TYPES = {
         msg: 'Error occurred while reading the file.',
     },
     LIMIT_FILE_SIZE: {
-        msg: 'File size exceeds the limit',
+        msg: 'File size exceeds the limit: 5MB',
         status: 400,
         name: 'LIMIT_FILE_SIZE',
     },
@@ -117,7 +119,9 @@ export const FILE_ERROR_TYPES = {
         name: 'DELETE_FILE',
     },
     INVALID_FILE_TYPE: {
-        msg: 'Invalid file type',
+        msg: `Invalid file type. Allowed formats: ${ALLOWED_FILE_TYPES.join(
+            ', '
+        )}`,
         status: 400,
         name: 'INVALID_FILE_TYPE',
     },

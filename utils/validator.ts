@@ -28,3 +28,13 @@ export const stringMaxLengthSchema = (maxLength = 60) =>
     z.string().max(maxLength, {
         message: 'Exceeds string maximum length of characters.',
     });
+
+export const stringRequiredWithMaxLengthSchema = (maxLength = 60) =>
+    z
+        .string()
+        .min(1, {
+            message: DEFAULT_VALIDATION_ERRORS.required,
+        })
+        .max(maxLength, {
+            message: 'Exceeds string maximum length of characters.',
+        });

@@ -1,8 +1,8 @@
-import { authOptions } from '@api/auth/[...nextauth]';
+import { getAuth } from '@api/auth/[...nextauth]';
 import UserPermissionService from '@lib/services/userPermission';
 import { ForbiddenError, handleError } from '@utils/error-handler';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { Session, getServerSession } from 'next-auth';
+import { Session } from 'next-auth';
 import {
     IUserPermissionService,
     PermissionOptions,
@@ -14,12 +14,7 @@ const permissionMiddleware =
     async (req: NextApiRequest, res: NextApiResponse, next: () => void) => {
         try {
             const { resource, permissions } = options;
-            const session: Session | null = await getServerSession(
-                req,
-                res,
-                authOptions(req, res)
-            );
-            console.log('session', session);
+            const session: Session | null = await getAuth(req, res);
             if (!session) {
                 throw new ForbiddenError();
             }

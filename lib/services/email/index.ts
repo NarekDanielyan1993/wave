@@ -2,8 +2,12 @@ import { MAIL_GEN_DEFAULT_PARAMETERS } from '@constant/default';
 import { config } from '@utils/config';
 import { InternalServerError } from '@utils/error-handler';
 import {
+    EMAIL_CHANGE_OUTRO_TEXT,
+    EMAIL_CHANGE_SUBJECT_TEXT,
+    EMAIL_CHANGE_TEXT,
+    generateEmailChangeLink,
+    generateEmailLink,
     generateEmailOutroText,
-    generateVerificationEmailLink,
     getEmailVerificationText,
 } from '@utils/provider';
 import Mailgen from 'mailgen';
@@ -11,12 +15,6 @@ import nodemailer from 'nodemailer';
 import { IEmailService, IMailGenOptions } from 'types/email';
 
 class EmailService implements IEmailService {
-    // private prisma: PrismaClient;
-
-    // constructor(prisma: PrismaClient = prismaAdapter) {
-    //     this.prisma = prisma;
-    // }
-
     createNodeMailerTransport = () => {
         const transporter = nodemailer.createTransport({
             service: config.NODEMAILER_PROVIDER,
@@ -49,10 +47,11 @@ class EmailService implements IEmailService {
 
     generateEmailTemplate = ({
         theme = MAIL_GEN_DEFAULT_PARAMETERS.THEME,
-        bodyName = MAIL_GEN_DEFAULT_PARAMETERS.BODY_NAME,
+        subject = MAIL_GEN_DEFAULT_PARAMETERS.SUBJECT,
         productOptions = {
             productName: MAIL_GEN_DEFAULT_PARAMETERS.PRODUCT_PARAMETERS.name,
-            productLink: MAIL_GEN_DEFAULT_PARAMETERS.PRODUCT_PARAMETERS.link,
+            productLink: MAIL_GEN_DEFAULT_PARAMETERS.PRODUCT_PARAMETERS
+                .link as string,
         },
         actionInstructions = getEmailVerificationText(),
         buttonOptions: {
@@ -71,7 +70,7 @@ class EmailService implements IEmailService {
         });
         const email = {
             body: {
-                name: bodyName,
+                name: subject,
                 action: {
                     instructions: actionInstructions,
                     button: {
@@ -91,11 +90,33 @@ class EmailService implements IEmailService {
         email: string,
         emailToken: string
     ): Promise<void> => {
-        const verificationEmailLink = generateVerificationEmailLink(emailToken);
+        const verificationEmailLink = generateEmailLink(emailToken);
         const emailBody = this.generateEmailTemplate({
             buttonOptions: {
                 link: verificationEmailLink,
             },
+        });
+        try {
+            await this.sendEmailViaNodemailer(email, emailBody);
+            console.log(`Email sent to ${email}`);
+        } catch (error) {
+            throw new InternalServerError();
+        }
+    };
+
+    sendChangeEmailRequest = async (
+        email: string,
+        emailToken: string
+    ): Promise<void> => {
+        const verificationEmailLink = generateEmailChangeLink(emailToken);
+        const emailBody = this.generateEmailTemplate({
+            buttonOptions: {
+                link: verificationEmailLink,
+                text: 'Confirm',
+            },
+            subject: EMAIL_CHANGE_SUBJECT_TEXT,
+            actionInstructions: EMAIL_CHANGE_TEXT,
+            outro: EMAIL_CHANGE_OUTRO_TEXT,
         });
         try {
             await this.sendEmailViaNodemailer(email, emailBody);

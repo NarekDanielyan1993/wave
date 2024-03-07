@@ -120,6 +120,9 @@ export function withCurrency(
     decimal = 2,
     symbolPosition = 'front'
 ): string {
+    if (typeof number !== 'number') {
+        return '';
+    }
     let formattedNumber;
     formattedNumber = number.toFixed(decimal);
 

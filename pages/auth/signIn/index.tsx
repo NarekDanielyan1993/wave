@@ -1,4 +1,4 @@
-import { authOptions } from '@api/auth/[...nextauth]';
+import { getAuth } from '@api/auth/[...nextauth]';
 import { createAuthSignInPromise } from '@store/auth/action';
 import { authSelector } from '@store/auth/selectors';
 import {
@@ -11,7 +11,6 @@ import { getSite } from '@store/site/action';
 import type { AuthTypes } from 'common/validation/auth';
 import SignInModule from 'module/auth/signIn';
 import type { GetServerSidePropsContext } from 'next';
-import { getServerSession } from 'next-auth';
 import { useCallback } from 'react';
 import { END } from 'redux-saga';
 import type { CustomNextPage } from 'types';
@@ -29,11 +28,7 @@ const SignInPage: CustomNextPage = () => {
 
 export const getServerSideProps = wrapper.getServerSideProps(
     (store: SagaStore) => async (ctx: GetServerSidePropsContext) => {
-        const session = await getServerSession(
-            ctx.req,
-            ctx.res,
-            authOptions(ctx.req, ctx.res)
-        );
+        const session = await getAuth(ctx.req, ctx.res);
         if (session) {
             return {
                 redirect: {

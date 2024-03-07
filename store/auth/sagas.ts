@@ -1,22 +1,21 @@
 import { AUTH_API } from '@constant/api';
 import { NOTIFICATION_MESSAGES } from '@constant/notification';
+import { SHOP_ROUTE } from '@constant/route';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { showNotification } from '@store/notification/reducer';
 import { apiRequest } from '@utils/apiRequest';
-import { AuthTypes } from 'common/validation/auth';
+import { AuthSignUpTypes } from 'common/validation/auth';
 import { signIn } from 'next-auth/react';
 import Router from 'next/router';
 import { call, put, takeLatest } from 'redux-saga/effects';
 import { AUTH_SIGN_UP, createAuthSignInPromise } from './action';
 import { isAuthLoading } from './reducer';
 
-function* signUpGenerator(action: PayloadAction<AuthTypes>) {
-    const { email, password } = action.payload;
+function* signUpGenerator(action: PayloadAction<AuthSignUpTypes>) {
     try {
         yield put(isAuthLoading(true));
         yield call(apiRequest.post, AUTH_API.SIGN_UP, {
-            email,
-            password,
+            ...action.payload,
         });
         yield put(
             showNotification({
@@ -46,7 +45,16 @@ function* signInGenerator(
             password,
             redirect: false,
         });
-        Router.push('/shop');
+        if (data.error) {
+            yield put(
+                showNotification({
+                    message: data.error,
+                    type: 'error',
+                })
+            );
+        } else {
+            Router.push(SHOP_ROUTE);
+        }
     } catch (error) {
         console.log(error);
     }

@@ -1,4 +1,4 @@
-import { authOptions } from '@api/auth/[...nextauth]';
+import { getAuth } from '@api/auth/[...nextauth]';
 import { COMMON_ERROR_TYPES, USER_ERROR_TYPES } from '@constant/error';
 import { VALIDATION_SOURCES } from '@constant/validation';
 import UserService from '@lib/services/user';
@@ -7,25 +7,19 @@ import { NotFoundError, handleError } from '@utils/error-handler';
 import { validateRequest } from '@utils/helper';
 import { profileGetSchema, updateProfileSchema } from 'common/validation/user';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { Session, getServerSession } from 'next-auth';
 import { createRouter } from 'next-connect';
 import { IUserService, UserGetQueryParams } from 'types';
 
 const router = createRouter<NextApiRequest, NextApiResponse>();
 
 router.get(
-    // permissionMiddleware({
-    //     resource: PERMISSION_RESOURCES.PROFILE,
-    //     permissions: [PERMISSION_ACTION.UPDATE],
-    // }),
     validateRequest(profileGetSchema, VALIDATION_SOURCES.QUERY),
     async (req, res) => {
         try {
-            const { email } = req.query as UserGetQueryParams;
+            const { id } = req.query as UserGetQueryParams;
 
             const userService: IUserService = new UserService();
-
-            const userData = await userService.getProfile(email);
+            const userData = await userService.getById(id);
             if (!userData) {
                 throw new NotFoundError('Profile not found.');
             }
@@ -45,11 +39,7 @@ router.put(
     validateRequest(updateProfileSchema),
     async (req: NextApiRequest, res: NextApiResponse) => {
         try {
-            const session = (await getServerSession(
-                req,
-                res,
-                authOptions(req, res)
-            )) as Session;
+            const session = await getAuth(req, res);
             const { file, ...data } = req.body;
             const userData = data;
             let img;

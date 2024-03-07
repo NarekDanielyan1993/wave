@@ -1,4 +1,4 @@
-import { authOptions } from '@api/auth/[...nextauth]';
+import { getAuth } from '@api/auth/[...nextauth]';
 import { ProductCardsSection } from '@components/productCards';
 import SlimPromotion from '@components/promotion/slimPromotion';
 import SliderComponent from '@components/slider';
@@ -11,7 +11,6 @@ import {
 import { getSite, getSiteImages } from '@store/site/action';
 import { addToCart, getCarts, getUser } from '@store/user/action';
 import { GetServerSidePropsContext } from 'next';
-import { getServerSession } from 'next-auth';
 import { useCallback } from 'react';
 import { END } from 'redux-saga';
 import { AddToCartPayloadType } from 'types';
@@ -42,11 +41,7 @@ const Home = () => {
 
 export const getServerSideProps = wrapper.getServerSideProps(
     (store: SagaStore) => async (ctx: GetServerSidePropsContext) => {
-        const session = await getServerSession(
-            ctx.req,
-            ctx.res,
-            authOptions(ctx.req, ctx.res)
-        );
+        const session = await getAuth(ctx.req, ctx.res);
         if (session) {
             store.dispatch(getUser({ email: session?.user.email }));
             store.dispatch(getCarts({ id: session.user.id }));

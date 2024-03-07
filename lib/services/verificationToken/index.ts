@@ -56,22 +56,28 @@ class VerificationTokenService implements IVerificationTokenService {
     ) {
         const verificationTokenExpirationTimestamp =
             new Date(verificationTokenExpiration).getTime() / 1000;
+        console.log(verificationTokenExpirationTimestamp);
+        console.log(userTokenExpiration);
         if (userTokenExpiration < verificationTokenExpirationTimestamp) {
             return true;
         }
         return false;
     }
 
-    async removeVerificationToken(
-        tokenId: string
-    ): Promise<IVerificationToken[]> {
-        const token: IVerificationToken[] =
+    isEmailChangeTokenExpired(verificationTokenExpiration: Date) {
+        const verificationTokenExpirationTimestamp =
+            new Date(verificationTokenExpiration).getTime() / 1000;
+        const dateNowTimeStamp = new Date().getTime() / 1000;
+        return dateNowTimeStamp > verificationTokenExpirationTimestamp;
+    }
+
+    async removeVerificationToken(id: string): Promise<IVerificationToken> {
+        const token: IVerificationToken =
             await this.prisma.verificationToken.delete({
                 where: {
-                    identifier: tokenId,
+                    id,
                 },
             });
-        console.log(token);
         return token;
     }
 }

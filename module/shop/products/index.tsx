@@ -45,7 +45,7 @@ const Products = () => {
             <StyledSectionWrapper>
                 <Box display="flex" gap={2} justifyContent="right" py={2}>
                     <IconButton
-                        boxSize="1rem"
+                        fontSize="1rem"
                         iconName={grid === 'home' ? 'gridOn' : 'gridOff'}
                         onClick={() =>
                             setGrid(prev => (prev === 'home' ? 'shop' : 'home'))

@@ -42,6 +42,12 @@ const Button = defineStyleConfig({
         secondary: {
             bgColor: 'brand.primary.main',
             color: 'white',
+            _hover: {
+                _disabled: {
+                    cursor: 'not-allowed',
+                    bgColor: 'brand.primary.darken',
+                },
+            },
         },
         tertiary: {
             backgroundColor: 'brand.primary.lighten',

@@ -9,11 +9,12 @@ import {
 } from 'types/client/auth';
 import { StyledGoogleButton } from './style';
 const SocialSignInButtons = () => {
-    const socialSignInHandler = (type: SocialSignInProvidersTypes) => {
-        signIn(type, {
-            redirect: true,
+    const socialSignInHandler = async (type: SocialSignInProvidersTypes) => {
+        const res = await signIn(type, {
+            redirect: false,
             callbackUrl: `${config.NEXT_PUBLIC_BASE_URL}${SHOP_ROUTE}`,
         });
+        console.log(res);
     };
 
     const socialButtonsData: ISocialSignInButtons[] = [
@@ -32,6 +33,7 @@ const SocialSignInButtons = () => {
                     key={btn.id}
                     leftIcon={<Icon />}
                     onClick={btn.onClick}
+                    w="full"
                 >
                     {btn.text}
                 </Component>

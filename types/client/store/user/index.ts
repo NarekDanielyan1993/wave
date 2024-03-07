@@ -29,7 +29,7 @@ export type GetUserProfilesActionTypes = {
 };
 
 export type GetUserProfilePayloadType = {
-    email: string;
+    id: string;
 };
 
 export type AddToCartActionTypes = {
@@ -99,12 +99,12 @@ export type RemoveCartPayloadType = {
 };
 
 export type UpdateUserPayloadType = {
-    userData: Pick<IUser, 'firstname' | 'lastname'>;
+    userData: Pick<IUser, 'firstName' | 'lastName'>;
 };
 
 export interface IUpdateUserProfilePayload {
-    firstname?: string;
-    lastname?: string;
+    firstName: string;
+    lastName: string;
     file?: string;
 }
 

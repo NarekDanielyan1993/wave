@@ -23,7 +23,7 @@ export const AUTH_SESSION_OPTIONS_SERVER = {
     maxAge: 60 * 60 * 24 * 30, // 30 Days
     strategy: SESSION_STRATEGIES.JWT,
     updateAge: 24 * 60 * 60,
-    jwt: false,
+    jwt: true,
 };
 
 export const AUTH_ENCRYPTION_LENGTH = 12;

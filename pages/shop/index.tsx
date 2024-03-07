@@ -1,4 +1,4 @@
-import { authOptions } from '@api/auth/[...nextauth]';
+import { getAuth } from '@api/auth/[...nextauth]';
 import { useAppDispatch, wrapper, type SagaStore } from '@store/create-store';
 import { getFrets } from '@store/frets/action';
 import { getBrands, getPaginatedProducts } from '@store/products/action';
@@ -8,7 +8,7 @@ import DashboardLayout from 'module/dashboard/dashboardLayout';
 import Products from 'module/shop/products';
 import ShopSideBar from 'module/shop/shopSideBar';
 import type { GetServerSidePropsContext } from 'next';
-import { getServerSession, type Session } from 'next-auth';
+import { type Session } from 'next-auth';
 import { useCallback } from 'react';
 import { END } from 'redux-saga';
 import type { GetPaginatedProductsActionPayload } from 'types';
@@ -36,14 +36,10 @@ ShopPage.requiredAuth = false;
 export const getServerSideProps = wrapper.getServerSideProps(
     (store: SagaStore) =>
         async ({ req, res }: GetServerSidePropsContext) => {
-            const session: Session | null = await getServerSession(
-                req,
-                res,
-                authOptions(req, res)
-            );
+            const session: Session | null = await getAuth(req, res);
             if (session) {
                 store.dispatch(getCarts({ id: session.user.id }));
-                store.dispatch(getUser({ email: session.user.email }));
+                store.dispatch(getUser({ id: session.user.id }));
             }
             store.dispatch(getSite());
             store.dispatch(getBrands());

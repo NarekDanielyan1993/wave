@@ -1,7 +1,9 @@
 import { Box, Button, Text } from '@chakra-ui/react';
 import ImageCropper from '@components/cropper';
+import { FILE_ERROR_TYPES } from '@constant/error';
 import { ALLOWED_FILE_TYPES, FILE_UPLOAD_BASE_URL } from '@constant/file';
 import { useAppDispatch, useAppSelector } from '@store/create-store';
+import { showNotification } from '@store/notification/reducer';
 import { addProfileImage, deleteProfileImage } from '@store/user/action';
 import { userSelector, usersSelector } from '@store/user/selectors';
 import {
@@ -24,7 +26,9 @@ const ProfileImage = () => {
         useAppSelector(usersSelector);
 
     const fileDeleteHandler = () => {
-        dispatch(deleteProfileImage({ publicId: user.data.publicId }));
+        dispatch(
+            deleteProfileImage({ publicId: user.data.publicId as string })
+        );
         setCroppedImage('');
     };
 
@@ -43,18 +47,21 @@ const ProfileImage = () => {
             if (!file) {
                 return;
             }
-            if (isFileExceedsSizeLimit(file)) {
-                return;
-            }
-            if (!isFileFormatAllowed(file)) {
-                return;
-            }
+
             try {
+                if (isFileExceedsSizeLimit(file)) {
+                    throw new Error(FILE_ERROR_TYPES.LIMIT_FILE_SIZE.msg);
+                }
+                if (!isFileFormatAllowed(file)) {
+                    throw new Error(FILE_ERROR_TYPES.INVALID_FILE_TYPE.msg);
+                }
                 const fileData = await readFile(file);
                 setImage(fileData);
                 setIsOpenDialog(true);
-            } catch (error) {
-                console.error(error);
+            } catch (error: any) {
+                dispatch(
+                    showNotification({ message: error.message, type: 'error' })
+                );
             }
         }
     };

@@ -1,12 +1,15 @@
 import { Box, Button, Flex, Text } from '@chakra-ui/react';
 import IconButton from '@components/button/icon-button';
 import ShoppingCartIcon from '@components/icons/shoppingCart';
+import { withCurrency } from '@utils/helper';
 import { IProductResponse } from 'types/product';
 
-const ProductRightSection = ({
+const ProductSection = ({
     product,
     addToCartHandler,
+    isCartLoading,
 }: {
+    isCartLoading: boolean;
     product: IProductResponse;
     addToCartHandler: (productId: string) => void;
 }) => (
@@ -15,7 +18,7 @@ const ProductRightSection = ({
             {product.model}
         </Text>
         <Text my={2}>{product.description}</Text>
-        <Box py={4} textTransform="uppercase">
+        <Flex flexDir="column" gap={4} py={4} textTransform="uppercase">
             <Flex alignItems="center" gap={2}>
                 <IconButton boxSize={8} fontSize="2rem" iconName="check" />
                 <Text color="brand.primary.main">
@@ -32,10 +35,11 @@ const ProductRightSection = ({
                     <br /> available
                 </Text>
             </Flex>
-        </Box>
+        </Flex>
         <Box borderY="1px solid lightgray" py={4}>
-            <Text fontSize="xl">${product.price}</Text>
+            <Text fontSize="xl">{withCurrency(product.price)}</Text>
             <Button
+                isDisabled={isCartLoading}
                 leftIcon={<ShoppingCartIcon />}
                 onClick={() => addToCartHandler(product.id)}
                 variant="secondary"
@@ -53,4 +57,4 @@ const ProductRightSection = ({
     </Box>
 );
 
-export default ProductRightSection;
+export default ProductSection;

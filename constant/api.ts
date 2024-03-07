@@ -1,5 +1,6 @@
 import { config } from '@utils/config';
 export const EMAIL_VERIFICATION_URL = `${config.NEXT_PUBLIC_BASE_URL}/api/user/profile/verifyEmail`;
+export const EMAIL_CHANGE_URL = `${config.NEXT_PUBLIC_BASE_URL}/api/user/profile/emailConfirmation`;
 
 export const PRODUCTS_API = {
     GET_PRODUCTS: '/api/product',

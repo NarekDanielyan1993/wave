@@ -22,5 +22,5 @@ export interface IVerificationTokenService {
     ) => Promise<IVerificationTokenResponse | null>;
     removeVerificationToken: (
         tokenId: string
-    ) => Promise<IVerificationTokenResponse[] | null>;
+    ) => Promise<IVerificationTokenResponse | null>;
 }

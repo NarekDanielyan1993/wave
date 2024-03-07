@@ -1,4 +1,4 @@
-import { UserRole } from '@prisma/client';
+import { Prisma, UserRole } from '@prisma/client';
 import { AuthTypes } from 'common/validation/auth';
 import { SESSION_PROVIDERS } from 'constant/auth';
 import { UppercaseKeys } from 'types/common';
@@ -29,17 +29,15 @@ export interface Account {
 }
 export interface IUser {
     email: string;
-    firstname: string;
-    lastname: string;
-    url: string;
-    publicId: string;
-    history: object;
-    cart: object;
+    firstName: string;
+    lastName: string;
+    url: string | null;
+    publicId: string | null;
 }
 
 export interface IUserProfile {
-    firstname?: string;
-    lastname?: string;
+    firstName?: string;
+    lastName?: string;
     url?: string;
     publicId?: string;
 }
@@ -56,6 +54,12 @@ export interface ICartsResponse {
     userId: string;
     productId: string;
     product: IProductResponse;
+}
+
+export interface ICartsResponseClient {
+    id: string;
+    userId: string;
+    productId: string;
 }
 
 export interface ICarts extends Omit<ICartsResponse, 'product' | 'productId'> {
@@ -88,7 +92,7 @@ export interface IHistory {
 }
 
 export type UserGetQueryParams = {
-    email: string;
+    id: string;
 };
 
 export type CartCreateBody = {
@@ -131,12 +135,17 @@ export type IUserModelDefaultSortByField = Record<
 export interface IUserService {
     verifyEmail: (id: string) => Promise<IUserResponse>;
     getByEmail: (email: string) => Promise<IUserResponse | null>;
+    getById(id: string): Promise<IUserResponse | null>;
     createUser: (user: AuthTypes) => Promise<IUserResponse>;
+    updateById(
+        id: string,
+        userData: Prisma.UserUpdateInput
+    ): Promise<IUserResponse>;
     addToCart: ({ id, productId }: ICart) => Promise<ICart>;
-    addToHistory(history: IHistory[]): Promise<IHistory>;
+    addToHistory(history: IHistory[]): Promise<Prisma.BatchPayload>;
     getHistory(userId: string): Promise<IHistory[] | null>;
-    removeCart: (id: string[]) => Promise<ICart>;
-    getCarts: (userId: string) => Promise<ICartsResponse[] | null>;
+    removeCart(id: string[]): Promise<Prisma.BatchPayload>;
+    getCarts: (userId: string) => Promise<ICartsResponseClient[] | null>;
     verifyPassword: (
         currentPassword: string,
         password: string
@@ -152,5 +161,5 @@ export interface IUserService {
         email: string,
         oldEmail: string
     ) => Promise<IUserResponse>;
-    generateToken: (id: string) => string;
+    generateToken: (id: string, email: string, expiresIn: number) => string;
 }

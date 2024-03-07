@@ -12,7 +12,7 @@ const PriceRange = ({
     register: UseFormRegister<FilterProductSchemaType>;
 }) => (
     <AccordionWrapper title="PRICE RANGE">
-        <Flex flexWrap="wrap" gap={2} pl={2}>
+        <Flex flexWrap="wrap" gap={2} px={2}>
             <PriceInput
                 error={errors?.from?.message}
                 name="from"

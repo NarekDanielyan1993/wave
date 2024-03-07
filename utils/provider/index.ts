@@ -1,6 +1,6 @@
-import { EMAIL_VERIFICATION_URL } from '@constant/api';
+import { EMAIL_CHANGE_URL, EMAIL_VERIFICATION_URL } from '@constant/api';
 
-export const generateVerificationEmailLink = (recipientEmail: string) =>
+export const generateEmailLink = (recipientEmail: string) =>
     `${EMAIL_VERIFICATION_URL}?token=${recipientEmail}`;
 
 export const generateEmailVerificationDefaultSubject = () =>
@@ -21,3 +21,16 @@ export const generateEmailOutroText = (text?: string) =>
     
         Narek
     `;
+
+export const EMAIL_CHANGE_TEXT =
+    'You have requested to update your email address, kindly confirm this change by clicking the link';
+
+export const EMAIL_CHANGE_OUTRO_TEXT = `
+        Best regards,
+    
+        Narek
+    `;
+export const EMAIL_CHANGE_SUBJECT_TEXT = 'Email Confirmation.';
+
+export const generateEmailChangeLink = (recipientEmail: string) =>
+    `${EMAIL_CHANGE_URL}?token=${recipientEmail}`;

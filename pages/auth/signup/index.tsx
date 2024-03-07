@@ -7,7 +7,7 @@ import {
     wrapper,
 } from '@store/create-store';
 import { getSite } from '@store/site/action';
-import { AuthTypes } from 'common/validation/auth';
+import { AuthSignUpTypes } from 'common/validation/auth';
 import SignUpModule from 'module/auth/signUp';
 import { GetServerSidePropsContext } from 'next';
 import { getSession } from 'next-auth/react';
@@ -18,7 +18,7 @@ const SignUpPage: CustomNextPage = () => {
     const dispatch = useAppDispatch();
     const { isLoading } = useAppSelector(authSelector);
 
-    const formSubmitHandler = (data: AuthTypes) => {
+    const formSubmitHandler = (data: AuthSignUpTypes) => {
         dispatch(signUp(data));
     };
 

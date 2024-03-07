@@ -1,5 +1,6 @@
 import { Box } from '@chakra-ui/react';
 import IconButton from '@components/button/icon-button';
+import { useEffect } from 'react';
 import DrawerOverlay from '../drawerOverlay';
 import { StyledDrawer } from './style';
 
@@ -11,26 +12,39 @@ const Drawer = ({
     children: React.ReactNode;
     isOpen: boolean;
     onClose: () => void;
-}) => (
-    <Box>
-        <DrawerOverlay
-            onClick={onClose}
-            sx={{
-                display: isOpen ? 'block' : 'none',
-                backgroundColor: `rgba(0,0,0,0.5)`,
-            }}
-        />
-        <StyledDrawer sx={{ transform: `translateX(${isOpen ? 0 : -100}%)` }}>
-            <IconButton
-                color="gray"
-                iconName="close"
-                marginLeft="auto"
-                mr="1"
+}) => {
+    useEffect(() => {
+        if (isOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'auto';
+        }
+    }, [isOpen]);
+
+    return (
+        <Box left={0} pos="absolute" top={0}>
+            <DrawerOverlay
                 onClick={onClose}
+                sx={{
+                    opacity: isOpen ? 1 : 0,
+                    transform: isOpen ? 'scale(1)' : 'scale(0)',
+                }}
             />
-            {children}
-        </StyledDrawer>
-    </Box>
-);
+            <StyledDrawer
+                sx={{ transform: `translateX(${isOpen ? 0 : -100}%)` }}
+            >
+                <IconButton
+                    color="gray"
+                    fontSize="2rem"
+                    iconName="close"
+                    marginLeft="auto"
+                    mr="1"
+                    onClick={onClose}
+                />
+                {children}
+            </StyledDrawer>
+        </Box>
+    );
+};
 
 export default Drawer;

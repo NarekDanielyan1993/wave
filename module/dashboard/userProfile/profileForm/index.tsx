@@ -1,24 +1,23 @@
 import { Button } from '@chakra-ui/react';
 import useForm from '@hooks/useForm';
-import { useAppDispatch, useAppSelector } from '@store/create-store';
-import { updateUserProfile } from '@store/user/action';
-import { userSelector } from '@store/user/selectors';
 import {
     UserProfileValidationTypes,
     userProfileValidationSchema,
 } from 'common/validation/user';
-import { SingleUserState } from 'types';
+import { IUser } from 'types';
 
-// eslint-disable-next-line react/function-component-definition
-function ProfileForm() {
-    const { data: userData, isLoading }: SingleUserState =
-        useAppSelector(userSelector);
-
-    const dispatch = useAppDispatch();
-
+const ProfileForm = ({
+    userData,
+    isLoading,
+    updateUserProfile,
+}: {
+    updateUserProfile: (data: UserProfileValidationTypes) => void;
+    userData: IUser;
+    isLoading: boolean;
+}) => {
     const defaultValues: UserProfileValidationTypes = {
-        firstname: userData?.firstname || '',
-        lastname: userData?.lastname || '',
+        firstName: userData?.firstName || '',
+        lastName: userData?.lastName || '',
     };
 
     const { handleSubmit, FormField, formState } =
@@ -27,17 +26,18 @@ function ProfileForm() {
             defaultValues,
         });
 
-    const formSubmitHandler = (data: UserProfileValidationTypes) =>
-        dispatch(updateUserProfile(data));
+    const formSubmitHandler = (data: UserProfileValidationTypes) => {
+        updateUserProfile(data);
+    };
 
     return (
         <form onSubmit={handleSubmit(formSubmitHandler)}>
             {FormField({
-                name: 'firstname',
+                name: 'firstName',
                 label: 'First Name',
             })}
             {FormField({
-                name: 'lastname',
+                name: 'lastName',
                 label: 'Last Name',
             })}
             <Button
@@ -50,6 +50,6 @@ function ProfileForm() {
             </Button>
         </form>
     );
-}
+};
 
 export default ProfileForm;

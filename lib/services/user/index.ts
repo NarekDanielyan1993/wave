@@ -4,22 +4,21 @@ import {
 } from '@constant/auth';
 import { USER_ERROR_TYPES } from '@constant/error';
 import prismaAdapter from '@lib/db';
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import { ForbiddenError, InternalServerError } from '@utils/error-handler';
 import { compare, hashSync } from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 import { DATABASE_MODELS, USER_MODEL_FIELDS } from '@constant/db';
 import { config } from '@utils/config';
-import { AuthTypes } from 'common/validation/auth';
+import { AuthSignUpTypes } from 'common/validation/auth';
 import {
+    ICartsResponseClient,
     IHistory,
-    IUserProfile,
     IUserResponse,
     IUserResponseWIthPassword,
     IUserService,
     type ICart,
-    type ICartsResponse,
 } from 'types';
 import { prismaExclude } from 'types/database';
 
@@ -45,12 +44,29 @@ class UserService implements IUserService {
         }
     }
 
+    async getById(id: string): Promise<IUserResponse | null> {
+        try {
+            return await this.prisma.user.findFirst({
+                where: {
+                    id,
+                },
+                select: prismaExclude(DATABASE_MODELS.USER, [
+                    USER_MODEL_FIELDS.PASSWORD,
+                ]),
+            });
+        } catch (error) {
+            throw new InternalServerError();
+        }
+    }
+
     async getAllData(email: string): Promise<IUserResponseWIthPassword | null> {
         try {
-            console.log(email);
-            return await this.prisma.user.findUnique({
+            return await this.prisma.user.findFirst({
                 where: {
-                    email,
+                    email: {
+                        contains: email,
+                        mode: 'insensitive',
+                    },
                 },
             });
         } catch (error) {
@@ -58,7 +74,12 @@ class UserService implements IUserService {
         }
     }
 
-    async createUser({ password, email }: AuthTypes): Promise<IUserResponse> {
+    async createUser({
+        password,
+        email,
+        firstName,
+        lastName,
+    }: AuthSignUpTypes): Promise<IUserResponse> {
         try {
             const hashedPassword = await this.hashPassword(password);
 
@@ -66,12 +87,34 @@ class UserService implements IUserService {
                 data: {
                     password: hashedPassword,
                     email,
+                    firstName,
+                    lastName,
                 },
             });
 
             return user;
         } catch (error) {
             throw new InternalServerError('Failed to create user.');
+        }
+    }
+
+    async updateById(
+        id: string,
+        userData: Prisma.UserUpdateInput
+    ): Promise<IUserResponse> {
+        try {
+            const updatedUser = await this.prisma.user.update({
+                where: {
+                    id,
+                },
+                data: {
+                    ...userData,
+                },
+                select: prismaExclude('User', ['password']),
+            });
+            return updatedUser;
+        } catch (error) {
+            throw new InternalServerError('Failed to update profile.');
         }
     }
 
@@ -91,7 +134,7 @@ class UserService implements IUserService {
 
     async updateUserProfile(
         email: string,
-        userData: IUserProfile
+        userData: Prisma.UserUpdateInput
     ): Promise<IUserResponse> {
         try {
             const updatedUser = await this.prisma.user.update({
@@ -126,7 +169,6 @@ class UserService implements IUserService {
                 },
                 data: {
                     email: newEmail,
-                    verified: false,
                 },
                 select: prismaExclude('User', ['password']),
             });
@@ -146,11 +188,15 @@ class UserService implements IUserService {
         return !!user;
     }
 
-    generateToken = (id: string) => {
+    generateToken = (id: string, email?: string, expiresIn?: number) => {
         try {
-            const token = jwt.sign({ id }, config.NEXTAUTH_SECRET, {
-                expiresIn: JWT_TOKEN_EXPIRATION_TIME,
-            });
+            const token = jwt.sign(
+                { id, email },
+                config.NEXTAUTH_SECRET as string,
+                {
+                    expiresIn: expiresIn || JWT_TOKEN_EXPIRATION_TIME,
+                }
+            );
             return token;
         } catch (error) {
             throw new InternalServerError();
@@ -158,17 +204,21 @@ class UserService implements IUserService {
     };
 
     async verifyEmail(id: string): Promise<IUserResponse> {
-        const updatedUser = await this.prisma.user.update({
-            where: {
-                id,
-            },
-            data: {
-                verified: true,
-                emailVerified: new Date(),
-            },
-            select: prismaExclude('User', ['password']),
-        });
-        return updatedUser;
+        try {
+            const updatedUser = await this.prisma.user.update({
+                where: {
+                    id,
+                },
+                data: {
+                    verified: true,
+                    emailVerified: new Date(),
+                },
+                select: prismaExclude('User', ['password']),
+            });
+            return updatedUser;
+        } catch (error) {
+            throw new InternalServerError();
+        }
     }
 
     async addToCart({ userId, productId }: ICart): Promise<ICart> {
@@ -188,7 +238,7 @@ class UserService implements IUserService {
         }
     }
 
-    async addToHistory(history: IHistory[]): Promise<IHistory> {
+    async addToHistory(history: IHistory[]): Promise<Prisma.BatchPayload> {
         try {
             const historyData = await this.prisma.history.createMany({
                 data: history,
@@ -212,7 +262,7 @@ class UserService implements IUserService {
         }
     }
 
-    async removeCart(id: string[]): Promise<ICart> {
+    async removeCart(id: string[]): Promise<Prisma.BatchPayload> {
         try {
             const user = await this.prisma.cart.deleteMany({
                 where: {
@@ -225,7 +275,7 @@ class UserService implements IUserService {
         }
     }
 
-    async getCarts(userId: string): Promise<ICartsResponse[] | null> {
+    async getCarts(userId: string): Promise<ICartsResponseClient[] | null> {
         try {
             const carts = await this.prisma.cart.findMany({
                 where: {

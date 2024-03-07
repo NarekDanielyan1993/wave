@@ -1,4 +1,3 @@
-import { authOptions } from '@api/auth/[...nextauth]';
 import { COMMON_ERROR_TYPES } from '@constant/error';
 import { VALIDATION_SOURCES } from '@constant/validation';
 import UserService from '@lib/services/user';
@@ -10,7 +9,6 @@ import {
     cartGetSchema,
 } from 'common/validation/user';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { getServerSession, type Session } from 'next-auth';
 import { createRouter } from 'next-connect';
 import type { CartCreateBody, CartDeleteBody, IUserService } from 'types';
 
@@ -45,11 +43,6 @@ router.get(
     validateRequest(cartGetSchema, VALIDATION_SOURCES.QUERY),
     async (req: NextApiRequest, res: NextApiResponse) => {
         try {
-            const session = (await getServerSession(
-                req,
-                res,
-                authOptions(req, res)
-            )) as Session;
             const { userId } = req.query;
             const user: IUserService = new UserService();
             const carts = await user.getCarts(userId);
@@ -71,11 +64,6 @@ router.delete(
     validateRequest(cartDeleteSchema),
     async (req: NextApiRequest, res: NextApiResponse) => {
         try {
-            const session = (await getServerSession(
-                req,
-                res,
-                authOptions(req, res)
-            )) as Session;
             const data = req.body as CartDeleteBody;
             const user: IUserService = new UserService();
             const carts = await user.removeCart(data.ids);

@@ -2,7 +2,7 @@ import { AUTH_ROUTES } from '@constant/route';
 import { wrapper, type SagaStore } from '@store/create-store';
 import { getPaginatedProducts, getProduct } from '@store/products/action';
 import { getSite } from '@store/site/action';
-import { addToCart } from '@store/user/action';
+import { addToCart, getCarts } from '@store/user/action';
 import ProductDetail from 'module/productDetail';
 import type { GetServerSidePropsContext } from 'next';
 import type { Session } from 'next-auth';
@@ -15,7 +15,7 @@ const ProductDetailPage = () => {
     const dispatch = useDispatch();
     const { data: session } = useSession();
     const addToCartHandler = useCallback((productId: string) => {
-        dispatch(addToCart({ productId, userId: session?.user.id }));
+        dispatch(addToCart({ productId, userId: session?.user.id as string }));
     }, []);
 
     return <ProductDetail addToCartHandler={addToCartHandler} />;
@@ -39,6 +39,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
                 };
             }
             store.dispatch(getSite());
+            store.dispatch(getCarts({ id: session.user.id }));
             store.dispatch(getProduct({ id }));
             store.dispatch(
                 getPaginatedProducts({

@@ -1,4 +1,4 @@
-import { authOptions } from '@api/auth/[...nextauth]';
+import { getAuth } from '@api/auth/[...nextauth]';
 import { COMMON_ERROR_TYPES } from '@constant/error';
 import UserService from '@lib/services/user';
 import CloudinaryService from '@lib/upload';
@@ -6,7 +6,6 @@ import { handleError } from '@utils/error-handler';
 import { validateRequest } from '@utils/helper';
 import { profileImageDeleteSchema } from 'common/validation/user';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { Session, getServerSession } from 'next-auth';
 import { createRouter } from 'next-connect';
 import { IUserService, ProfileImageDeleteBody } from 'types';
 
@@ -20,11 +19,7 @@ router.delete(
     validateRequest(profileImageDeleteSchema),
     async (req: NextApiRequest, res: NextApiResponse) => {
         try {
-            const session = (await getServerSession(
-                req,
-                res,
-                authOptions(req, res)
-            )) as Session;
+            const session = await getAuth(req, res);
             const { publicId } = req.body as ProfileImageDeleteBody;
             const cloudinaryService = new CloudinaryService();
             await cloudinaryService.deleteFile(publicId);

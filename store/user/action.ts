@@ -12,6 +12,7 @@ import {
     IUpdateUserProfileAction,
     IUpdateUserProfilePayload,
     UpdateUserEmailActionTypes,
+    UpdateUserEmailPayloadType,
     type AddToCartActionTypes,
     type AddToCartPayloadType,
     type GetCartsActionTypes,
@@ -106,7 +107,7 @@ export function updateUserProfile(
 }
 
 export function updateUserEmail(
-    data: GetUserProfilePayloadType
+    data: UpdateUserEmailPayloadType
 ): UpdateUserEmailActionTypes {
     return {
         type: UPDATE_USER_EMAIL,

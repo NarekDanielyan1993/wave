@@ -1,7 +1,11 @@
 import { Button } from '@chakra-ui/react';
 import { AUTH_ROUTES } from '@constant/route';
 import useForm from '@hooks/useForm';
-import { authValidationSchema, type AuthTypes } from 'common/validation/auth';
+import {
+    AuthSignInTypes,
+    authSignInValidationSchema,
+    type AuthTypes,
+} from 'common/validation/auth';
 import SocialSignInButtons from '../socialSignInButtons';
 import {
     StyledAuthContainer,
@@ -17,13 +21,13 @@ const SignInModule = ({
     onSubmit: (data: AuthTypes) => void;
     isLoading: boolean;
 }) => {
-    const authDefaultData: AuthTypes = {
+    const authDefaultData: AuthSignInTypes = {
         email: '',
         password: '',
     };
 
-    const { handleSubmit, FormField } = useForm<AuthTypes>({
-        validationSchema: authValidationSchema,
+    const { handleSubmit, FormField } = useForm<AuthSignInTypes>({
+        validationSchema: authSignInValidationSchema,
         defaultValues: authDefaultData,
     });
     return (
