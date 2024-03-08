@@ -104,7 +104,8 @@ const ProfileImage = () => {
                         !!user?.data?.url ||
                         isUserProfileImageLoading
                     }
-                    onClick={() => imageUploader?.current?.click()}
+                    onMouseDown={() => imageUploader?.current?.click()}
+                    onTouchStart={() => imageUploader?.current?.click()}
                     variant="primary"
                 >
                     select
