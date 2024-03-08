@@ -34,6 +34,8 @@ class CloudinaryService {
     }
 }
 
-export const config = { api: { bodyParser: { sizeLimit: '4mb' } } };
+export const config = {
+    api: { bodyParser: { sizeLimit: '20mb' } },
+};
 
 export default CloudinaryService;

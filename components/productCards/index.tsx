@@ -16,7 +16,9 @@ export const ProductCardsSection = ({
     const products = useAppSelector(takeProductCardsSectionSelector(which));
     return (
         <StyledProductCardsContainer>
-            <StyledProductCardsTitle fontSize={{ base: 'xl', sm: '2xl' }}>
+            <StyledProductCardsTitle
+                fontSize={{ base: 'lg', sm: 'xl', md: '2xl' }}
+            >
                 {title}
             </StyledProductCardsTitle>
             <StyledProductCardsWrapper>

@@ -67,6 +67,9 @@ router.put(
     }
 );
 
+export const config = {
+    api: { responseLimit: false, bodyParser: { sizeLimit: '25mb' } },
+};
 const noMatchHandler = (req: NextApiRequest, res: NextApiResponse) => {
     res.status(COMMON_ERROR_TYPES.NOT_FOUND.status).json({
         msg: COMMON_ERROR_TYPES.NOT_FOUND.msg,

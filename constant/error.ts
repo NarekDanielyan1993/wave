@@ -94,7 +94,7 @@ export const FILE_ERROR_TYPES = {
         msg: 'Error occurred while reading the file.',
     },
     LIMIT_FILE_SIZE: {
-        msg: 'File size exceeds the limit: 5MB',
+        msg: 'File size exceeds the limit: 2MB',
         status: 400,
         name: 'LIMIT_FILE_SIZE',
     },
