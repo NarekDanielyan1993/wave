@@ -21,8 +21,9 @@ import {
 import { ZodSchema } from 'zod';
 
 export interface IFormProps<T> {
-    validationSchema: ZodSchema;
+    validationSchema?: ZodSchema;
     defaultValues: DefaultValues<T>;
+    isDisabled?: boolean;
 }
 
 export type fieldSizesTypesUnion = 'sm' | 'md' | 'lg' | 'xl';

@@ -38,11 +38,11 @@ model User {
   url           String?
   publicId      String?
   password      String
+  withProvider  Boolean   @default(false)
   firstName     String    @default("")
   lastName      String    @default("")
   emailVerified DateTime? @map("email_verified")
   verified      Boolean   @default(false)
-  history       String[]  @default([])
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   accounts      Account[]

@@ -1,11 +1,11 @@
 import FormInput from '@components/field';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { FieldValues, useForm as useReactHookForm } from 'react-hook-form';
 import { FormErrorTypes, IFormFieldProps, IFormProps } from 'types/form';
 
 const useForm = <T extends FieldValues>({
     validationSchema,
     defaultValues,
+    isDisabled,
 }: IFormProps<T>) => {
     const {
         register,
@@ -17,9 +17,10 @@ const useForm = <T extends FieldValues>({
         formState,
         clearErrors,
     } = useReactHookForm<T>({
+        disabled: isDisabled,
         mode: 'onChange',
         reValidateMode: 'onChange',
-        resolver: zodResolver(validationSchema),
+        ...(validationSchema ?? { resolver: validationSchema }),
         defaultValues,
     });
     console.log(formState.errors);

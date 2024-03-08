@@ -1,12 +1,12 @@
 import { UploadApiResponse, v2 as cloudinary } from 'cloudinary';
-import { config } from '..';
+import { config as conf } from '..';
 
 class CloudinaryService {
     constructor() {
         cloudinary.config({
-            cloud_name: config.CLOUDINARY_CLOUD_NAME,
-            api_key: config.CLOUDINARY_API_KEY,
-            api_secret: config.CLOUDINARY_API_SECRET,
+            cloud_name: conf.CLOUDINARY_CLOUD_NAME,
+            api_key: conf.CLOUDINARY_API_KEY,
+            api_secret: conf.CLOUDINARY_API_SECRET,
         });
     }
 
@@ -20,6 +20,7 @@ class CloudinaryService {
                 publicId: result.public_id,
             };
         } catch (err) {
+            console.log(err);
             throw new Error('Error happened while creating file.');
         }
     }
@@ -32,5 +33,7 @@ class CloudinaryService {
         }
     }
 }
+
+export const config = { api: { bodyParser: { sizeLimit: '4mb' } } };
 
 export default CloudinaryService;

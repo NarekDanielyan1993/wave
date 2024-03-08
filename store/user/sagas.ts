@@ -8,6 +8,7 @@ import {
     AddToHistoryPayloadType,
     GetHistoryPayloadType,
     GetUserProfilePayloadType,
+    IAddProfileImagePayload,
     IDeleteProfileImagePayload,
     UpdateUserEmailPayloadType,
     UpdateUserPayloadType,
@@ -98,7 +99,7 @@ function* addToCartGenerator(action: PayloadAction<AddToCartPayloadType>) {
 }
 
 function* addProfileImageGenerator(
-    action: PayloadAction<AddToCartPayloadType>
+    action: PayloadAction<IAddProfileImagePayload>
 ) {
     yield put(isUserProfileImageLoading(true));
     try {

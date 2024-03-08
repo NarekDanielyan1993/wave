@@ -27,6 +27,13 @@ export async function readFile(f: File): Promise<string> {
     });
 }
 
+export const dataUrlToFile = (url: string, fileName: string) => {
+    const i = url.indexOf('base64,');
+    const buffer = Buffer.from(url.slice(i + 7), 'base64');
+    const file = new File([buffer], fileName, { type: 'image/png' });
+    return file;
+};
+
 export async function generateBcryptToken(payload: string, saltRounds = 10) {
     try {
         const salt = await bcrypt.genSalt(saltRounds);
@@ -88,7 +95,7 @@ export const validateRequest =
                     COMMON_ERROR_TYPES.VALIDATION_ERROR.status,
                     error?.issues?.map((issue: any) => issue.message)
                 );
-                handleError(validationError, res);
+                return handleError(validationError, res);
             }
             handleError(error, res);
         }

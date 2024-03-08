@@ -26,19 +26,32 @@ router.post(validateRequest(authSignUpValidationSchema), async (req, res) => {
         const { email, password, firstName, lastName }: AuthSignUpTypes =
             req.body;
         const userService = new UserService();
-        const isEmailExists = await userService.getByEmail(email);
-        if (isEmailExists) {
+        const user = await userService.getByEmail(email);
+        if (user && !user.withProvider) {
             throw new ForbiddenError(
                 USER_ERROR_TYPES.EMAIL_EXISTS.msg,
                 USER_ERROR_TYPES.EMAIL_EXISTS.status
             );
         }
-        const newUser: IUserResponse = await userService.createUser({
-            email,
-            password,
-            firstName,
-            lastName,
-        });
+        let newUser = {} as IUserResponse;
+        if (user?.withProvider) {
+            const hashedPassword = await userService.hashPassword(password);
+            newUser = await userService.updateUserProfile(user.email, {
+                email,
+                password: hashedPassword,
+                firstName,
+                lastName,
+                withProvider: false,
+            });
+        } else {
+            newUser = await userService.createUser({
+                email,
+                password,
+                firstName,
+                lastName,
+                withProvider: false,
+            });
+        }
 
         const emailToken: string = userService.generateToken(newUser.id);
         const verificationToken = new VerificationTokenService();

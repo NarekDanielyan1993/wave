@@ -14,16 +14,20 @@ const Input = ({
     name,
     isInvalid,
     error,
+    isDisabled,
 }: {
-    onChange: (e: ChangeEvent<Element>) => void;
+    onChange: (e: ChangeEvent<HTMLInputElement>) => void;
     name: string;
     label: string | undefined;
     isInvalid: boolean | undefined;
     error: string | undefined;
+    value: number | string;
+    isDisabled: boolean;
 }) => (
     <StyledFormControl>
         <Box pos="relative">
             <StyledInput
+                isDisabled={isDisabled}
                 isInvalid={isInvalid}
                 onChange={onChange}
                 placeholder=" "

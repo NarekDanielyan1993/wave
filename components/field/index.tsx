@@ -5,7 +5,7 @@ import { Box, Checkbox, Select } from '@chakra-ui/react';
 import { ChakraFieldDefaultOptions, IFormInputProps } from 'types';
 import FileSelect from './fileSelect';
 import Input from './input';
-import NumberInput from './numberInput';
+import NumericInput from './numericInput';
 import {
     StyledErrorText,
     StyledFormControl,
@@ -155,7 +155,7 @@ const FormInput = <T extends FieldValues>({
                         <>
                             <StyledFormControl>
                                 <Box pos="relative">
-                                    <NumberInput
+                                    <NumericInput
                                         onChange={onChange}
                                         placeholder=" "
                                         value={value}
@@ -183,6 +183,7 @@ const FormInput = <T extends FieldValues>({
                         <>
                             <Input
                                 error={error}
+                                isDisabled={!!defaultOptions.disabled}
                                 isInvalid={defaultOptions.isInvalid}
                                 label={defaultOptions.label}
                                 name={name}

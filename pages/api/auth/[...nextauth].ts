@@ -1,5 +1,8 @@
 import { PrismaAdapter } from '@auth/prisma-adapter';
-import { AUTH_SESSION_OPTIONS_SERVER } from '@constant/auth';
+import {
+    AUTH_SESSION_OPTIONS_SERVER,
+    SESSION_PROVIDERS_TYPES,
+} from '@constant/auth';
 import { USER_ERROR_TYPES } from '@constant/error';
 import prismaAdapter from '@lib/db';
 import UserService from '@lib/services/user';
@@ -7,10 +10,11 @@ import {
     AuthSignInTypes,
     authSignInValidationSchema,
 } from 'common/validation/auth';
+import { IncomingMessage, ServerResponse } from 'http';
 import { config } from 'lib';
 import { NextApiRequest, NextApiResponse } from 'next';
 import type { Session, User } from 'next-auth';
-import NextAuth, { getServerSession } from 'next-auth';
+import NextAuth, { Account, getServerSession } from 'next-auth';
 import type { Adapter } from 'next-auth/adapters';
 import { type JWT } from 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
@@ -27,13 +31,13 @@ export const authOptions = {
     debug: config.isDev,
     secret: config.NEXTAUTH_SECRET,
     logger: {
-        error(code, metadata) {
+        error(code: any, metadata: any) {
             console.log({ type: 'inside error logger', code, metadata });
         },
-        warn(code) {
+        warn(code: any) {
             console.log({ type: 'inside warn logger', code });
         },
-        debug(code, metadata) {
+        debug(code: any, metadata: any) {
             console.log({ type: 'inside debug logger', code, metadata });
         },
     },
@@ -57,7 +61,7 @@ export const authOptions = {
                 const userService = new UserService();
                 const currentUser: IUserResponseWIthPassword | null =
                     await userService.getAllData(email);
-                if (!currentUser) {
+                if (!currentUser || (currentUser && currentUser.withProvider)) {
                     throw new Error(USER_ERROR_TYPES.USER_NOT_FOUND.msg);
                 }
                 const isValid = await userService.verifyPassword(
@@ -71,6 +75,7 @@ export const authOptions = {
                     id: currentUser.id,
                     email: currentUser.email,
                     role: currentUser.role,
+                    isProvider: false,
                 };
                 return userAuth;
             },
@@ -105,6 +110,7 @@ export const authOptions = {
                     const { email } = profile;
                     userData = await userService.createUser!({
                         email: email as string,
+                        withProvider: true,
                         password: account?.providerAccountId as string,
                         firstName: profile.given_name,
                         lastName: profile.family_name,
@@ -125,7 +131,15 @@ export const authOptions = {
             }
             return true;
         },
-        async jwt({ user, token }: { user: User; token: JWT }) {
+        async jwt({
+            user,
+            token,
+            account,
+        }: {
+            user: User;
+            token: JWT;
+            account: Account | null;
+        }) {
             if (user) {
                 token = {
                     ...token,
@@ -133,6 +147,9 @@ export const authOptions = {
                         id: user.id,
                         email: user.email,
                         role: user.role,
+                        isProvider:
+                            user.isProvider ??
+                            !!(account?.type === SESSION_PROVIDERS_TYPES.OAUTH),
                     },
                 };
             }
@@ -147,15 +164,13 @@ export const authOptions = {
             token: JWT;
             user: User;
         }) {
-            console.log(user);
-            console.log(session);
-            console.log(token);
             session = {
                 ...session,
                 user: {
                     email: token.user.email,
                     id: token.user.id,
                     role: token.user.role,
+                    isProvider: token.user.isProvider,
                 } as User,
             } as Session;
             return session;
@@ -171,5 +186,9 @@ export const authOptions = {
 };
 
 export default NextAuth(authOptions);
-export const getAuth = async (req: NextApiRequest, res: NextApiResponse) =>
-    await getServerSession(req, res, authOptions);
+export const getAuth = async (
+    req:
+        | NextApiRequest
+        | (IncomingMessage & { cookies: Partial<{ [key: string]: string }> }),
+    res: NextApiResponse | ServerResponse
+) => await getServerSession(req, res, authOptions);

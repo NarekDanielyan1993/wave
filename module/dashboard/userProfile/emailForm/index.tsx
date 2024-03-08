@@ -4,6 +4,7 @@ import {
     UserProfileEmailValidationTypes,
     userProfileEmailValidationSchema,
 } from 'common/validation/user';
+import { useSession } from 'next-auth/react';
 import { IUser } from 'types';
 
 const EmailForm = ({
@@ -15,14 +16,19 @@ const EmailForm = ({
     userData: IUser;
     isEmailLoading: boolean;
 }) => {
+    const {
+        data: { user },
+    } = useSession();
     const defaultValues: UserProfileEmailValidationTypes = {
         email: userData?.email || '',
     };
+    console.log(user);
 
     const { handleSubmit, FormField, formState } =
         useForm<UserProfileEmailValidationTypes>({
             validationSchema: userProfileEmailValidationSchema,
             defaultValues,
+            isDisabled: true,
         });
 
     const formSubmitHandler = (data: UserProfileEmailValidationTypes) => {
@@ -34,6 +40,7 @@ const EmailForm = ({
             {FormField({
                 name: 'email',
                 label: 'Email',
+                disabled: user?.isProvider,
             })}
             <Button
                 isDisabled={!(formState.isValid && formState.isDirty)}

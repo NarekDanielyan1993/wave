@@ -11,7 +11,6 @@ import jwt from 'jsonwebtoken';
 
 import { DATABASE_MODELS, USER_MODEL_FIELDS } from '@constant/db';
 import { config } from '@utils/config';
-import { AuthSignUpTypes } from 'common/validation/auth';
 import {
     ICartsResponseClient,
     IHistory,
@@ -35,9 +34,6 @@ class UserService implements IUserService {
                 where: {
                     email,
                 },
-                select: prismaExclude(DATABASE_MODELS.USER, [
-                    USER_MODEL_FIELDS.PASSWORD,
-                ]),
             });
         } catch (error) {
             throw new InternalServerError();
@@ -76,19 +72,15 @@ class UserService implements IUserService {
 
     async createUser({
         password,
-        email,
-        firstName,
-        lastName,
-    }: AuthSignUpTypes): Promise<IUserResponse> {
+        ...userData
+    }: Prisma.UserCreateInput): Promise<IUserResponse> {
         try {
             const hashedPassword = await this.hashPassword(password);
 
             const user = await this.prisma.user.create({
                 data: {
                     password: hashedPassword,
-                    email,
-                    firstName,
-                    lastName,
+                    ...userData,
                 },
             });
 
@@ -299,7 +291,7 @@ class UserService implements IUserService {
         return result;
     }
 
-    async hashPassword(password: string): Promise<string> {
+    public async hashPassword(password: string): Promise<string> {
         return hashSync(password, AUTH_ENCRYPTION_LENGTH);
     }
 }

@@ -19,6 +19,11 @@ export enum SESSION_PROVIDERS {
     GOOGLE = 'google',
 }
 
+export enum SESSION_PROVIDERS_TYPES {
+    CREDENTIALS = 'credentials',
+    OAUTH = 'oauth',
+}
+
 export const AUTH_SESSION_OPTIONS_SERVER = {
     maxAge: 60 * 60 * 24 * 30, // 30 Days
     strategy: SESSION_STRATEGIES.JWT,

@@ -1,14 +1,9 @@
 import { Prisma, UserRole } from '@prisma/client';
-import { AuthTypes } from 'common/validation/auth';
+import { AuthSignUpTypes } from 'common/validation/auth';
 import { SESSION_PROVIDERS } from 'constant/auth';
 import { UppercaseKeys } from 'types/common';
 import { Keys } from 'types/database';
 import type { IProductResponse } from 'types/product';
-
-// export enum UserRole {
-//     ADMIN,
-//     USER,
-// }
 
 export interface IUserRole {
     name: string;
@@ -33,6 +28,7 @@ export interface IUser {
     lastName: string;
     url: string | null;
     publicId: string | null;
+    withProvider?: boolean;
 }
 
 export interface IUserProfile {
@@ -136,12 +132,12 @@ export interface IUserService {
     verifyEmail: (id: string) => Promise<IUserResponse>;
     getByEmail: (email: string) => Promise<IUserResponse | null>;
     getById(id: string): Promise<IUserResponse | null>;
-    createUser: (user: AuthTypes) => Promise<IUserResponse>;
+    createUser: (user: AuthSignUpTypes) => Promise<IUserResponse>;
     updateById(
         id: string,
         userData: Prisma.UserUpdateInput
     ): Promise<IUserResponse>;
-    addToCart: ({ id, productId }: ICart) => Promise<ICart>;
+    addToCart: (cart: ICart) => Promise<ICart>;
     addToHistory(history: IHistory[]): Promise<Prisma.BatchPayload>;
     getHistory(userId: string): Promise<IHistory[] | null>;
     removeCart(id: string[]): Promise<Prisma.BatchPayload>;

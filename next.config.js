@@ -1,6 +1,7 @@
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const withBundleAnalyzer = require('@next/bundle-analyzer');
 
-const bundleAnanlizer = withBundleAnalyzer({
+const bundleAnalizer = withBundleAnalyzer({
     enabled: process.env.ANALYZE === 'true',
 });
 
@@ -54,30 +55,6 @@ const nextConfig = {
         });
         return config;
     },
-    /*
-        pageExtensions: ['mdx', 'md', 'jsx', 'js', 'tsx', 'ts', 'mjs'],
-        webpack: (config, { webpack }) => {
-            config.module.rules.push({
-                test: /\.mjs$/,
-                include: /node_modules/,
-                type: 'javascript/auto',
-            });
-
-            // Ignore 'fs' and 'child_process' modules in client-side builds
-            if (!config.plugins) {
-                config.plugins = [];
-            }
-
-            config.plugins.push(
-                new webpack.IgnorePlugin({
-                    resourceRegExp: /^fs$|^(child_|worker_)?process$/,
-                    contextRegExp: /\/config$/,
-                })
-            );
-
-            return config;
-        },
-    */
 };
 
-module.exports = bundleAnanlizer(nextConfig);
+module.exports = bundleAnalizer(nextConfig);
