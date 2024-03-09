@@ -8,7 +8,9 @@ export const StyledShopCardContainer = chakra('div', {
         flexDir: 'column',
         gap: 6,
         p: 4,
-        boxShadow: 'sm',
+        borderRadius: '5px',
+        boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)',
+        cursor: 'pointer',
         border: `1px solid lightgray`,
     },
 });

@@ -6,7 +6,7 @@ const CartList = ({
     cart,
 }: {
     cart: IProductCart[];
-    removeCartHandler: (id: string[]) => void;
+    removeCartHandler: (product: IProductCart) => void;
 }) =>
     cart.map(c => (
         <CartItem cart={c} key={c.id} removeCartHandler={removeCartHandler} />

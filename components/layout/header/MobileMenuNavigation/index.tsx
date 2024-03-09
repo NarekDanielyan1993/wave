@@ -9,19 +9,28 @@ import {
 } from '@chakra-ui/react';
 import Link from '@components/button/link';
 import useGenerateNavLinks from '@hooks/useGenerateNavLinks';
-import { useAppSelector } from '@store/create-store';
-import { usersSelector } from '@store/user/selectors';
 import { useRouter } from 'next/router';
 import { NavLinkTypes } from 'types';
 
 const MobileMenMenuNavigation = () => {
-    const { links } = useGenerateNavLinks();
+    const { links, isAuth, ShoppingCartBadge } = useGenerateNavLinks();
     const { asPath } = useRouter();
-    const {
-        cart: { quantity },
-    } = useAppSelector(usersSelector);
     return (
         <ChakraMenu autoSelect={false}>
+            {isAuth && (
+                <Link
+                    aria-current={
+                        asPath === '/dashboard/account/cart'
+                            ? 'page'
+                            : undefined
+                    }
+                    href="/dashboard/account/cart"
+                    marginLeft="auto"
+                    variant="secondary"
+                >
+                    {ShoppingCartBadge}
+                </Link>
+            )}
             <MenuButton
                 aria-label="Options"
                 as={IconButton}
@@ -44,10 +53,6 @@ const MobileMenMenuNavigation = () => {
                                     sx={{ width: '100%' }}
                                     variant="secondary"
                                 >
-                                    {link.url === '/dashboard/cart' &&
-                                    quantity > 0
-                                        ? quantity
-                                        : ''}{' '}
                                     {link.text}
                                 </Link>
                             </MenuItem>

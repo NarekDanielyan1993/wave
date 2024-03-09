@@ -1,12 +1,13 @@
-import { Button } from '@chakra-ui/react';
 import IconButton from '@components/button/icon-button';
 import ImageComponent from '@components/image';
+import { PRODUCT_ROUTES } from '@constant/route';
 import { useAppSelector } from '@store/create-store';
 import { productsSelector } from '@store/products/selectors';
 import { userSelector, usersSelector } from '@store/user/selectors';
 import { withCurrency } from '@utils/helper';
 import { useRouter } from 'next/router';
-import { type IProductCard } from 'types/product';
+import { MouseEvent, useCallback } from 'react';
+import { IProductCard } from 'types';
 import {
     StyledHomeCardActions,
     StyledHomeCardContainer,
@@ -24,14 +25,24 @@ const HomeCard = ({ product, addToCartHandler }: IProductCard) => {
     const { isCartLoading } = useAppSelector(usersSelector);
     const { images } = useAppSelector(productsSelector);
     const image = images.find(im => im.productId === product.id);
+
+    const navigateToProductDetailHandler = useCallback(() => {
+        router.push(`${PRODUCT_ROUTES.PRODUCT_DETAIL}/${product.id}`);
+    }, []);
+
+    const addToCart = (e: MouseEvent<HTMLButtonElement>) => {
+        e.stopPropagation();
+        addToCartHandler({ userId: id, productId: product.id });
+    };
+
     return (
-        <StyledHomeCardContainer>
+        <StyledHomeCardContainer onClick={navigateToProductDetailHandler}>
             <StyledHomeCardContent>
                 <StyledHomeCardImage>
                     <ImageComponent layout="fill" src={image?.url} />
                 </StyledHomeCardImage>
                 <StyledHomeCardTitle>{product.brand.name}</StyledHomeCardTitle>
-                <StyledHomeCardText isTruncated as="p">
+                <StyledHomeCardText as="p" isTruncated>
                     {product.model}
                 </StyledHomeCardText>
                 <StyledHomeCardText as="p">
@@ -39,20 +50,13 @@ const HomeCard = ({ product, addToCartHandler }: IProductCard) => {
                 </StyledHomeCardText>
             </StyledHomeCardContent>
             <StyledHomeCardActions>
-                <Button
-                    flexGrow={3}
-                    onClick={() => router.push(`productDetail/${product.id}`)}
-                    variant="tertiary"
-                >
-                    view product
-                </Button>
                 <IconButton
-                    isDisabled={isCartLoading}
+                    borderRadius="5px"
                     iconName="shop"
-                    onClick={() =>
-                        addToCartHandler({ userId: id, productId: product.id })
-                    }
-                    variant="iconPrimary"
+                    isDisabled={isCartLoading}
+                    onClick={addToCart}
+                    variant="primary"
+                    w="full"
                 />
             </StyledHomeCardActions>
         </StyledHomeCardContainer>

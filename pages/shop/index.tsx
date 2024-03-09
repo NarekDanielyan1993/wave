@@ -4,9 +4,8 @@ import { getFrets } from '@store/frets/action';
 import { getBrands, getPaginatedProducts } from '@store/products/action';
 import { getSite } from '@store/site/action';
 import { getCarts, getUser } from '@store/user/action';
-import DashboardLayout from 'module/dashboard/dashboardLayout';
 import Products from 'module/shop/products';
-import ShopSideBar from 'module/shop/shopSideBar';
+import ShopLayout from 'module/shop/shopLayout';
 import type { GetServerSidePropsContext } from 'next';
 import { type Session } from 'next-auth';
 import { useCallback } from 'react';
@@ -23,11 +22,9 @@ const ShopPage = () => {
     );
 
     return (
-        <DashboardLayout
-            sideBar={<ShopSideBar filterProducts={filterProducts} />}
-        >
+        <ShopLayout filterProducts={filterProducts}>
             <Products />
-        </DashboardLayout>
+        </ShopLayout>
     );
 };
 

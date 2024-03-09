@@ -1,10 +1,11 @@
 import { Box } from '@chakra-ui/react';
 import Carousel from '@components/carousel';
-import ImageComponent from '@components/image';
 import Promotion from '@components/promotion';
+import { FILE_UPLOAD_BASE_URL } from '@constant/file';
 import useGeneratePromotion from '@hooks/useGenerateSliderPromotion';
 import { useAppSelector } from '@store/create-store';
 import { siteSelector } from '@store/site/selectors';
+import Image from 'next/image';
 import { SliderPromotionTypes } from 'types';
 import { StyledPromotionContainer } from './style';
 
@@ -28,12 +29,12 @@ const SliderComponent = () => {
                             height: '80vh',
                         }}
                     >
-                        <ImageComponent
+                        <Image
                             alt=""
                             layout="fill"
                             objectFit="cover"
                             priority
-                            src={siteImages[index]?.url}
+                            src={`${FILE_UPLOAD_BASE_URL}/${siteImages[index]?.url}`}
                         />
                         <StyledPromotionContainer>
                             <Promotion

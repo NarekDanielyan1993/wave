@@ -1,4 +1,5 @@
 import FormInput from '@components/field';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { FieldValues, useForm as useReactHookForm } from 'react-hook-form';
 import { FormErrorTypes, IFormFieldProps, IFormProps } from 'types/form';
 
@@ -20,7 +21,7 @@ const useForm = <T extends FieldValues>({
         disabled: isDisabled,
         mode: 'onChange',
         reValidateMode: 'onChange',
-        ...(validationSchema ?? { resolver: validationSchema }),
+        ...(validationSchema && { resolver: zodResolver(validationSchema) }),
         defaultValues,
     });
     console.log(formState.errors);

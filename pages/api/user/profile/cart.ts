@@ -3,11 +3,7 @@ import { VALIDATION_SOURCES } from '@constant/validation';
 import UserService from '@lib/services/user';
 import { InternalServerError, handleError } from '@utils/error-handler';
 import { validateRequest } from '@utils/helper';
-import {
-    cartCreateSchema,
-    cartDeleteSchema,
-    cartGetSchema,
-} from 'common/validation/user';
+import { cartCreateSchema, cartGetSchema } from 'common/validation/user';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
 import type { CartCreateBody, CartDeleteBody, IUserService } from 'types';
@@ -61,12 +57,12 @@ router.delete(
     //     resource: PERMISSION_RESOURCES.PROFILE,
     //     permissions: [PERMISSION_ACTION.UPDATE],
     // }),
-    validateRequest(cartDeleteSchema),
+    // validateRequest(cartDeleteSchema),
     async (req: NextApiRequest, res: NextApiResponse) => {
         try {
-            const data = req.body as CartDeleteBody;
+            const { product } = req.body as CartDeleteBody;
             const user: IUserService = new UserService();
-            const carts = await user.removeCart(data.ids);
+            const carts = await user.removeCart(product.id);
             if (!carts) {
                 throw new InternalServerError();
             }

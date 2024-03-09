@@ -8,7 +8,7 @@ export const StyledDrawer = chakra(Box, {
         height: 'full',
         display: 'flex',
         flexDir: 'column',
-        w: '60%',
+        w: '70%',
         maxW: '25rem',
         p: '1rem',
         zIndex: 1031,

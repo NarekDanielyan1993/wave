@@ -92,10 +92,10 @@ const userSlice = createSlice({
         },
         removeCartSuccess: (
             state: IUsersState,
-            action: PayloadAction<{ quantity: number; id: string[] }>
+            action: PayloadAction<IProductCart>
         ) => {
             state.cart.products = state.cart.products.filter(
-                product => !action.payload.id.some(c => c === product.id)
+                product => action.payload.id !== product.id
             );
             state.cart.quantity -= action.payload.quantity;
         },

@@ -42,7 +42,7 @@ const ProductSection = ({
                 isDisabled={isCartLoading}
                 leftIcon={<ShoppingCartIcon />}
                 onClick={() => addToCartHandler(product.id)}
-                variant="secondary"
+                variant="primary"
             >
                 add to cart
             </Button>

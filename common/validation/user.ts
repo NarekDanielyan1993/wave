@@ -26,9 +26,9 @@ export const cartGetSchema = z.object({
     userId: z.string(),
 });
 
-export const cartDeleteSchema = z.object({
-    ids: z.array(z.string()),
-});
+// export const cartDeleteSchema = z.object({
+//     ids: z.array(z.string()),
+// });
 
 export const profileHistoryCreateSchema = z.object({
     history: z.array(

@@ -17,7 +17,7 @@ const CartItem = ({
     cart,
     removeCartHandler,
 }: {
-    removeCartHandler: (id: string[]) => void;
+    removeCartHandler: (product: IProductCart) => void;
     cart: IProductCart;
 }) => {
     const { images } = useAppSelector(productsSelector);
@@ -54,7 +54,7 @@ const CartItem = ({
             </Box>
             <Button
                 marginLeft="auto"
-                onClick={() => removeCartHandler([cart.id])}
+                onClick={() => removeCartHandler(cart)}
                 variant="delete"
             >
                 Remove

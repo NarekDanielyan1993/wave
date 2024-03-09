@@ -1,4 +1,3 @@
-import Sidebar from '@components/sideBar';
 import { AUTH_ROUTES } from '@constant/route';
 import { wrapper, type SagaStore } from '@store/create-store';
 import { getSite, getSiteImages } from '@store/site/action';
@@ -13,7 +12,7 @@ import { CustomNextPage } from 'types';
 import PageTitle from '../../../module/dashboard/dashboardLayout/pageTitle';
 
 const SitePage: CustomNextPage = () => (
-    <DashboardLayout sideBar={<Sidebar />}>
+    <DashboardLayout>
         <PageTitle>Manage site</PageTitle>
         <Site />
     </DashboardLayout>

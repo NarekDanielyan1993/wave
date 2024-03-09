@@ -91,6 +91,7 @@ class ProductService implements IProductService {
             });
             return newProduct;
         } catch (error) {
+            console.log(error);
             throw new InternalServerError('Failed to add product.');
         }
     }

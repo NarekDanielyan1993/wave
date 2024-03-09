@@ -147,13 +147,13 @@ function* deleteProfileImageGenerator(
 }
 
 function* removeCartGenerator(action: PayloadAction<RemoveCartPayloadType>) {
-    const { id } = action.payload;
+    const { product } = action.payload;
     yield put(isCartLoading(true));
     try {
         const { data } = yield call(apiRequest.delete, USER_API.REMOVE_CART, {
-            data: { ids: id },
+            data: { product },
         });
-        yield put(removeCartSuccess({ quantity: data.count, id }));
+        yield put(removeCartSuccess(product));
     } catch (error: any) {
         yield put(
             showNotification({

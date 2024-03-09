@@ -5,12 +5,11 @@ import { z } from 'zod';
 export const createUpdateProductValidationSchema = z.object({
     model: z.string(),
     brandId: z.string(),
-    fretId: z.number(),
+    fretId: z.string(),
     woodType: z.string(),
     description: z.string(),
     price: z.number(),
     available: z.number(),
-    itemsSold: z.number(),
     shipping: z.boolean().optional(),
     file: z
         .object({
@@ -57,12 +56,7 @@ export const addEditProductSchema = z.object({
     model: z.string().min(1, { message: DEFAULT_VALIDATION_ERRORS.required }),
     available: positiveNumberSchema,
     fretId: z.string(),
-    price: z
-        .string({ invalid_type_error: DEFAULT_VALIDATION_ERRORS.required })
-        .min(1, { message: DEFAULT_VALIDATION_ERRORS.required })
-        .refine(value => !Number.isNaN(Number(value)), 'Input number')
-        .refine(value => Number(value) > 0, 'Input positive number')
-        .transform(value => Number(value)),
+    price: positiveNumberSchema,
     woodType: z.string(),
     description: z
         .string()

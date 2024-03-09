@@ -1,5 +1,6 @@
 import { Button, Text } from '@chakra-ui/react';
 import { PAYMENT_API } from '@constant/api';
+import { SHOP_ROUTE } from '@constant/route';
 import { useAppSelector } from '@store/create-store';
 import { usersSelector } from '@store/user/selectors';
 import {
@@ -23,7 +24,7 @@ const PaymentForm = () => {
         e.preventDefault();
 
         try {
-            if (elements == null) {
+            if (stripe === null || elements == null) {
                 return;
             }
             const { error: submitError } = await elements.submit();
@@ -40,7 +41,7 @@ const PaymentForm = () => {
                     amount: cart.subtotal,
                 },
             });
-            // router.push('/shop');
+            router.push(SHOP_ROUTE);
         } catch (error) {
             console.log(error);
         } finally {

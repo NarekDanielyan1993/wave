@@ -1,5 +1,8 @@
+import ShoppingCartBadge from '@components/badge/shoppingCartBadge';
 import { SESSION_STATUS } from '@constant/auth';
 import { AUTH_ROUTES } from '@constant/route';
+import { useAppSelector } from '@store/create-store';
+import { usersSelector } from '@store/user/selectors';
 import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import type { NavLinkTypes } from 'types';
@@ -7,14 +10,18 @@ import type { NavLinkTypes } from 'types';
 const useGenerateNavLinks = () => {
     const { status } = useSession();
     const router = useRouter();
-    let links = [
+    const {
+        cart: { quantity },
+    } = useAppSelector(usersSelector);
+
+    let MobileNavlinks = [
         {
             text: 'Home',
             url: '/',
             type: 'link',
         },
         {
-            text: 'Guitars',
+            text: 'Shop',
             url: '/shop',
             type: 'link',
         },
@@ -24,15 +31,16 @@ const useGenerateNavLinks = () => {
             type: 'link',
         },
     ] as NavLinkTypes[];
+
     const navLinksUpperWithSignIn: NavLinkTypes[] = [
         {
-            text: 'MY Cart',
-            url: '/dashboard/cart',
+            text: <ShoppingCartBadge quantity={quantity} />,
+            url: '/dashboard/account/cart',
             type: 'link',
         },
         {
             text: 'MY Account',
-            url: '/dashboard/profile',
+            url: '/dashboard/account/profile',
             type: 'link',
         },
         {
@@ -52,7 +60,7 @@ const useGenerateNavLinks = () => {
             type: 'link',
         },
         {
-            text: 'Guitars',
+            text: 'Shop',
             url: '/shop',
             type: 'link',
         },
@@ -69,20 +77,15 @@ const useGenerateNavLinks = () => {
     let navLinksUpper: NavLinkTypes[] = signOutNavLinksUpper;
     if (status === SESSION_STATUS.AUTHENTICATED) {
         navLinksUpper = navLinksUpperWithSignIn;
-        links = [
-            {
-                text: 'MY Cart',
-                url: '/dashboard/cart',
-                type: 'link',
-            },
+        MobileNavlinks = [
             {
                 text: 'MY Account',
-                url: '/dashboard/account',
+                url: '/dashboard/account/profile',
                 type: 'link',
             },
-            ...links,
+            ...MobileNavlinks,
         ];
-        links.splice(links.length - 1, 1, {
+        MobileNavlinks.splice(MobileNavlinks.length - 1, 1, {
             text: 'LOG OUT',
             url: '/',
             type: 'button',
@@ -93,7 +96,13 @@ const useGenerateNavLinks = () => {
         });
     }
 
-    return { upperLinks: navLinksUpper, bottomLinks: navLinksBottom, links };
+    return {
+        isAuth: status === SESSION_STATUS.AUTHENTICATED,
+        upperLinks: navLinksUpper,
+        bottomLinks: navLinksBottom,
+        links: MobileNavlinks,
+        ShoppingCartBadge: <ShoppingCartBadge quantity={quantity} />,
+    };
 };
 
 export default useGenerateNavLinks;

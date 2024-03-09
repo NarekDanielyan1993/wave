@@ -1,4 +1,4 @@
-import type { AddToCartPayloadType, cardViewTypesUnion } from 'types';
+import type { AddToCartPayloadType, CardViewTypeUnion } from 'types';
 import type { IProductResponse } from 'types/product';
 import Card from '..';
 import { StyledCardList } from './style';
@@ -8,7 +8,7 @@ const CardList = ({
     type,
     addToCartHandler,
 }: {
-    type: cardViewTypesUnion;
+    type: CardViewTypeUnion;
     cards: IProductResponse[];
     addToCartHandler: (data: AddToCartPayloadType) => void;
 }) => (

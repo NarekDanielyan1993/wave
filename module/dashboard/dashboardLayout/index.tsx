@@ -1,5 +1,6 @@
 import MobileMenu from '@components/layout/mobileMenu';
-import { LayoutTypes } from 'types';
+import Sidebar from '@components/sideBar';
+import { DashboardLayoutType } from 'types';
 import {
     StyledDashboardContainer,
     StyledDashboardLeftSide,
@@ -7,12 +8,14 @@ import {
     StyledRightSide,
 } from './style';
 
-const DashboardLayout = ({ children, sideBar }: LayoutTypes) => (
+const DashboardLayout = ({ children }: DashboardLayoutType) => (
     <StyledDashboardContainer>
         <StyledDashboardWrapper>
-            <MobileMenu hideFrom="lg">{sideBar}</MobileMenu>
+            <MobileMenu hideFrom="lg">
+                <Sidebar />
+            </MobileMenu>
             <StyledDashboardLeftSide hideBelow="lg">
-                {sideBar}
+                <Sidebar />
             </StyledDashboardLeftSide>
             <StyledRightSide>{children}</StyledRightSide>
         </StyledDashboardWrapper>

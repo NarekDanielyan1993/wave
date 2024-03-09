@@ -1,11 +1,11 @@
 import History from './history';
 import Overview from './overview';
 
-const Account = () => (
+const MyHistory = () => (
     <>
         <Overview />
         <History />
     </>
 );
 
-export default Account;
+export default MyHistory;

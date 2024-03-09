@@ -1,4 +1,3 @@
-import Sidebar from '@components/sideBar';
 import { AUTH_ROUTES } from '@constant/route';
 import { wrapper, type SagaStore } from '@store/create-store';
 import { getFrets } from '@store/frets/action';
@@ -15,7 +14,7 @@ import { END } from 'redux-saga';
 import type { CustomNextPage } from 'types';
 
 const AdminFretsPage: CustomNextPage = () => (
-    <DashboardLayout sideBar={<Sidebar />}>
+    <DashboardLayout>
         <PageTitle>frets</PageTitle>
         <AdminFrets />
     </DashboardLayout>

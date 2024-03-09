@@ -1,13 +1,14 @@
-import { Button } from '@chakra-ui/react';
 import IconButton from '@components/button/icon-button';
 import ImageComponent from '@components/image';
 import TruncatedText from '@components/trancatedText';
+import { PRODUCT_ROUTES } from '@constant/route';
 import { useAppSelector } from '@store/create-store';
 import { productsSelector } from '@store/products/selectors';
 import { userSelector } from '@store/user/selectors';
 import { withCurrency } from '@utils/helper';
 import { useRouter } from 'next/router';
-import { type IProductCard } from 'types/product';
+import { MouseEvent, useCallback } from 'react';
+import { IProductCard } from 'types';
 import {
     StyledShopCardActions,
     StyledShopCardContainer,
@@ -26,8 +27,16 @@ const ShopCard = ({ product, addToCartHandler }: IProductCard) => {
     } = useAppSelector(userSelector);
     const { images } = useAppSelector(productsSelector);
     const image = images.find(im => im.productId === product.id);
+    const navigateToProductDetailHandler = useCallback(() => {
+        router.push(`${PRODUCT_ROUTES.PRODUCT_DETAIL}/${product.id}`);
+    }, []);
+
+    const addToCart = (e: MouseEvent<HTMLButtonElement>) => {
+        e.stopPropagation();
+        addToCartHandler({ userId: id, productId: product.id });
+    };
     return (
-        <StyledShopCardContainer>
+        <StyledShopCardContainer onClick={navigateToProductDetailHandler}>
             <StyledShopCardContentWrapper
                 alignItems={{ base: 'center', md: 'flex-start' }}
                 flexDir={{ base: 'column', md: 'row' }}
@@ -53,23 +62,12 @@ const ShopCard = ({ product, addToCartHandler }: IProductCard) => {
                 </StyledShopCardContent>
             </StyledShopCardContentWrapper>
             <StyledShopCardActions>
-                <Button
-                    color="brand.primary"
-                    onClick={() => router.push(`productDetail/${product.id}`)}
-                    variant="tertiary"
-                >
-                    view product
-                </Button>
                 <IconButton
                     iconName="shop"
-                    onClick={() =>
-                        addToCartHandler({
-                            userId: id,
-                            productId: product.id,
-                        })
-                    }
+                    onClick={addToCart}
                     size="md"
-                    variant="iconPrimary"
+                    variant="primary"
+                    w="full"
                 />
             </StyledShopCardActions>
         </StyledShopCardContainer>

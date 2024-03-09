@@ -254,11 +254,24 @@ class UserService implements IUserService {
         }
     }
 
-    async removeCart(id: string[]): Promise<Prisma.BatchPayload> {
+    async removeCart(id: string): Promise<Prisma.BatchPayload> {
         try {
             const user = await this.prisma.cart.deleteMany({
                 where: {
-                    productId: { in: id },
+                    productId: id,
+                },
+            });
+            return user;
+        } catch (error) {
+            throw new InternalServerError('Failed to remove cart.');
+        }
+    }
+
+    async removeCarts(ids: string[]): Promise<Prisma.BatchPayload> {
+        try {
+            const user = await this.prisma.cart.deleteMany({
+                where: {
+                    productId: { in: ids },
                 },
             });
             return user;

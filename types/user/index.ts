@@ -97,7 +97,7 @@ export type CartCreateBody = {
 };
 
 export type CartDeleteBody = {
-    ids: string[];
+    product: IProductCart;
 };
 
 export type ProfileEmailUpdateBody = {
@@ -140,7 +140,8 @@ export interface IUserService {
     addToCart: (cart: ICart) => Promise<ICart>;
     addToHistory(history: IHistory[]): Promise<Prisma.BatchPayload>;
     getHistory(userId: string): Promise<IHistory[] | null>;
-    removeCart(id: string[]): Promise<Prisma.BatchPayload>;
+    removeCart(id: string): Promise<Prisma.BatchPayload>;
+    removeCarts(ids: string[]): Promise<Prisma.BatchPayload>;
     getCarts: (userId: string) => Promise<ICartsResponseClient[] | null>;
     verifyPassword: (
         currentPassword: string,

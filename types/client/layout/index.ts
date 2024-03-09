@@ -1,5 +1,12 @@
-export type LayoutTypes = {
+import { GetPaginatedProductsActionPayload } from '../store';
+
+export type DashboardLayoutType = {
     children: React.ReactNode;
+};
+
+export type ShopLayoutType = {
+    children: React.ReactNode;
+    filterProducts: (data: GetPaginatedProductsActionPayload) => void;
 };
 
 // FOOTER

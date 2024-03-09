@@ -4,12 +4,13 @@ import { useAppDispatch, useAppSelector } from '@store/create-store';
 import { removeCart } from '@store/user/action';
 import { usersSelector } from '@store/user/selectors';
 import { withCurrency } from '@utils/helper';
+import { IProductCart } from 'types';
 import CartList from '../cartList';
 
 const Carts = () => {
     const dispatch = useAppDispatch();
-    const removeCartHandler = (id: string[]) => {
-        dispatch(removeCart({ id }));
+    const removeCartHandler = (product: IProductCart) => {
+        dispatch(removeCart({ product }));
     };
     const {
         cart: { products, subtotal },

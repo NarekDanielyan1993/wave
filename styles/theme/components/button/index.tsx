@@ -50,10 +50,10 @@ const Button = defineStyleConfig({
             },
         },
         tertiary: {
-            backgroundColor: 'brand.primary.lighten',
-            color: 'brand.primary.main',
+            bgColor: 'brand.tertiary.main',
+            color: 'brand.common.black',
             _hover: {
-                backgroundColor: 'brand.primary.darken',
+                bgColor: 'brand.tertiary.darken',
             },
         },
         ghost: {

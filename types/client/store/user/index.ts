@@ -10,7 +10,7 @@ import {
     UPDATE_USER,
     UPDATE_USER_EMAIL,
 } from '@store/user/action';
-import { IUser, IUserResponse } from 'types/user';
+import { IProductCart, IUser, IUserResponse } from 'types/user';
 
 export type GET_USER_PROFILE_TYPE = typeof GET_USER_PROFILE;
 export type UPDATE_USER_EMAIL_TYPE = typeof UPDATE_USER_EMAIL;
@@ -95,7 +95,7 @@ export type RemoveCartActionTypes = {
 };
 
 export type RemoveCartPayloadType = {
-    id: string[];
+    product: IProductCart;
 };
 
 export type UpdateUserPayloadType = {

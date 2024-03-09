@@ -1,7 +1,6 @@
-import { Box, Text } from '@chakra-ui/react';
+import { Box, Button } from '@chakra-ui/react';
 import IconButton from '@components/button/icon-button';
 import CardList from '@components/card/cardList';
-import useObserver from '@hooks/useObserver';
 import { useAppDispatch, useAppSelector } from '@store/create-store';
 import { getProducts } from '@store/products/action';
 import { paginatedProductsSelector } from '@store/products/selectors';
@@ -16,7 +15,7 @@ const Products = () => {
         isProductsLoading,
         products,
     } = useAppSelector(paginatedProductsSelector);
-    const [grid, setGrid] = useState<'home' | 'shop'>('home');
+    const [isHomeGrid, setIsHomeGrid] = useState<boolean>(true);
     const dispatch = useAppDispatch();
     const getProductsHandler = useCallback(() => {
         dispatch(
@@ -35,35 +34,32 @@ const Products = () => {
         [page, filters]
     );
 
-    const { sentinelRef } = useObserver({
-        isEnabled: products.length < totalItems,
-        callback: () => getProductsHandler(),
-    });
-
     return (
         <>
             <StyledSectionWrapper>
                 <Box display="flex" gap={2} justifyContent="right" py={2}>
                     <IconButton
                         fontSize="1rem"
-                        iconName={grid === 'home' ? 'gridOn' : 'gridOff'}
-                        onClick={() =>
-                            setGrid(prev => (prev === 'home' ? 'shop' : 'home'))
-                        }
+                        iconName={isHomeGrid ? 'gridOn' : 'gridOff'}
+                        onClick={() => setIsHomeGrid(prev => !prev)}
                     />
                 </Box>
                 <CardList
                     addToCartHandler={addToCartHandler}
                     cards={products}
-                    type={grid}
+                    type={isHomeGrid ? 'home' : 'shop'}
                 />
-                <Box
-                    display="block"
-                    ref={sentinelRef}
-                    sx={{ textAlign: 'center', mt: 10 }}
-                >
-                    {isProductsLoading && <Text>Loading...</Text>}
-                </Box>
+                {products.length < totalItems ? (
+                    <Box display="block" sx={{ textAlign: 'center', mt: 10 }}>
+                        <Button
+                            isLoading={isProductsLoading}
+                            onClick={getProductsHandler}
+                            variant="tertiary"
+                        >
+                            Load More
+                        </Button>
+                    </Box>
+                ) : null}
             </StyledSectionWrapper>
         </>
     );

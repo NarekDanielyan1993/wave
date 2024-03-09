@@ -9,6 +9,10 @@ export const AUTH_ROUTES = {
 export const APP_BASE_ROUTE = '/';
 export const SHOP_ROUTE = '/shop';
 
+export const PRODUCT_ROUTES = {
+    PRODUCT_DETAIL: '/productDetail',
+};
+
 export const IMAGE_ROUTES = {
     IMAGE_NOT_AVAILABLE: '/images/image_not_availble.png',
 };

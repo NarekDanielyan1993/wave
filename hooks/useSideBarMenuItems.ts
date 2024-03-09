@@ -3,16 +3,16 @@ import { SideBarMenuItem, SideBarMenuSectionTypesUnion } from 'types';
 const useSideBarMenuItems = (which: SideBarMenuSectionTypesUnion) => {
     const userMenuItems: SideBarMenuItem[] = [
         {
-            text: 'Purchase History',
-            href: '/dashboard/account',
+            text: 'Profile',
+            href: '/dashboard/account/profile',
         },
         {
-            text: 'My account',
-            href: '/dashboard/profile',
+            text: 'History',
+            href: '/dashboard/account/history',
         },
         {
-            text: 'My cart',
-            href: '/dashboard/cart',
+            text: 'Cart',
+            href: '/dashboard/account/cart',
         },
     ];
     const adminMenuItems: SideBarMenuItem[] = [

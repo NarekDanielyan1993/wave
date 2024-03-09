@@ -6,6 +6,7 @@ import {
     ModalFooter,
     ModalHeader,
     ModalOverlay,
+    SimpleGrid,
 } from '@chakra-ui/react';
 import useForm from '@hooks/useForm';
 import { useAppDispatch, useAppSelector } from '@store/create-store';
@@ -40,9 +41,9 @@ const AddEditProductDialog = ({
         if (data) {
             const image = images.find(img => img?.productId === data.id);
             return {
-                available: data.available.toString(),
+                available: data.available,
                 fretId: data.frets.id,
-                price: data.price.toString(),
+                price: data.price,
                 model: data.model,
                 woodType: data.woodType,
                 description: data.description,
@@ -52,7 +53,7 @@ const AddEditProductDialog = ({
             };
         }
         return {
-            available: null,
+            available: '',
             fretId: frets[0]?.id,
             price: '',
             model: '',
@@ -98,7 +99,12 @@ const AddEditProductDialog = ({
     };
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose} scrollBehavior="inside">
+        <Modal
+            isOpen={isOpen}
+            onClose={onClose}
+            scrollBehavior="inside"
+            size="xl"
+        >
             <ModalOverlay />
             <ModalContent>
                 <ModalHeader>{data ? 'edit' : 'Add'} Product</ModalHeader>
@@ -111,44 +117,47 @@ const AddEditProductDialog = ({
                             name: 'file',
                             type: 'file',
                         })}
-                        {FormField({
-                            name: 'model',
-                            label: 'Model',
-                        })}
-                        {FormField({
-                            name: 'fretId',
-                            label: 'Frets',
-                            type: 'select',
-                            options: frets.map(fret => ({
-                                id: fret.id,
-                                name: fret.frets,
-                            })),
-                        })}
-                        {FormField({
-                            name: 'woodType',
-                            label: 'Wood type',
-                        })}
-                        {FormField({
-                            name: 'brand',
-                            type: 'select',
-                            label: 'Brand',
-                            options: brands.map(brand => ({
-                                id: brand.id,
-                                name: brand.name,
-                            })),
-                        })}
+                        <SimpleGrid columns={2} spacingX="1rem">
+                            {FormField({
+                                name: 'model',
+                                label: 'Model',
+                            })}
+                            {FormField({
+                                name: 'woodType',
+                                label: 'Wood type',
+                            })}
+                            {FormField({
+                                name: 'brand',
+                                type: 'select',
+                                label: 'Brand',
+                                options: brands.map(brand => ({
+                                    id: brand.id,
+                                    name: brand.name,
+                                })),
+                            })}
+                            {FormField({
+                                name: 'fretId',
+                                label: 'Frets',
+                                type: 'select',
+                                options: frets.map(fret => ({
+                                    id: fret.id,
+                                    name: fret.frets,
+                                })),
+                            })}
+
+                            {FormField({
+                                name: 'price',
+                                label: 'Price',
+                            })}
+                            {FormField({
+                                name: 'available',
+                                label: 'Available',
+                            })}
+                        </SimpleGrid>
                         {FormField({
                             name: 'description',
                             type: 'textarea',
                             label: 'Description',
-                        })}
-                        {FormField({
-                            name: 'price',
-                            label: 'Price',
-                        })}
-                        {FormField({
-                            name: 'available',
-                            label: 'Available',
                         })}
                         {FormField({
                             name: 'shipping',

@@ -1,4 +1,4 @@
-import type { AddToCartPayloadType, cardViewTypesUnion } from 'types';
+import type { AddToCartPayloadType, CardViewTypeUnion } from 'types';
 import { type IProductResponse } from 'types/product';
 import HomeCard from './home';
 import ShopCard from './shop';
@@ -9,7 +9,7 @@ const Card = ({
     addToCartHandler,
 }: {
     card: IProductResponse;
-    type: cardViewTypesUnion;
+    type: CardViewTypeUnion;
     addToCartHandler: (data: AddToCartPayloadType) => void;
 }) => {
     switch (type) {

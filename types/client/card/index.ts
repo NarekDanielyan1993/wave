@@ -9,7 +9,7 @@ export type CardItemTypes = {
     desc: string;
 };
 
-export type cardViewTypesUnion = 'home' | 'shop';
+export type CardViewTypeUnion = 'home' | 'shop';
 
 export type CardListTypes = {
     cards: CardItemTypes[];

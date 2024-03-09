@@ -67,8 +67,6 @@ router.post(
                 amount
             );
 
-            console.log(paymentIntent);
-
             const history = products.map(ca => ({
                 userId: session.user.id,
                 amount: ca.total,
@@ -79,18 +77,20 @@ router.post(
             await productService.updateMultipleProducts(productIds, {
                 itemsSold: { increment: 1 },
             });
-            const user: IUserService = new UserService();
-            const updatedHistory = await user.addToHistory(history);
+            const userService: IUserService = new UserService();
+            const updatedHistory = await userService.addToHistory(history);
             if (!updatedHistory) {
                 throw new InternalServerError();
             }
 
-            const cartsDeleted = await user.removeCart(
+            const cartsDeleted = await userService.removeCarts(
                 products.map(pr => pr.id)
             );
+
             if (!cartsDeleted) {
                 throw new InternalServerError();
             }
+
             res.status(200).json(paymentIntent);
         } catch (error) {
             handleError(error, res);
