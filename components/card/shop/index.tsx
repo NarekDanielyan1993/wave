@@ -4,7 +4,7 @@ import TruncatedText from '@components/trancatedText';
 import { PRODUCT_ROUTES } from '@constant/route';
 import { useAppSelector } from '@store/create-store';
 import { productsSelector } from '@store/products/selectors';
-import { userSelector } from '@store/user/selectors';
+import { userSelector, usersSelector } from '@store/user/selectors';
 import { withCurrency } from '@utils/helper';
 import { useRouter } from 'next/router';
 import { MouseEvent, useCallback } from 'react';
@@ -25,6 +25,7 @@ const ShopCard = ({ product, addToCartHandler }: IProductCard) => {
     const {
         data: { id },
     } = useAppSelector(userSelector);
+    const { isCartLoading } = useAppSelector(usersSelector);
     const { images } = useAppSelector(productsSelector);
     const image = images.find(im => im.productId === product.id);
     const navigateToProductDetailHandler = useCallback(() => {
@@ -64,6 +65,8 @@ const ShopCard = ({ product, addToCartHandler }: IProductCard) => {
             <StyledShopCardActions>
                 <IconButton
                     iconName="shop"
+                    isDisabled={isCartLoading}
+                    isLoading={isCartLoading}
                     onClick={addToCart}
                     size="md"
                     variant="primary"

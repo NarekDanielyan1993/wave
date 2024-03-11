@@ -3,7 +3,6 @@ import {
     TableContainer,
     Tbody,
     Td,
-    Text,
     Thead,
     Tr,
     chakra,
@@ -73,12 +72,13 @@ export const StyledTd = chakra(Td, {
         overflow: 'hidden',
         color: 'brand.common.black',
         border: 'none',
+        whiteSpace: 'nowrap',
+        textOverflow: 'ellipsis',
     },
 });
 
-export const StyledTdText = chakra(Text, {
+export const StyledTdText = chakra('div', {
     baseStyle: {
-        // p: '2',
         overflow: 'hidden',
         whiteSpace: 'nowrap',
         textOverflow: 'ellipsis',

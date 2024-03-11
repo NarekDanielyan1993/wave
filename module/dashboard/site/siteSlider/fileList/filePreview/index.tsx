@@ -1,6 +1,7 @@
 import { CloseIcon } from '@chakra-ui/icons';
 import { Flex, Text } from '@chakra-ui/react';
 import { FILE_UPLOAD_BASE_URL } from '@constant/file';
+import { MouseEvent } from 'react';
 import {
     StyledFileSelectImageOverlay,
     StyledFileSelectImageRemove,
@@ -37,16 +38,15 @@ const AttachmentPreview = ({
                     alt=""
                     src={`${FILE_UPLOAD_BASE_URL}/${url}`}
                 />
-                <StyledFileSelectImageOverlay>
-                    <StyledFileSelectImageRemove
-                        onClick={e => {
-                            e.stopPropagation();
-                            onRemove(image, index);
-                        }}
-                    >
-                        <CloseIcon />
-                    </StyledFileSelectImageRemove>
-                </StyledFileSelectImageOverlay>
+                <StyledFileSelectImageOverlay />
+                <StyledFileSelectImageRemove
+                    onClick={(e: MouseEvent<HTMLDivElement>) => {
+                        e.stopPropagation();
+                        onRemove(image, index);
+                    }}
+                >
+                    <CloseIcon />
+                </StyledFileSelectImageRemove>
             </StyledFileWrapper>
             <Text p={2}>{name}</Text>
         </Flex>

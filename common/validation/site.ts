@@ -18,7 +18,6 @@ export const siteUpdateValidationSchema = z.object({
 export const siteImageCreateValidationSchema = z.object({
     name: z.string(),
     url: z.string(),
-    publicId: z.string(),
 });
 
 export const siteImageDeleteValidationSchema = z.object({

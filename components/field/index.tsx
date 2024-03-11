@@ -41,7 +41,7 @@ const FormInput = <T extends FieldValues>({
                 <Controller
                     control={control}
                     name={name}
-                    render={({ field: { value, onChange } }) => (
+                    render={({ field: { onChange } }) => (
                         <StyledSelect>
                             <Select
                                 onChange={val => onChange(val)}
@@ -156,10 +156,11 @@ const FormInput = <T extends FieldValues>({
                             <StyledFormControl>
                                 <Box pos="relative">
                                     <NumericInput
+                                        {...defaultOptions}
+                                        isInvalid={!!error}
                                         onChange={onChange}
                                         placeholder=" "
                                         value={value}
-                                        {...defaultOptions}
                                     />
                                     <StyledFormLabel htmlFor={name}>
                                         {defaultOptions.label}
@@ -179,7 +180,7 @@ const FormInput = <T extends FieldValues>({
                 <Controller
                     control={control}
                     name={name}
-                    render={({ field: { onChange, value }, formState }) => (
+                    render={({ field: { onChange, value } }) => (
                         <>
                             <Input
                                 error={error}

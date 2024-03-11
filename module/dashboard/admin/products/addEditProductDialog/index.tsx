@@ -53,9 +53,9 @@ const AddEditProductDialog = ({
             };
         }
         return {
-            available: '',
+            available: 0,
             fretId: frets[0]?.id,
-            price: '',
+            price: 0,
             model: '',
             woodType: '',
             description: '',
@@ -144,9 +144,9 @@ const AddEditProductDialog = ({
                                     name: fret.frets,
                                 })),
                             })}
-
                             {FormField({
                                 name: 'price',
+                                type: 'number',
                                 label: 'Price',
                             })}
                             {FormField({

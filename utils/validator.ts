@@ -24,6 +24,10 @@ export const positiveNumberSchema = z
     .refine(value => Number(value) > 0, 'Input positive number')
     .transform(value => Number(value));
 
+export const positiveNumberRequiredSchema = z.coerce
+    .number()
+    .gt(0, { message: DEFAULT_VALIDATION_ERRORS.required });
+
 export const stringMaxLengthSchema = (maxLength = 60) =>
     z.string().max(maxLength, {
         message: 'Exceeds string maximum length of characters.',

@@ -1,6 +1,7 @@
 import { AUTH_ROUTES } from '@constant/route';
 import { wrapper, type SagaStore } from '@store/create-store';
 import { getSite, getSiteImages } from '@store/site/action';
+import { getCarts } from '@store/user/action';
 import { getUserPermissions } from '@store/userPermission/action';
 import DashboardLayout from 'module/dashboard/dashboardLayout';
 import Site from 'module/dashboard/site';
@@ -36,6 +37,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
                 })
             );
             store.dispatch(getSite());
+            store.dispatch(getCarts({ id: session.user.id }));
             store.dispatch(getSiteImages());
             store.dispatch(END);
             await store.sagaTask?.toPromise();

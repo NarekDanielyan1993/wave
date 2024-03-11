@@ -40,6 +40,9 @@ export const StyledFileSelectImageOverlay = chakra(Box, {
 export const StyledFileSelectImageRemove = chakra(Box, {
     baseStyle: {
         _hover: { bgColor: '#eee' },
+        pos: 'absolute',
+        top: '5px',
+        right: '5px',
         bgColor: 'brand.common.white',
         borderRadius: 'sm',
         cursor: 'pointer',

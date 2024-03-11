@@ -17,26 +17,20 @@ const Button = defineStyleConfig({
             bgColor: 'brand.secondary.main',
             color: 'brand.primary.lighten',
             _hover: {
-                bgColor: 'brand.secondary.darken',
                 _disabled: {
-                    cursor: 'not-allowed',
-                    _hover: {
-                        bgColor: 'brand.secondary.main',
-                    },
+                    bgColor: 'brand.secondary.darken',
                 },
+                bgColor: 'brand.secondary.main',
             },
         },
         primaryLight: {
             bgColor: 'brand.secondary.lighten',
             color: 'brand.primary.lighten',
             _hover: {
-                bgColor: 'brand.secondary.darken',
                 _disabled: {
-                    cursor: 'not-allowed',
-                    _hover: {
-                        bgColor: 'brand.secondary.main',
-                    },
+                    bgColor: 'brand.secondary.darken',
                 },
+                bgColor: 'brand.secondary.main',
             },
         },
         secondary: {
@@ -44,16 +38,21 @@ const Button = defineStyleConfig({
             color: 'white',
             _hover: {
                 _disabled: {
-                    cursor: 'not-allowed',
                     bgColor: 'brand.primary.darken',
                 },
+                bgColor: 'brand.primary.darken',
             },
         },
         tertiary: {
             bgColor: 'brand.tertiary.main',
             color: 'brand.common.black',
             _hover: {
+                _disabled: {
+                    bgColor: 'brand.tertiary.darken',
+                    color: 'brand.common.black',
+                },
                 bgColor: 'brand.tertiary.darken',
+                color: 'brand.common.black',
             },
         },
         ghost: {
@@ -84,6 +83,9 @@ const Button = defineStyleConfig({
             backgroundColor: 'brand.primary.lighten',
             color: 'brand.primary.main',
             _hover: {
+                _disabled: {
+                    bgColor: 'brand.primary.darken',
+                },
                 bgColor: 'brand.primary.darken',
             },
         },

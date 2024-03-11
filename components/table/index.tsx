@@ -64,10 +64,10 @@ export function Table<T>({
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
     const renderColumn = useCallback((props, column: TableColumn<T>) => {
-        if (column.headerName === 'Id') {
+        if (column.headerName.toLocaleLowerCase() === 'id') {
             return <Checkbox isChecked={props.row.getIsSelected()} />;
         }
-        if (column.headerName === 'Shipping') {
+        if (column.headerName.toLowerCase() === 'shipping') {
             return (
                 <Checkbox
                     isChecked={props.getValue()}
@@ -75,7 +75,10 @@ export function Table<T>({
                 />
             );
         }
-        if (column.headerName === 'Amount') {
+        if (
+            column.headerName.toLowerCase() === 'amount' ||
+            column.headerName.toLowerCase() === 'price'
+        ) {
             return withCurrency(props.getValue());
         }
         return props.getValue();
@@ -201,16 +204,12 @@ export function Table<T>({
                                 onClick={row.getToggleSelectedHandler()}
                             >
                                 {row.getVisibleCells().map(cell => (
-                                    <>
-                                        <StyledTd key={cell.id}>
-                                            <StyledTdText>
-                                                {flexRender(
-                                                    cell.column.columnDef.cell,
-                                                    cell.getContext()
-                                                )}
-                                            </StyledTdText>
-                                        </StyledTd>
-                                    </>
+                                    <StyledTd key={cell.id}>
+                                        {flexRender(
+                                            cell.column.columnDef.cell,
+                                            cell.getContext()
+                                        )}
+                                    </StyledTd>
                                 ))}
                             </StyledTbodyTr>
                         </>
