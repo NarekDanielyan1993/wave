@@ -17,13 +17,11 @@ router.get(
     async (req, res) => {
         try {
             const { id } = req.query as UserGetQueryParams;
-
             const userService: IUserService = new UserService();
             const userData = await userService.getById(id);
             if (!userData) {
                 throw new NotFoundError('Profile not found.');
             }
-
             res.status(201).json(userData);
         } catch (error) {
             handleError(error, res);

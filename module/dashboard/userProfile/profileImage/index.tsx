@@ -3,14 +3,10 @@ import ImageCropper from '@components/cropper';
 import { FILE_ERROR_TYPES } from '@constant/error';
 import { ALLOWED_FILE_TYPES, FILE_UPLOAD_BASE_URL } from '@constant/file';
 import { useAppDispatch, useAppSelector } from '@store/create-store';
-import { showNotification } from '@store/notification/reducer';
+import { showNotification } from '@store/notification/notificationReducer';
 import { addProfileImage, deleteProfileImage } from '@store/user/action';
 import { userSelector, usersSelector } from '@store/user/selectors';
-import {
-    isFileExceedsSizeLimit,
-    isFileFormatAllowed,
-    readFile,
-} from '@utils/helper';
+import { dataUrlToFile, isFileFormatAllowed, readFile } from '@utils/helper';
 import Image from 'next/image';
 import { ChangeEvent, useRef, useState } from 'react';
 import { StyledProfileImage } from './style';
@@ -22,6 +18,7 @@ const ProfileImage = () => {
     const [croppedImage, setCroppedImage] = useState<string>('');
     const dispatch = useAppDispatch();
     const user = useAppSelector(userSelector);
+
     const { isUserProfileImageLoading, isUserProfileImageDeleteLoading } =
         useAppSelector(usersSelector);
 
@@ -38,7 +35,8 @@ const ProfileImage = () => {
     };
 
     const uploadUserImageHandler = () => {
-        dispatch(addProfileImage({ file: croppedImage }));
+        const file = dataUrlToFile(croppedImage, 'file');
+        dispatch(addProfileImage({ file }));
     };
 
     const fileUploadHandler = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -47,12 +45,11 @@ const ProfileImage = () => {
             if (!file) {
                 return;
             }
-
             try {
-                if (isFileExceedsSizeLimit(file)) {
-                    throw new Error(FILE_ERROR_TYPES.LIMIT_FILE_SIZE.msg);
-                }
-                if (!isFileFormatAllowed(file)) {
+                // if (isFileExceedsSizeLimit(file)) {
+                //     throw new Error(FILE_ERROR_TYPES.LIMIT_FILE_SIZE.msg);
+                // }
+                if (!isFileFormatAllowed(file.type)) {
                     throw new Error(FILE_ERROR_TYPES.INVALID_FILE_TYPE.msg);
                 }
                 const fileData = await readFile(file);
@@ -128,7 +125,7 @@ const ProfileImage = () => {
                     </Button>
                 ) : (
                     <Button
-                        isDisabled={!croppedImage}
+                        isDisabled={!croppedImage || isUserProfileImageLoading}
                         onClick={fileCancelHandler}
                         variant="primary"
                     >

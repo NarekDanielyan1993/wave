@@ -1,4 +1,5 @@
 import { getAuth } from '@api/auth/[...nextauth]';
+import { SHOP_ROUTE } from '@constant/route';
 import { createAuthSignInPromise } from '@store/auth/action';
 import { authSelector } from '@store/auth/selectors';
 import {
@@ -8,9 +9,10 @@ import {
     wrapper,
 } from '@store/create-store';
 import { getSite } from '@store/site/action';
-import type { AuthTypes } from 'common/validation/auth';
+import { AuthSignInTypes } from 'common/validation/auth';
 import SignInModule from 'module/auth/signIn';
 import type { GetServerSidePropsContext } from 'next';
+import { useRouter } from 'next/router';
 import { useCallback } from 'react';
 import { END } from 'redux-saga';
 import type { CustomNextPage } from 'types';
@@ -18,9 +20,12 @@ import type { CustomNextPage } from 'types';
 const SignInPage: CustomNextPage = () => {
     const dispatch = useAppDispatch();
     const { isLoading } = useAppSelector(authSelector);
+    const router = useRouter();
 
-    const formSubmitHandler = useCallback((data: AuthTypes) => {
-        dispatch(createAuthSignInPromise(data));
+    const formSubmitHandler = useCallback((data: AuthSignInTypes) => {
+        dispatch(createAuthSignInPromise(data)).then(() => {
+            router.push(SHOP_ROUTE);
+        });
     }, []);
 
     return <SignInModule isLoading={isLoading} onSubmit={formSubmitHandler} />;

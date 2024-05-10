@@ -1,6 +1,6 @@
 import { BRAND_API, PRODUCTS_API } from '@constant/api';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { showNotification } from '@store/notification/reducer';
+import { showNotification } from '@store/notification/notificationReducer';
 import { apiRequest } from '@utils/apiRequest';
 import type { AxiosResponse } from 'axios';
 import { call, put, takeLatest } from 'redux-saga/effects';
@@ -243,7 +243,7 @@ function* deleteProductGenerator(
 }
 
 function* deleteImageGenerator(action: PayloadAction<DeleteImagePayloadTypes>) {
-    const { id, productId, publicId } = action.payload;
+    const { publicId } = action.payload;
 
     try {
         yield put(isProductsLoading(true));
@@ -251,7 +251,7 @@ function* deleteImageGenerator(action: PayloadAction<DeleteImagePayloadTypes>) {
             apiRequest.delete,
             PRODUCTS_API.DELETE_PRODUCT_IMAGE,
             {
-                params: { productId, id, publicId },
+                params: { publicId },
             }
         );
         yield put(deleteImageSuccess(data));

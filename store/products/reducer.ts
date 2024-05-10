@@ -52,6 +52,7 @@ const productsSlice = createSlice({
             action: PayloadAction<IPaginatedProductResponse>
         ) => {
             const dateFns = new DateFns();
+            console.log(typeof action.payload.products[0]?.createdAt);
             state.products = [
                 ...state.products,
                 ...action.payload.products.map(item => ({
@@ -89,12 +90,8 @@ const productsSlice = createSlice({
             const dateFns = new DateFns();
             state.products = action.payload.products.map(item => ({
                 ...item,
-                createdAt: dateFns.parseToHumanReadableFormat(
-                    item.createdAt as string
-                ),
-                updatedAt: dateFns.parseToHumanReadableFormat(
-                    item.updatedAt as string
-                ),
+                createdAt: dateFns.formatDate(item.createdAt),
+                updatedAt: dateFns.formatDate(item.updatedAt),
             }));
             state.paginationData.limit = action.payload.limit;
             state.paginationData.page = action.payload.page;
@@ -128,11 +125,11 @@ const productsSlice = createSlice({
                 if (product.id === action.payload.product.id) {
                     return {
                         ...action.payload.product,
-                        createdAt: dateFns.parseToHumanReadableFormat(
-                            action.payload.product.createdAt as string
+                        createdAt: dateFns.formatDate(
+                            action.payload.product.createdAt
                         ),
-                        updatedAt: dateFns.parseToHumanReadableFormat(
-                            action.payload.product.updatedAt as string
+                        updatedAt: dateFns.formatDate(
+                            action.payload.product.updatedAt
                         ),
                     };
                 }
@@ -148,11 +145,11 @@ const productsSlice = createSlice({
                 ...state.products,
                 {
                     ...action.payload.product,
-                    createdAt: dateFns.parseToHumanReadableFormat(
-                        action.payload.product.createdAt as string
+                    createdAt: dateFns.formatDate(
+                        action.payload.product.createdAt
                     ),
-                    updatedAt: dateFns.parseToHumanReadableFormat(
-                        action.payload.product.updatedAt as string
+                    updatedAt: dateFns.formatDate(
+                        action.payload.product.updatedAt
                     ),
                 },
             ];

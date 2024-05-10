@@ -14,30 +14,35 @@ const FileSelect = ({
     onChange,
     value,
 }: {
+    value: {
+        publicId?: string;
+        url: string;
+        name: string;
+    };
     onChange: (event: string) => void;
 }) => {
     const imageUploader = useRef<HTMLInputElement>(null);
     const dispatch = useAppDispatch();
+
     const fileDeleteHandler = () => {
         dispatch(
             deleteImage({
-                id: value.id,
-                publicId: value.publicId,
-                productId: value.productId,
+                publicId: value.publicId as string,
             })
         );
         onChange('');
     };
+
     const fileUploadHandler = async (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
             const file = e.target.files[0];
             if (!file) {
                 return;
             }
-            if (isFileExceedsSizeLimit(file)) {
+            if (isFileExceedsSizeLimit(file.size)) {
                 return;
             }
-            if (!isFileFormatAllowed(file)) {
+            if (!isFileFormatAllowed(file.type)) {
                 return;
             }
             try {
@@ -76,7 +81,7 @@ const FileSelect = ({
                             src={
                                 value?.publicId
                                     ? `${FILE_UPLOAD_BASE_URL}/${value.url}`
-                                    : value?.url
+                                    : value.url
                             }
                         />
                     </Box>

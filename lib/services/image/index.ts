@@ -49,10 +49,10 @@ class ImageService implements IImageService {
     //     return product;
     // }
 
-    async deleteImage(id: string): Promise<IImageResponse> {
+    async deleteImage(publicId: string): Promise<IImageResponse> {
         const deletedImage = await this.prisma.image.delete({
             where: {
-                id,
+                publicId,
             },
         });
         return deletedImage;

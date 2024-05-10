@@ -1,7 +1,9 @@
-import { formatDistanceToNow, isValid, parseISO } from 'date-fns';
+import { yyyy_MM_dd } from '@constant/date';
+import { format, formatDistanceToNow, isValid, parseISO } from 'date-fns';
 
 interface IDateFns {
     parseToHumanReadableFormat: (date: string) => string;
+    formatDate(date: Date | string, formatString: string): string;
 }
 
 export class DateFns implements IDateFns {
@@ -14,5 +16,12 @@ export class DateFns implements IDateFns {
             });
         }
         return dateInString;
+    }
+
+    formatDate(date: Date | string, formatString: string = yyyy_MM_dd): string {
+        if (!(date instanceof Date || isValid(new Date(date)))) {
+            throw new Error('Invalid date object');
+        }
+        return format(new Date(date), formatString);
     }
 }

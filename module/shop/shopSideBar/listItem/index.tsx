@@ -1,5 +1,5 @@
 import { Text } from '@chakra-ui/react';
-import type { UseFieldArrayUpdate } from 'react-hook-form';
+import { type UseFieldArrayUpdate } from 'react-hook-form';
 import type { FilterProductSchemaType } from '../validationSchema';
 
 const Item = ({
@@ -34,6 +34,7 @@ const Item = ({
             <Text>{brand.name}</Text>
             <input
                 checked={brand.checked}
+                readOnly={true}
                 style={{ cursor: 'pointer' }}
                 type="checkbox"
             />

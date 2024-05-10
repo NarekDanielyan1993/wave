@@ -3,7 +3,7 @@ import { VALIDATION_SOURCES } from '@constant/validation';
 import UserService from '@lib/services/user';
 import { InternalServerError, handleError } from '@utils/error-handler';
 import { validateRequest } from '@utils/helper';
-import { cartCreateSchema, cartGetSchema } from 'common/validation/user';
+import { cartGetSchema } from 'common/validation/user';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
 import type { CartCreateBody, CartDeleteBody, IUserService } from 'types';
@@ -15,7 +15,8 @@ router.post(
     //     resource: PERMISSION_RESOURCES.PROFILE,
     //     permissions: [PERMISSION_ACTION.UPDATE],
     // }),
-    validateRequest(cartCreateSchema),
+    // authMiddleware,
+    // validateRequest(cartCreateSchema),
     async (req: NextApiRequest, res: NextApiResponse) => {
         try {
             const data = req.body as CartCreateBody;
@@ -40,8 +41,8 @@ router.get(
     async (req: NextApiRequest, res: NextApiResponse) => {
         try {
             const { userId } = req.query;
-            const user: IUserService = new UserService();
-            const carts = await user.getCarts(userId);
+            const userService: IUserService = new UserService();
+            const carts = await userService.getCarts(userId);
             if (!carts) {
                 throw new InternalServerError();
             }
@@ -57,6 +58,7 @@ router.delete(
     //     resource: PERMISSION_RESOURCES.PROFILE,
     //     permissions: [PERMISSION_ACTION.UPDATE],
     // }),
+    // authMiddleware,
     // validateRequest(cartDeleteSchema),
     async (req: NextApiRequest, res: NextApiResponse) => {
         try {

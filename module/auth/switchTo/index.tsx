@@ -1,4 +1,4 @@
-import { Link } from '@chakra-ui/react';
+import Link from '@components/button/link';
 import { StyledSwitchToSignUpSignIn, StyledSwitchToText } from './style';
 
 const SwitchSignUpSignIn = ({

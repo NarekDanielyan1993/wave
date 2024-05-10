@@ -1,7 +1,6 @@
 import { config } from '@utils/config';
 import { generateEmailVerificationDefaultSubject } from '@utils/provider';
 import { UserPermissionActionsTypes } from 'types';
-import { PAGINATION_QUERY_PARAMS_DEFAULT } from './db';
 
 export const MAIL_GEN_DEFAULT_PARAMETERS = {
     THEME: 'default',
@@ -26,5 +25,5 @@ export const USER_PERMISSIONS_DEFAULT: UserPermissionActionsTypes = {
 export const PRODUCT_CARDS_QUERY_DEFAULT_PARAMS = {
     limit: 3,
     order: 'desc',
-    sortBy: PAGINATION_QUERY_PARAMS_DEFAULT.sortBy,
+    sortBy: 'createdAt',
 };

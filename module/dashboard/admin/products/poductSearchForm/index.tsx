@@ -1,57 +1,64 @@
 import { Box, Button } from '@chakra-ui/react';
 import Input from '@components/field/input';
 import { useDebounce } from '@hooks/useDebounce';
-import useDidUpdate from '@hooks/useDidUpdate';
 import { useAppDispatch } from '@store/create-store';
 import { getPaginatedProducts } from '@store/products/action';
 import React, { useState } from 'react';
+import { SearchFilter } from 'types';
 
 const ProductSearchForm = () => {
     const dispatch = useAppDispatch();
     const [search, setSearch] = useState('');
-    const { debounce } = useDebounce(search, 1000);
 
-    useDidUpdate(() => {
+    const formSubmitHandler = (val: string) => {
+        const searchFilter: SearchFilter[] = [];
+        searchFilter.push({
+            name: 'model',
+            value: val,
+            keyword: 'contains',
+            keywords: [
+                {
+                    keyword: 'mode',
+                    value: 'insensitive',
+                },
+            ],
+        });
         dispatch(
             getPaginatedProducts({
                 filters: {
                     baseFilters: {
-                        search: [
-                            {
-                                name: 'model',
-                                value: debounce,
-                                keyword: 'contains',
-                                keywords: [
-                                    {
-                                        keyword: 'mode',
-                                        value: 'insensitive',
-                                    },
-                                ],
-                            },
-                        ],
+                        search: searchFilter,
                     },
                 },
             })
         );
-    }, [debounce]);
+    };
 
-    const formSubmitHandler = () => {
+    const debounceSubmit = useDebounce(formSubmitHandler, 1000);
+
+    const formResetHandler = () => {
         dispatch(getPaginatedProducts({ limit: 10, page: 0 }));
         setSearch('');
+    };
+
+    const searchChangeHandler = (val: string) => {
+        setSearch(val);
+        debounceSubmit(val);
     };
 
     return (
         <Box>
             <Input
                 label="Search"
-                onChange={(e: React.ChangeEvent<Element>) =>
-                    setSearch(e.target.value)
+                name="search"
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    searchChangeHandler(e.target.value)
                 }
                 value={search}
             />
             <Button
                 isDisabled={!search}
-                onClick={() => formSubmitHandler()}
+                onClick={() => formResetHandler()}
                 variant="primary"
             >
                 reset field

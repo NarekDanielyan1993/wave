@@ -8,6 +8,7 @@ import {
     ModalOverlay,
     SimpleGrid,
 } from '@chakra-ui/react';
+import FileSelectInput from '@components/field/fileSelectInput';
 import useForm from '@hooks/useForm';
 import { useAppDispatch, useAppSelector } from '@store/create-store';
 import { fretsSelector } from '@store/frets/selectors';
@@ -22,6 +23,7 @@ import {
     addEditProductSchemaTypes,
 } from 'common/validation/product';
 import { useMemo } from 'react';
+import { FormProvider } from 'react-hook-form';
 import { IProductResponse } from 'types/product';
 
 const AddEditProductDialog = ({
@@ -37,6 +39,15 @@ const AddEditProductDialog = ({
     const { images } = useAppSelector(productsSelector);
     const { frets } = useAppSelector(fretsSelector);
     const { paginationData } = useAppSelector(paginatedProductsSelector);
+    const brandOptions = brands.map(brand => ({
+        id: brand.id,
+        name: brand.name,
+    }));
+
+    const fretOptions = frets.map(fret => ({
+        id: fret.id,
+        name: fret.frets,
+    }));
     const defaultValues = useMemo(() => {
         if (data) {
             const image = images.find(img => img?.productId === data.id);
@@ -64,10 +75,20 @@ const AddEditProductDialog = ({
             file: null,
         };
     }, []);
-    const { FormField, handleSubmit } = useForm<addEditProductSchemaTypes>({
-        defaultValues,
+
+    const methods = useForm<addEditProductSchemaTypes>({
         validationSchema: addEditProductSchema,
+        defaultValues,
     });
+
+    const {
+        TextField,
+        CheckboxField,
+        NumericField,
+        Textarea,
+        SelectField,
+        handleSubmit,
+    } = methods;
 
     const dispatch = useAppDispatch();
 
@@ -99,83 +120,59 @@ const AddEditProductDialog = ({
     };
 
     return (
-        <Modal
-            isOpen={isOpen}
-            onClose={onClose}
-            scrollBehavior="inside"
-            size="xl"
-        >
-            <ModalOverlay />
-            <ModalContent>
-                <ModalHeader>{data ? 'edit' : 'Add'} Product</ModalHeader>
-                <ModalBody>
-                    <form
-                        id="product-form"
-                        onSubmit={handleSubmit(formSubmitHandler)}
-                    >
-                        {FormField({
-                            name: 'file',
-                            type: 'file',
-                        })}
-                        <SimpleGrid columns={2} spacingX="1rem">
-                            {FormField({
-                                name: 'model',
-                                label: 'Model',
-                            })}
-                            {FormField({
-                                name: 'woodType',
-                                label: 'Wood type',
-                            })}
-                            {FormField({
-                                name: 'brand',
-                                type: 'select',
-                                label: 'Brand',
-                                options: brands.map(brand => ({
-                                    id: brand.id,
-                                    name: brand.name,
-                                })),
-                            })}
-                            {FormField({
-                                name: 'fretId',
-                                label: 'Frets',
-                                type: 'select',
-                                options: frets.map(fret => ({
-                                    id: fret.id,
-                                    name: fret.frets,
-                                })),
-                            })}
-                            {FormField({
-                                name: 'price',
-                                type: 'number',
-                                label: 'Price',
-                            })}
-                            {FormField({
-                                name: 'available',
-                                label: 'Available',
-                            })}
-                        </SimpleGrid>
-                        {FormField({
-                            name: 'description',
-                            type: 'textarea',
-                            label: 'Description',
-                        })}
-                        {FormField({
-                            name: 'shipping',
-                            label: 'Shipping',
-                            type: 'checkbox',
-                        })}
-                    </form>
-                </ModalBody>
-                <ModalFooter display="flex" gap={2}>
-                    <Button form="product-form" type="submit" variant="primary">
-                        {data ? 'edit' : 'add'}
-                    </Button>
-                    <Button onClick={onClose} variant="primary">
-                        close
-                    </Button>
-                </ModalFooter>
-            </ModalContent>
-        </Modal>
+        <FormProvider {...methods}>
+            <Modal
+                isOpen={isOpen}
+                onClose={onClose}
+                scrollBehavior="inside"
+                size="xl"
+            >
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalHeader>{data ? 'edit' : 'Add'}Product</ModalHeader>
+                    <ModalBody>
+                        <form
+                            id="product-form"
+                            onSubmit={handleSubmit(formSubmitHandler)}
+                        >
+                            <FileSelectInput name="file" />
+                            <SimpleGrid columns={2} spacingX="1rem">
+                                <TextField label="Model" name="model" />
+                                <TextField label="Wood Type" name="woodType" />
+                                <SelectField
+                                    name="brand"
+                                    options={brandOptions}
+                                />
+                                <SelectField
+                                    name="fretId"
+                                    options={fretOptions}
+                                />
+                                <NumericField
+                                    label="Price"
+                                    name="price"
+                                    prefix="$"
+                                />
+                                <TextField label="Available" name="available" />
+                            </SimpleGrid>
+                            <Textarea label="Description" name="description" />
+                            <CheckboxField label="Shipping" name="shipping" />
+                        </form>
+                    </ModalBody>
+                    <ModalFooter display="flex" gap={2}>
+                        <Button
+                            form="product-form"
+                            type="submit"
+                            variant="primary"
+                        >
+                            {data ? 'edit' : 'add'}
+                        </Button>
+                        <Button onClick={onClose} variant="primary">
+                            close
+                        </Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
+        </FormProvider>
     );
 };
 

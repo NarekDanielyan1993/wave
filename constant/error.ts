@@ -94,7 +94,7 @@ export const FILE_ERROR_TYPES = {
         msg: 'Error occurred while reading the file.',
     },
     LIMIT_FILE_SIZE: {
-        msg: 'File size exceeds the limit: 2MB',
+        msg: 'File size exceeds the limit: 5MB',
         status: 400,
         name: 'LIMIT_FILE_SIZE',
     },
@@ -158,7 +158,7 @@ export const DEFAULT_VALIDATION_ERRORS = {
     min_string: 'Minimum length is required',
     email: 'Invalid email address',
     pattern_password:
-        'Password should include uppercase letter, lowercase letter, digit, and special character.',
+        'Password should include uppercase letter, lowercase letter and digit.',
 };
 
 export const VALIDATION_ERRORS = {

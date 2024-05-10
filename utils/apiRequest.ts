@@ -1,10 +1,25 @@
+import { AUTH_ROUTES } from '@constant/route';
 import { config } from '@utils/config';
 import axios, { AxiosRequestConfig, Method } from 'axios';
 import { CANCEL } from 'redux-saga';
+
 export const apiRequest = axios.create({
     baseURL: config.NEXT_PUBLIC_BASE_URL,
     timeout: 30000,
 });
+
+apiRequest.interceptors.response.use(
+    response => response,
+    error => {
+        if (
+            error?.response?.data?.status &&
+            error.response.data.status === 401
+        ) {
+            window.location.href = AUTH_ROUTES.BASE;
+        }
+        return Promise.reject(error);
+    }
+);
 
 export const request = axios.create({
     timeout: 30000,

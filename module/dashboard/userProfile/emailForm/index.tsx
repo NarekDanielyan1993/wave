@@ -5,6 +5,7 @@ import {
     userProfileEmailValidationSchema,
 } from 'common/validation/user';
 import { useSession } from 'next-auth/react';
+import { FormProvider } from 'react-hook-form';
 import { IUser } from 'types';
 
 const EmailForm = ({
@@ -22,35 +23,37 @@ const EmailForm = ({
     const defaultValues: UserProfileEmailValidationTypes = {
         email: userData?.email || '',
     };
-    console.log(user);
 
-    const { handleSubmit, FormField, formState } =
-        useForm<UserProfileEmailValidationTypes>({
-            validationSchema: userProfileEmailValidationSchema,
-            defaultValues,
-            isDisabled: true,
-        });
+    const methods = useForm<UserProfileEmailValidationTypes>({
+        validationSchema: userProfileEmailValidationSchema,
+        defaultValues,
+        isDisabled: true,
+    });
+
+    const { TextField, formState, handleSubmit } = methods;
 
     const formSubmitHandler = (data: UserProfileEmailValidationTypes) => {
         updateUserEmail(data);
     };
 
     return (
-        <form onSubmit={handleSubmit(formSubmitHandler)}>
-            {FormField({
-                name: 'email',
-                label: 'Email',
-                disabled: user?.isProvider,
-            })}
-            <Button
-                isDisabled={!(formState.isValid && formState.isDirty)}
-                isLoading={isEmailLoading}
-                type="submit"
-                variant="primary"
-            >
-                Edit email
-            </Button>
-        </form>
+        <FormProvider {...methods}>
+            <form onSubmit={handleSubmit(formSubmitHandler)}>
+                <TextField
+                    disabled={user?.isProvider}
+                    label="Email"
+                    name="email"
+                />
+                <Button
+                    isDisabled={!(formState.isValid && formState.isDirty)}
+                    isLoading={isEmailLoading}
+                    type="submit"
+                    variant="primary"
+                >
+                    Edit email
+                </Button>
+            </form>
+        </FormProvider>
     );
 };
 

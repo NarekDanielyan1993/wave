@@ -13,8 +13,14 @@ export const filterProductSchema = z.object({
             checked: z.boolean(),
         })
     ),
-    from: z.coerce.number().min(0).or(z.null()),
-    to: z.coerce.number().min(0).or(z.null()),
+    from: z
+        .string()
+        .transform(val => Number(val.replace(/[^\d.-]/g, '')))
+        .or(z.null()),
+    to: z
+        .string()
+        .transform(val => Number(val.replace(/[^\d.-]/g, '')))
+        .or(z.null()),
 });
 
 export type FilterProductSchemaType = z.infer<typeof filterProductSchema>;

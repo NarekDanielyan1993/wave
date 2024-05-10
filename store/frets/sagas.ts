@@ -1,6 +1,6 @@
 import { FRETS_API } from '@constant/api';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { showNotification } from '@store/notification/reducer';
+import { showNotification } from '@store/notification/notificationReducer';
 import { apiRequest } from '@utils/apiRequest';
 import type { AxiosResponse } from 'axios';
 import { call, put, takeLatest } from 'redux-saga/effects';

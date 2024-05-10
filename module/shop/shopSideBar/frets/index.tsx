@@ -1,15 +1,13 @@
 import { List } from '@chakra-ui/react';
 import AccordionWrapper from '@components/accordion';
-import type { UseFieldArrayUpdate, UseFormRegister } from 'react-hook-form';
+import type { UseFieldArrayUpdate } from 'react-hook-form';
 import Item from '../listItem';
 import type { FilterProductSchemaType } from '../validationSchema';
 
 const Frets = ({
     frets,
     update,
-    register,
 }: {
-    register: UseFormRegister<FilterProductSchemaType>;
     update: UseFieldArrayUpdate<FilterProductSchemaType>;
     frets: { name: string; checked: boolean; id: string }[];
 }) => (

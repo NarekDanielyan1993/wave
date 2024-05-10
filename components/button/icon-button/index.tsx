@@ -1,3 +1,4 @@
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { IconButton as ChakraIconButton, Tooltip } from '@chakra-ui/react';
 import CheckIcon from '@components/icons/checkIcon';
 import CloseIcon from '@components/icons/closeIcon';
@@ -23,9 +24,11 @@ export const IconButton = ({
         truck: TruckIcon,
         check: CheckIcon,
         google: GoogleIcon,
+        view: ViewIcon,
+        viewOff: ViewOffIcon,
     };
 
-    const Icon = icons[iconName];
+    const Icon = icons[iconName] ?? ViewIcon;
 
     return (
         <Tooltip label={tooltipText}>

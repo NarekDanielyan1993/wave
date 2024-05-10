@@ -98,6 +98,7 @@ const userSlice = createSlice({
                 product => action.payload.id !== product.id
             );
             state.cart.quantity -= action.payload.quantity;
+            state.cart.subtotal -= action.payload.total;
         },
         calculateTotal: (
             state: IUsersState,

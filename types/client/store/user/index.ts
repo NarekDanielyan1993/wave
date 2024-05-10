@@ -48,7 +48,7 @@ export interface IAddProfileImageAction {
 }
 
 export interface IAddProfileImagePayload {
-    file: string;
+    file: File;
 }
 
 export interface IDeleteProfileImageAction {

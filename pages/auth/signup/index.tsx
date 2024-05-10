@@ -18,11 +18,11 @@ const SignUpPage: CustomNextPage = () => {
     const dispatch = useAppDispatch();
     const { isLoading } = useAppSelector(authSelector);
 
-    const formSubmitHandler = (data: AuthSignUpTypes) => {
+    const signUpFormHandler = (data: AuthSignUpTypes) => {
         dispatch(signUp(data));
     };
 
-    return <SignUpModule isLoading={isLoading} onSubmit={formSubmitHandler} />;
+    return <SignUpModule isLoading={isLoading} onSubmit={signUpFormHandler} />;
 };
 
 export const getServerSideProps = wrapper.getServerSideProps(

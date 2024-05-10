@@ -9,7 +9,9 @@
         "plugin:@typescript-eslint/recommended",
         "prettier",
         "next",
-        "next/core-web-vitals"
+        "next/core-web-vitals",
+        "plugin:testing-library/react",
+        "plugin:jest-dom/recommended"
     ],
     "parser": "@typescript-eslint/parser",
     "rules": {
@@ -37,19 +39,19 @@
             "single",
             { "allowTemplateLiterals": true, "avoidEscape": false }
         ],
-        "react/function-component-definition": [
-            1,
-            {
-                "namedComponents": "arrow-function",
-                "unnamedComponents": "arrow-function"
-            }
-        ],
+        // "react/function-component-definition": [
+        //     1,
+        //     {
+        //         "namedComponents": "arrow-function",
+        //         "unnamedComponents": "arrow-function"
+        //     }
+        // ],
         "max-lines": [
             "warn",
             { "max": 300, "skipBlankLines": true, "skipComments": true }
         ],
         "array-callback-return": "off",
-        "prefer-const": "error",
+        "prefer-const": ["error"],
         "no-useless-rename": "error",
         "import/prefer-default-export": "off",
         "no-unused-expressions": "off",

@@ -56,7 +56,10 @@ export const addEditProductSchema = z.object({
     model: z.string().min(1, { message: DEFAULT_VALIDATION_ERRORS.required }),
     available: positiveNumberRequiredSchema,
     fretId: z.string(),
-    price: positiveNumberRequiredSchema,
+    price: z
+        .string()
+        .min(1, { message: DEFAULT_VALIDATION_ERRORS.required })
+        .transform(val => Number(val.replace(/[^\d.-]/g, ''))),
     woodType: z.string(),
     description: z
         .string()

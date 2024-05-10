@@ -1,17 +1,17 @@
-import { AUTH_ERRORS_MESSAGES } from '@constant/error';
 import { ForbiddenError, handleError } from '@utils/error-handler';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getToken } from 'next-auth/jwt';
+import { NextHandler } from 'next-connect';
 
 export const authMiddleware = async (
     req: NextApiRequest,
     res: NextApiResponse,
-    next: () => Promise<void>
+    next: NextHandler
 ) => {
     try {
         const token = await getToken({ req });
         if (!token) {
-            throw new ForbiddenError(AUTH_ERRORS_MESSAGES.AUTH_FAILED);
+            throw new ForbiddenError();
         }
         return await next();
     } catch (error) {

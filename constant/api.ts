@@ -31,7 +31,7 @@ export const AUTH_API = {
 export const USER_API = {
     GET_USER: '/api/user/profile',
     ADD_TO_CART: '/api/user/profile/cart',
-    ADD_PROFILE_IMAGE: '/api/user/profile',
+    ADD_PROFILE_IMAGE: '/api/user/profile/image',
     DELETE_PROFILE_IMAGE: '/api/user/profile/image',
     ADD_TO_HISTORY: '/api/user/profile/history',
     GET_CARTS: '/api/user/profile/cart',
@@ -58,3 +58,5 @@ export const PAYMENT_API = {
     payment: '/api/payment',
     SIGN_IN: '/api/auth/callback/credentials',
 };
+
+export const PUBLIC_API = ['/api', AUTH_API.SIGN_IN, AUTH_API.SIGN_IN];

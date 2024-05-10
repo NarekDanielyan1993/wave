@@ -3,14 +3,10 @@ import { z } from 'zod';
 
 export const passwordSchema = z
     .string()
-    .nonempty({ message: DEFAULT_VALIDATION_ERRORS.required })
-    .refine(
-        value =>
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
-                value
-            ),
-        { message: DEFAULT_VALIDATION_ERRORS.pattern_password }
-    );
+    .min(1, { message: DEFAULT_VALIDATION_ERRORS.required })
+    .refine(value => /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{3,}$/.test(value), {
+        message: DEFAULT_VALIDATION_ERRORS.pattern_password,
+    });
 
 export const emailSchema = z
     .string()

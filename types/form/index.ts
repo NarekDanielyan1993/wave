@@ -1,3 +1,59 @@
+import { CheckboxProps, InputProps } from '@chakra-ui/react';
+import {
+    Control,
+    DefaultValues,
+    FieldError,
+    FieldErrorsImpl,
+    FieldValues,
+    Merge,
+    Path,
+    PathValue,
+} from 'react-hook-form';
+import { ZodSchema } from 'zod';
+
+export type TextFieldType =
+    | 'text'
+    | 'email'
+    | 'number'
+    | 'password'
+    | 'textarea';
+
+export type ITextFieldProps<T> = {
+    label?: string;
+    name: Path<T>;
+    disabled?: boolean;
+    type?: TextFieldType;
+    errorMessage?: string;
+} & InputProps;
+
+export type INumberFieldProps<T> = {
+    label?: string;
+    name: Path<T> | string;
+    disabled?: boolean;
+    allowLeadingZeros?: boolean;
+    allowNegative?: boolean;
+    prefix: string;
+    placeholder?: string;
+};
+
+export type ICheckboxProps<T> = {
+    label?: string;
+    name: Path<T>;
+    disabled?: boolean;
+} & CheckboxProps;
+
+export type ISelectFieldProps<T> = {
+    options: SelectProps[];
+    name: Path<T>;
+    label?: string;
+    disabled?: boolean;
+};
+
+export type TextFieldErrorType =
+    | FieldError
+    | Merge<FieldError, FieldErrorsImpl<any>>
+    | null;
+
 export type FieldTypes = {
     name: string;
     label: string;
@@ -10,15 +66,6 @@ export type FormErrorTypes = {
     message: string;
     type: string;
 };
-
-import {
-    Control,
-    DefaultValues,
-    FieldValues,
-    Path,
-    PathValue,
-} from 'react-hook-form';
-import { ZodSchema } from 'zod';
 
 export interface IFormProps<T> {
     validationSchema?: ZodSchema;

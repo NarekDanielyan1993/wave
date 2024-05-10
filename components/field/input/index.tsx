@@ -1,42 +1,38 @@
 import { Box } from '@chakra-ui/react';
-import { ChangeEvent } from 'react';
 import {
     StyledErrorText,
     StyledFormControl,
     StyledFormLabel,
     StyledInput,
-} from '../style';
+} from '@components/field/style';
+import { ITextFieldProps } from 'types';
 
-const Input = ({
+function Input<T>({
     onChange,
     value,
     label,
+    disabled,
+    type = 'text',
     name,
-    isInvalid,
-    error,
-    isDisabled,
-}: {
-    onChange: (e: ChangeEvent<HTMLInputElement>) => void;
-    name: string;
-    label: string | undefined;
-    isInvalid: boolean | undefined;
-    error: string | undefined;
-    value: number | string;
-    isDisabled: boolean;
-}) => (
-    <StyledFormControl>
-        <Box pos="relative">
-            <StyledInput
-                isDisabled={isDisabled}
-                isInvalid={isInvalid}
-                onChange={onChange}
-                placeholder=" "
-                value={value}
-            />
-            <StyledFormLabel htmlFor={name}>{label}</StyledFormLabel>
-        </Box>
-        <StyledErrorText>{isInvalid && error}</StyledErrorText>
-    </StyledFormControl>
-);
+    errorMessage,
+    ...props
+}: ITextFieldProps<T>) {
+    return (
+        <StyledFormControl>
+            <Box pos="relative">
+                <StyledInput
+                    isDisabled={disabled}
+                    onChange={onChange}
+                    placeholder=" "
+                    type={type}
+                    value={value}
+                    {...props}
+                />
+                <StyledFormLabel htmlFor={name}>{label}</StyledFormLabel>
+            </Box>
+            <StyledErrorText>{errorMessage}</StyledErrorText>
+        </StyledFormControl>
+    );
+}
 
 export default Input;

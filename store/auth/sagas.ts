@@ -1,17 +1,16 @@
+import { AuthSignUpTypes } from '@common/validation/auth';
 import { AUTH_API } from '@constant/api';
 import { NOTIFICATION_MESSAGES } from '@constant/notification';
-import { SHOP_ROUTE } from '@constant/route';
 import { PayloadAction } from '@reduxjs/toolkit';
-import { showNotification } from '@store/notification/reducer';
+import { isAuthLoading } from '@store/auth/reducer';
+import { showNotification } from '@store/notification/notificationReducer';
+import { implementPromiseAction } from '@teroneko/redux-saga-promise';
 import { apiRequest } from '@utils/apiRequest';
-import { AuthSignUpTypes } from 'common/validation/auth';
 import { signIn } from 'next-auth/react';
-import Router from 'next/router';
 import { call, put, takeLatest } from 'redux-saga/effects';
 import { AUTH_SIGN_UP, createAuthSignInPromise } from './action';
-import { isAuthLoading } from './reducer';
 
-function* signUpGenerator(action: PayloadAction<AuthSignUpTypes>) {
+export function* signUpGenerator(action: PayloadAction<AuthSignUpTypes>) {
     try {
         yield put(isAuthLoading(true));
         yield call(apiRequest.post, AUTH_API.SIGN_UP, {
@@ -24,6 +23,7 @@ function* signUpGenerator(action: PayloadAction<AuthSignUpTypes>) {
             })
         );
     } catch (error: any) {
+        console.log(error);
         yield put(
             showNotification({
                 message: error?.response?.data?.msg,
@@ -34,31 +34,65 @@ function* signUpGenerator(action: PayloadAction<AuthSignUpTypes>) {
     yield put(isAuthLoading(false));
 }
 
+// export function* signInGenerator(
+//     action: typeof createAuthSignInPromise.types.triggerAction
+// ) {
+//     const { email, password } = action.payload;
+//     yield put(isAuthLoading(true));
+//     try {
+//         const data = yield call(signIn, 'credentials', {
+//             email,
+//             password,
+//             redirect: false,
+//         });
+//         console.log(data);
+
+//         if (data.error) {
+//             yield put(
+//                 showNotification({
+//                     message: data.error,
+//                     type: 'error',
+//                 })
+//             );
+//         } else {
+//             return Promise.resolve('success');
+//         }
+//     } catch (error) {
+//         console.log(error);
+//     }
+//     yield put(isAuthLoading(false));
+// }
+
 function* signInGenerator(
     action: typeof createAuthSignInPromise.types.triggerAction
 ) {
-    const { email, password } = action.payload;
-    yield put(isAuthLoading(true));
-    try {
-        const data = yield call(signIn, 'credentials', {
-            email,
-            password,
-            redirect: false,
-        });
-        if (data.error) {
-            yield put(
-                showNotification({
-                    message: data.error,
-                    type: 'error',
-                })
-            );
-        } else {
-            Router.push(SHOP_ROUTE);
+    yield call(implementPromiseAction, action, function* () {
+        const { email, password } = action.payload;
+        yield put(isAuthLoading(true));
+        try {
+            const data = yield call(signIn, 'credentials', {
+                email,
+                password,
+                redirect: false,
+            });
+            console.log(data);
+
+            if (data.error) {
+                yield put(isAuthLoading(false));
+                yield put(
+                    showNotification({
+                        message: data.error,
+                        type: 'error',
+                    })
+                );
+            } else {
+                yield put(isAuthLoading(false));
+                return Promise.resolve('success');
+            }
+        } catch (error) {
+            console.log(error);
         }
-    } catch (error) {
-        console.log(error);
-    }
-    yield put(isAuthLoading(false));
+    });
 }
 
 export function* watchAuthSaga() {

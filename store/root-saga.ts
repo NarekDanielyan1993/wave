@@ -1,6 +1,6 @@
 import { all, fork } from 'redux-saga/effects';
 import { watchAuthSaga } from './auth/sagas';
-import { watchError as errorSaga } from './error/saga';
+import { watchErrorSaga } from './error/saga';
 import { watchFretsSaga } from './frets/sagas';
 import { watchProductsSaga } from './products/sagas';
 import { watchSiteSaga } from './site/sagas';
@@ -9,7 +9,7 @@ import { watchUserPermissionSaga } from './userPermission/sagas';
 
 export default function* rootSaga() {
     yield all([
-        fork(errorSaga),
+        fork(watchErrorSaga),
         fork(watchFretsSaga),
         fork(watchProductsSaga),
         fork(watchAuthSaga),

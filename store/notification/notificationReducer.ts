@@ -8,7 +8,7 @@ export interface INotificationState {
     type: TypeOptions;
 }
 
-const initialState: INotificationState = {
+export const initialState: INotificationState = {
     message: '',
     type: 'success',
 };

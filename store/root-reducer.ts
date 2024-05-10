@@ -5,7 +5,7 @@ import { RootReducerStateTypes } from 'types/client/store/rootReducer';
 import authSlice from './auth/reducer';
 import errorSlice from './error/reducer';
 import fretsSlice from './frets/reducer';
-import notificationSlice from './notification/reducer';
+import notificationSlice from './notification/notificationReducer';
 import productsSlice from './products/reducer';
 import siteSlice from './site/reducer';
 import userSlice from './user/reducer';

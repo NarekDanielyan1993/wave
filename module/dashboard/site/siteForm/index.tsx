@@ -7,20 +7,23 @@ import {
     siteCreateValidationSchema,
     siteCreateValidationSchemaTypes,
 } from 'common/validation/site';
+import { FormProvider } from 'react-hook-form';
 
 const SiteForm = () => {
     const dispatch = useAppDispatch();
     const { site, isSiteLoading } = useAppSelector(siteSelector);
-    const { FormField, handleSubmit, formState } =
-        useForm<siteCreateValidationSchemaTypes>({
-            defaultValues: {
-                hours: site.hours || '',
-                address: site.address || '',
-                phone: site.phone || '',
-                email: site.email || '',
-            },
-            validationSchema: siteCreateValidationSchema,
-        });
+
+    const methods = useForm<siteCreateValidationSchemaTypes>({
+        validationSchema: siteCreateValidationSchema,
+        defaultValues: {
+            hours: site.hours || '',
+            address: site.address || '',
+            phone: site.phone || '',
+            email: site.email || '',
+        },
+    });
+
+    const { TextField, formState, handleSubmit } = methods;
 
     const formSubmitHandler = (data: siteCreateValidationSchemaTypes) => {
         if (site.id) {
@@ -31,32 +34,22 @@ const SiteForm = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit(formSubmitHandler)}>
-            {FormField({
-                name: 'address',
-                label: 'Address',
-            })}
-            {FormField({
-                name: 'email',
-                label: 'Email',
-            })}
-            {FormField({
-                name: 'phone',
-                label: 'Phone',
-            })}
-            {FormField({
-                name: 'hours',
-                label: 'Hours',
-            })}
-            <Button
-                isDisabled={!(formState.isDirty && formState.isValid)}
-                isLoading={isSiteLoading}
-                type="submit"
-                variant="primary"
-            >
-                edit site
-            </Button>
-        </form>
+        <FormProvider {...methods}>
+            <form onSubmit={handleSubmit(formSubmitHandler)}>
+                <TextField label="Address" name="address" />
+                <TextField label="Email" name="email" />
+                <TextField label="Phone" name="phone" />
+                <TextField label="Hours" name="hours" />
+                <Button
+                    isDisabled={!(formState.isDirty && formState.isValid)}
+                    isLoading={isSiteLoading}
+                    type="submit"
+                    variant="primary"
+                >
+                    edit site
+                </Button>
+            </form>
+        </FormProvider>
     );
 };
 

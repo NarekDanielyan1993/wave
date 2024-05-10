@@ -25,7 +25,6 @@ const permissionMiddleware =
                     session.user.role,
                     resource
                 );
-            console.log(userPermissions);
             const hasPermission = userPermissions.actions.some(permission =>
                 permissions.includes(permission)
             );

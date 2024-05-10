@@ -55,8 +55,8 @@ export interface IProductResponse extends IProduct {
         createdAt: Date;
         updatedAt: Date;
     };
-    createdAt: Date | string;
-    updatedAt: Date | string;
+    createdAt: string;
+    updatedAt: string;
 }
 
 export type ProductImageDeleteQueryParamsTypes = {

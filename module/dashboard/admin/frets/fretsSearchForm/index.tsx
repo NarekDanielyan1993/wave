@@ -1,54 +1,59 @@
 import { Box, Button } from '@chakra-ui/react';
 import Input from '@components/field/input';
 import { useDebounce } from '@hooks/useDebounce';
-import useDidUpdate from '@hooks/useDidUpdate';
 import { useAppDispatch } from '@store/create-store';
 import { getFrets } from '@store/frets/action';
 import { getPaginatedProducts } from '@store/products/action';
-import React, { useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import { SearchFilter } from 'types';
 
 const FretsSearchForm = () => {
     const dispatch = useAppDispatch();
     const [search, setSearch] = useState('');
-    const { debounce } = useDebounce(search, 1000);
 
-    useDidUpdate(() => {
-        const search: SearchFilter[] = [];
-        if (debounce)
-            search.push({
-                name: 'frets',
-                value: debounce,
-                keyword: 'equals',
-            });
+    const formSubmitHandler = (val: string) => {
+        const searchFilter: SearchFilter[] = [];
+        searchFilter.push({
+            name: 'frets',
+            value: val,
+            keyword: 'contains',
+        });
         dispatch(
             getFrets({
                 filters: {
                     baseFilters: {
-                        search: [...search],
+                        search: searchFilter,
                     },
                 },
             })
         );
-    }, [debounce]);
+    };
 
-    const formSubmitHandler = () => {
+    const debounceSubmit = useDebounce(formSubmitHandler, 1000);
+
+    const formResetHandler = () => {
         dispatch(getPaginatedProducts({ limit: 10, page: 0 }));
         setSearch('');
+    };
+
+    const searchChangeHandler = (val: string) => {
+        setSearch(val);
+        debounceSubmit(val);
     };
 
     return (
         <Box>
             <Input
                 label="Search"
-                onChange={(e: React.ChangeEvent<Element>) =>
-                    setSearch(e.target.value)
+                name="search"
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    searchChangeHandler(e.target.value)
                 }
                 value={search}
             />
             <Button
                 isDisabled={!search}
-                onClick={() => formSubmitHandler()}
+                onClick={() => formResetHandler()}
                 variant="primary"
             >
                 reset field

@@ -4,6 +4,7 @@ import {
     UserProfileValidationTypes,
     userProfileValidationSchema,
 } from 'common/validation/user';
+import { FormProvider } from 'react-hook-form';
 import { IUser } from 'types';
 
 const ProfileForm = ({
@@ -20,35 +21,32 @@ const ProfileForm = ({
         lastName: userData?.lastName || '',
     };
 
-    const { handleSubmit, FormField, formState } =
-        useForm<UserProfileValidationTypes>({
-            validationSchema: userProfileValidationSchema,
-            defaultValues,
-        });
+    const methods = useForm<UserProfileValidationTypes>({
+        validationSchema: userProfileValidationSchema,
+        defaultValues,
+    });
+
+    const { TextField, formState, handleSubmit } = methods;
 
     const formSubmitHandler = (data: UserProfileValidationTypes) => {
         updateUserProfile(data);
     };
 
     return (
-        <form onSubmit={handleSubmit(formSubmitHandler)}>
-            {FormField({
-                name: 'firstName',
-                label: 'First Name',
-            })}
-            {FormField({
-                name: 'lastName',
-                label: 'Last Name',
-            })}
-            <Button
-                isDisabled={!(formState.isValid && formState.isDirty)}
-                isLoading={isLoading}
-                type="submit"
-                variant="primary"
-            >
-                Edit Profile
-            </Button>
-        </form>
+        <FormProvider {...methods}>
+            <form onSubmit={handleSubmit(formSubmitHandler)}>
+                <TextField label="First Name" name="firstName" />
+                <TextField label="Last Name" name="lastName" />
+                <Button
+                    isDisabled={!(formState.isValid && formState.isDirty)}
+                    isLoading={isLoading}
+                    type="submit"
+                    variant="primary"
+                >
+                    Edit Profile
+                </Button>
+            </form>
+        </FormProvider>
     );
 };
 

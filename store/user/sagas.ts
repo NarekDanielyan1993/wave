@@ -1,7 +1,7 @@
 import { USER_API } from '@constant/api';
 import { NOTIFICATION_MESSAGES } from '@constant/notification';
 import { PayloadAction } from '@reduxjs/toolkit';
-import { showNotification } from '@store/notification/reducer';
+import { showNotification } from '@store/notification/notificationReducer';
 import { apiRequest } from '@utils/apiRequest';
 import { call, put, takeLatest } from 'redux-saga/effects';
 import {
@@ -101,13 +101,18 @@ function* addToCartGenerator(action: PayloadAction<AddToCartPayloadType>) {
 function* addProfileImageGenerator(
     action: PayloadAction<IAddProfileImagePayload>
 ) {
+    const formData = new FormData();
+    formData.append('file', action.payload.file);
     yield put(isUserProfileImageLoading(true));
     try {
         const { data } = yield call(
-            apiRequest.put,
+            apiRequest.post,
             USER_API.ADD_PROFILE_IMAGE,
+            formData,
             {
-                ...action.payload,
+                headers: {
+                    'Content-Type': `multipart/form-data`,
+                },
             }
         );
         yield put(addProfileImageSuccess(data));
@@ -131,7 +136,7 @@ function* deleteProfileImageGenerator(
             apiRequest.delete,
             USER_API.DELETE_PROFILE_IMAGE,
             {
-                data: { ...action.payload },
+                params: action.payload,
             }
         );
         yield put(deleteProfileImageSuccess(data));

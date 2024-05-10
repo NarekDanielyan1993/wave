@@ -18,15 +18,12 @@ router.delete(
     validateRequest(deleteProductImageValidationSchema),
     async (req, res) => {
         try {
-            const { id, publicId } =
+            const { publicId } =
                 req.query as ProductImageDeleteQueryParamsTypes;
-            let image;
-            if (id) {
-                const imageService = new ImageService();
-                image = await imageService.deleteImage(id);
-                const cloudinaryService = new CloudinaryService();
-                await cloudinaryService.deleteFile(publicId);
-            }
+            const imageService = new ImageService();
+            const image = await imageService.deleteImage(publicId);
+            const cloudinaryService = new CloudinaryService();
+            await cloudinaryService.deleteFile(publicId);
             res.status(201).json(image);
         } catch (error) {
             handleError(error, res);

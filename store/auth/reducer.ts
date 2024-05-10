@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { ProductsReducerName } from './action';
+import { AuthReducerName } from './action';
 
 interface IProductsState {
     isLoading: boolean;
@@ -10,7 +10,7 @@ const initialState: IProductsState = {
 };
 
 const authSlice = createSlice({
-    name: ProductsReducerName,
+    name: AuthReducerName,
     initialState,
     reducers: {
         isAuthLoading: (

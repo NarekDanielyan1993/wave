@@ -42,6 +42,7 @@ export const StyledInput = chakra(Input, {
         width: 'full',
         color: 'brand.primary.darken',
         borderColor: 'brand.primary.main',
+        borderRadius: '4px',
         '&:focus ~ label, &:not(:placeholder-shown) ~ label': {
             top: 0,
             backgroundColor: 'brand.common.white',
@@ -52,12 +53,16 @@ export const StyledInput = chakra(Input, {
             boxShadow: 'none',
             borderColor: 'brand.primary.darken',
         },
+
+        _invalid: {
+            borderColor: 'red',
+        },
     },
 });
 
 export const StyledFormControl = chakra(FormControl, {
     baseStyle: {
-        mb: 3,
+        mb: 1,
         position: 'relative',
     },
 });

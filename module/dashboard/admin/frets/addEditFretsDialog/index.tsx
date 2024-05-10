@@ -16,6 +16,7 @@ import {
     addEditFretsSchemaTypes,
 } from 'common/validation/frets';
 import { useMemo } from 'react';
+import { FormProvider } from 'react-hook-form';
 import { GetFretsResponse } from 'types/client/store/frets';
 
 const AddEditFretsDialog = ({
@@ -39,10 +40,12 @@ const AddEditFretsDialog = ({
         };
     }, []);
 
-    const { FormField, handleSubmit } = useForm<addEditFretsSchemaTypes>({
-        defaultValues,
+    const methods = useForm<addEditFretsSchemaTypes>({
         validationSchema: addEditFretsSchema,
+        defaultValues,
     });
+
+    const { TextField, handleSubmit } = methods;
 
     const dispatch = useAppDispatch();
 
@@ -70,17 +73,16 @@ const AddEditFretsDialog = ({
             <ModalOverlay />
             <ModalContent>
                 <ModalHeader>{data ? 'edit' : 'Add'} Fret</ModalHeader>
-                <ModalBody>
-                    <form
-                        id="fret-form"
-                        onSubmit={handleSubmit(formSubmitHandler)}
-                    >
-                        {FormField({
-                            name: 'frets',
-                            label: 'Frets',
-                        })}
-                    </form>
-                </ModalBody>
+                <FormProvider {...methods}>
+                    <ModalBody>
+                        <form
+                            id="fret-form"
+                            onSubmit={handleSubmit(formSubmitHandler)}
+                        >
+                            <TextField label="Frets" name="frets" />
+                        </form>
+                    </ModalBody>
+                </FormProvider>
                 <ModalFooter display="flex" gap={2}>
                     <Button form="fret-form" type="submit" variant="primary">
                         {data ? 'edit' : 'add'}

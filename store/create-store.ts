@@ -16,11 +16,12 @@ export interface SagaStore extends Store {
     sagaTask?: Task;
 }
 
-export const createStore = () => {
+export const createStore = preloadedState => {
     const sagaMiddleware = createSagaMiddleware();
     const store = configureStore({
         reducer: rootReducer,
         devTools: config.isDev,
+        preloadedState,
         middleware: [promiseMiddleware, sagaMiddleware],
     });
     (store as SagaStore).sagaTask = sagaMiddleware.run(rootSaga);
@@ -29,7 +30,7 @@ export const createStore = () => {
 
 export type AppStore = ReturnType<typeof createStore>;
 export type AppState = ReturnType<AppStore['getState']>;
-type AppDispatch = AppStore['dispatch'];
+export type AppDispatch = AppStore['dispatch'];
 
 export const useAppDispatch = () => useDispatch<AppDispatch>();
 export const useAppSelector: TypedUseSelectorHook<AppState> = useSelector;

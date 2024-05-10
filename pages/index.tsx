@@ -43,7 +43,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
     (store: SagaStore) => async (ctx: GetServerSidePropsContext) => {
         const session = await getAuth(ctx.req, ctx.res);
         if (session) {
-            store.dispatch(getUser({ id: session?.user.id }));
+            store.dispatch(getUser({ id: session.user.id }));
             store.dispatch(getCarts({ id: session.user.id }));
         }
         store.dispatch(

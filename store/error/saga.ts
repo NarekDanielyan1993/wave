@@ -12,7 +12,7 @@ function* removeErrorGenerator(action: PayloadAction<string>) {
     // yield put(setError(action.payload));
 }
 
-export function* watchError() {
+export function* watchErrorSaga() {
     yield takeLatest(ADD_ERROR, addErrorGenerator);
     yield takeLatest(REMOVE_ERROR, removeErrorGenerator);
 }

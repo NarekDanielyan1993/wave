@@ -66,7 +66,6 @@ const ShopCard = ({ product, addToCartHandler }: IProductCard) => {
                 <IconButton
                     iconName="shop"
                     isDisabled={isCartLoading}
-                    isLoading={isCartLoading}
                     onClick={addToCart}
                     size="md"
                     variant="primary"

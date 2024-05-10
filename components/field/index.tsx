@@ -3,9 +3,7 @@ import { Controller, FieldValues } from 'react-hook-form';
 
 import { Box, Checkbox, Select } from '@chakra-ui/react';
 import { ChakraFieldDefaultOptions, IFormInputProps } from 'types';
-import FileSelect from './fileSelect';
-import Input from './input';
-import NumericInput from './numericInput';
+import FileSelect from './fileSelectInput/fileSelect';
 import {
     StyledErrorText,
     StyledFormControl,
@@ -14,6 +12,7 @@ import {
     StyledLabel,
     StyledSelect,
 } from './style';
+import Input from './textInput';
 
 const FormInput = <T extends FieldValues>({
     control,
@@ -155,13 +154,13 @@ const FormInput = <T extends FieldValues>({
                         <>
                             <StyledFormControl>
                                 <Box pos="relative">
-                                    <NumericInput
+                                    {/* <NumericInput
                                         {...defaultOptions}
                                         isInvalid={!!error}
                                         onChange={onChange}
                                         placeholder=" "
                                         value={value}
-                                    />
+                                    /> */}
                                     <StyledFormLabel htmlFor={name}>
                                         {defaultOptions.label}
                                     </StyledFormLabel>
@@ -175,6 +174,7 @@ const FormInput = <T extends FieldValues>({
                 />
             );
         }
+
         default:
             return (
                 <Controller
@@ -183,7 +183,7 @@ const FormInput = <T extends FieldValues>({
                     render={({ field: { onChange, value } }) => (
                         <>
                             <Input
-                                error={error}
+                                // error={error}
                                 isDisabled={!!defaultOptions.disabled}
                                 isInvalid={defaultOptions.isInvalid}
                                 label={defaultOptions.label}

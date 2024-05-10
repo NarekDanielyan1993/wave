@@ -8,13 +8,13 @@ import {
     SocialSignInProvidersTypes,
 } from 'types/client/auth';
 import { StyledGoogleButton } from './style';
+
 const SocialSignInButtons = () => {
     const socialSignInHandler = async (type: SocialSignInProvidersTypes) => {
-        const res = await signIn(type, {
+        await signIn(type, {
             redirect: false,
             callbackUrl: `${config.NEXT_PUBLIC_BASE_URL}${SHOP_ROUTE}`,
         });
-        console.log(res);
     };
 
     const socialButtonsData: ISocialSignInButtons[] = [
@@ -26,6 +26,7 @@ const SocialSignInButtons = () => {
             text: 'sign in with google',
         },
     ];
+
     return (
         <Flex justifyContent="center">
             {socialButtonsData.map(({ Icon, Component, ...btn }) => (

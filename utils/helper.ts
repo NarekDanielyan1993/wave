@@ -19,6 +19,71 @@ import type {
 import type { ZodRawShape, z } from 'zod';
 import { config } from './config';
 
+export const isObject = (item: unknown): item is object =>
+    typeof item === 'object' &&
+    !Array.isArray(item) &&
+    !(item instanceof Date) &&
+    item !== null;
+
+export const isExists = <T>(item: T | undefined | null): item is T =>
+    typeof item !== 'undefined' && item !== null;
+
+export const isDateObject = (item: unknown): item is Date =>
+    typeof item === 'object' && item instanceof Date;
+
+export const isObjectEmpty = (obj: object) => {
+    if (!isObject(obj)) {
+        return true;
+    }
+
+    return Object.getOwnPropertyNames(obj).length === 0;
+};
+
+export function isDeepEqual(
+    obj1: Record<string, unknown>,
+    obj2: Record<string, unknown>
+): boolean {
+    if (!isObject(obj1) || !isObject(obj2)) {
+        return false;
+    }
+    const keys1 = Object.keys(obj1);
+    const keys2 = Object.keys(obj2);
+
+    if (keys1.length !== keys2.length) {
+        return false;
+    }
+
+    return keys1.reduce((isEqual, key) => {
+        if (isEqual === false) {
+            return false;
+        }
+
+        const isObjects = isObject(obj1[key]) && isObject(obj2[key]);
+        if (isObjects) {
+            return isDeepEqual(
+                obj1[key] as Record<string, unknown>,
+                obj2[key] as Record<string, unknown>
+            );
+        }
+
+        return obj1[key] === obj2[key];
+    }, true);
+}
+
+export function isDeepEqualArray(
+    arr1: Record<string, unknown>[],
+    arr2: Record<string, unknown>[]
+): boolean {
+    if (arr1.length !== arr2.length) {
+        return false;
+    }
+
+    return arr1.every((obj1, index) => {
+        const obj2 = arr2[index];
+        return isDeepEqual(obj1, obj2);
+    });
+}
+
 export async function readFile(f: File): Promise<string> {
     return new Promise(resolve => {
         const reader = new FileReader();
@@ -51,10 +116,11 @@ export const calculateTotal = (carts: ICarts) =>
         return acc;
     }, 0);
 
-export const isFileExceedsSizeLimit = (file: File) => file.size > MAX_FILE_SIZE;
+export const isFileExceedsSizeLimit = (fileSize: number) =>
+    fileSize > MAX_FILE_SIZE;
 
-export const isFileFormatAllowed = (file: File) =>
-    ALLOWED_FILE_TYPES.includes(file.type);
+export const isFileFormatAllowed = (type: string) =>
+    ALLOWED_FILE_TYPES.includes(type);
 
 export function createCookie(
     req: NextApiRequest,
@@ -85,7 +151,6 @@ export const validateRequest =
             schema.parse(validationData);
             await next();
         } catch (error: any) {
-            console.log(error);
             if (
                 error.name ===
                 COMMON_ERROR_TYPES.VALIDATION_ERROR.types.zod.name
@@ -279,8 +344,4 @@ export const generatePrismaFilters = (
 
 export function capitalizeFirstLetter(string: string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
-export function isObjectEmpty(obj) {
-    return Object.keys(obj).length === 0;
 }

@@ -1,4 +1,5 @@
 import { COMMON_ERROR_TYPES } from '@constant/error';
+import { PERMISSION_ACTION, PERMISSION_RESOURCES } from '@constant/permission';
 import { VALIDATION_SOURCES } from '@constant/validation';
 import ImageService from '@lib/services/image';
 import ProductService from '@lib/services/product';
@@ -9,6 +10,7 @@ import {
     createUpdateProductValidationSchema,
     deleteProductValidationSchema,
 } from 'common/validation/product';
+import permissionMiddleware from 'middlewares/permission';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
 import type {
@@ -44,10 +46,10 @@ router.get(
 );
 
 router.put(
-    // permissionMiddleware({
-    //     resource: PERMISSION_RESOURCES.PROFILE,
-    //     permissions: [PERMISSION_ACTION.READ_OWN],
-    // }),
+    permissionMiddleware({
+        resource: PERMISSION_RESOURCES.PROFILE,
+        permissions: [PERMISSION_ACTION.READ_OWN],
+    }),
     validateRequest(createUpdateProductValidationSchema),
     async (req, res) => {
         try {

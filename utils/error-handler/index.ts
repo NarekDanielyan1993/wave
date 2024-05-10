@@ -149,13 +149,10 @@ export class ErrorHandler {
                 return err;
             }
             case COMMON_ERROR_TYPES.FILE_ERROR.name: {
-                if (error?.code === FILE_ERROR_TYPES.LIMIT_FILE_SIZE.name) {
-                    return new FileError(
-                        FILE_ERROR_TYPES.LIMIT_FILE_SIZE.msg,
-                        FILE_ERROR_TYPES.LIMIT_FILE_SIZE.status
-                    );
-                }
-                const fileError = new FileError();
+                const fileError = new FileError(
+                    FILE_ERROR_TYPES.LIMIT_FILE_SIZE.msg,
+                    FILE_ERROR_TYPES.LIMIT_FILE_SIZE.status
+                );
                 return fileError;
             }
             case COMMON_ERROR_TYPES.MONGO_ERROR.name: {
@@ -268,10 +265,10 @@ export class ErrorHandler {
 
 export const handleError = (error: any, res: NextApiResponse) => {
     console.log(error);
-    const err = ErrorHandler.handleError(error);
+    // const err = ErrorHandler.handleError(error);
     res.status(
-        err.status || COMMON_ERROR_TYPES.INTERNAL_SERVER_ERROR.status
-    ).json(err);
+        error.status || COMMON_ERROR_TYPES.INTERNAL_SERVER_ERROR.status
+    ).json(error);
 };
 
 export const logError = (error: any, info: any) => {

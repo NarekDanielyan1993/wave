@@ -1,6 +1,6 @@
 import { USER_PERMISSIONS_API } from '@constant/api';
 import { PayloadAction } from '@reduxjs/toolkit';
-import { showNotification } from '@store/notification/reducer';
+import { showNotification } from '@store/notification/notificationReducer';
 import { apiRequest } from '@utils/apiRequest';
 import { call, put, takeLatest } from 'redux-saga/effects';
 import { GetUserPermissionsPayloadType } from 'types';

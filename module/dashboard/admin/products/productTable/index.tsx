@@ -16,13 +16,11 @@ const ProductTable = () => {
     } = useAppSelector(paginatedProductsSelector);
     const dispatch = useAppDispatch();
 
-    const [dialogAddOpen, setDialogAddOpen] = useState<
-        IProductResponse | boolean
-    >(false);
+    const [dialogAddOpen, setDialogAddOpen] = useState<boolean>(false);
 
     const [dialogEditOpen, setDialogEditOpen] = useState<
-        IProductResponse | boolean
-    >(false);
+        IProductResponse | undefined
+    >(undefined);
 
     const [selectedProduct, setSelectedProduct] = useState<string[]>([]);
 
@@ -35,8 +33,11 @@ const ProductTable = () => {
         setDialogEditOpen(product);
     };
     const removeProductHandler = () => {
-        dispatch(deleteProduct({ id: selectedProduct[0] }));
-        setSelectedProduct([]);
+        const product = selectedProduct[0];
+        if (product) {
+            dispatch(deleteProduct({ id: product }));
+            setSelectedProduct([]);
+        }
     };
     return (
         <>
@@ -79,7 +80,7 @@ const ProductTable = () => {
                 <AddEditProductDialog
                     data={dialogEditOpen}
                     isOpen={!!dialogEditOpen}
-                    onClose={() => setDialogEditOpen(false)}
+                    onClose={() => setDialogEditOpen(undefined)}
                 />
             )}
         </>

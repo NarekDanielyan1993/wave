@@ -17,7 +17,9 @@ export type iconNameTypes =
     | 'gridOff'
     | 'gridOn'
     | 'truck'
-    | 'check';
+    | 'check'
+    | 'view'
+    | 'viewOff';
 
 export interface IconButtonTypes extends Partial<IconButtonProps> {
     title?: string;

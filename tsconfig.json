@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "target": "ES2022",
+        "target": "ESNext",
         "verbatimModuleSyntax": false,
         "lib": ["ES2022", "DOM"],
         "allowJs": true,
@@ -9,25 +9,29 @@
         "forceConsistentCasingInFileNames": true,
         "noEmit": true,
         "esModuleInterop": true,
-        "moduleResolution": "node",
-        "module": "CommonJS",
+        "moduleResolution": "Node10",
+        "module": "esnext",
         "noUncheckedIndexedAccess": true,
-        "moduleDetection": "force",
+        "moduleDetection": "auto",
         "resolveJsonModule": true,
         "isolatedModules": true,
         "jsx": "preserve",
         "incremental": true,
         "baseUrl": ".",
+        "types": ["@testing-library/jest-dom"],
         "paths": {
             "@components/*": ["components/*"],
             "@utils/*": ["utils/*"],
+            "@module/*": ["module/*"],
+            "@common/*": ["common/*"],
+            "@test/*": ["test/*"],
             "@lib/*": ["lib/*"],
             "@services/*": ["services/*"],
             "@api/*": ["pages/api/*"],
             "@store/*": ["store/*"],
             "@hooks/*": ["hooks/*"],
             "@constant/*": ["constant/*"],
-            "@styles/*": ["globals/*"]
+            "@mocks/*": ["__mocks__/*"]
         }
     },
     "allowImportingTsExtensions": true,

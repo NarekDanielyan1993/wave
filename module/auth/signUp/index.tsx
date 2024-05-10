@@ -1,10 +1,11 @@
 import { Button } from '@chakra-ui/react';
-import { AUTH_ROUTES } from '@constant/route';
-import useForm from '@hooks/useForm';
 import {
     AuthSignUpTypes,
     authSignUpValidationSchema,
-} from 'common/validation/auth';
+} from '@common/validation/auth';
+import { AUTH_ROUTES } from '@constant/route';
+import useForm from '@hooks/useForm';
+import { FormProvider } from 'react-hook-form';
 import {
     StyledAuthContainer,
     StyledAuthTitle,
@@ -26,10 +27,12 @@ const SignUpModule = ({
         lastName: '',
     };
 
-    const { handleSubmit, FormField, reset } = useForm<AuthSignUpTypes>({
+    const methods = useForm<AuthSignUpTypes>({
         validationSchema: authSignUpValidationSchema,
         defaultValues: authDefaultData,
     });
+
+    const { PasswordField, TextField, reset, handleSubmit } = methods;
 
     const formSubmitHandler = (data: AuthSignUpTypes) => {
         onSubmit(data);
@@ -37,45 +40,47 @@ const SignUpModule = ({
     };
 
     return (
-        <StyledAuthContainer>
-            <StyledAuthWrapper onSubmit={handleSubmit(formSubmitHandler)}>
-                <StyledAuthTitle as="h3">sign up</StyledAuthTitle>
-                {FormField({
-                    disabled: isLoading,
-                    name: 'firstName',
-                    label: 'First Name',
-                })}
-                {FormField({
-                    disabled: isLoading,
-                    name: 'lastName',
-                    label: 'Last Name',
-                })}
-                {FormField({
-                    disabled: isLoading,
-                    name: 'email',
-                    label: 'Email',
-                })}
-                {FormField({
-                    disabled: isLoading,
-                    name: 'password',
-                    label: 'Password',
-                    type: 'password',
-                })}
-                <Button
-                    isLoading={isLoading}
-                    type="submit"
-                    variant="primary"
-                    width="full"
-                >
-                    sign up
-                </Button>
-                <SwitchSignUpSignIn
-                    redirectLink={AUTH_ROUTES.BASE}
-                    redirectToText="Sign in"
-                    text="Already sign up?"
-                />
-            </StyledAuthWrapper>
-        </StyledAuthContainer>
+        <FormProvider {...methods}>
+            <StyledAuthContainer>
+                <StyledAuthWrapper onSubmit={handleSubmit(formSubmitHandler)}>
+                    <StyledAuthTitle as="h3">sign up</StyledAuthTitle>
+                    <TextField
+                        disabled={isLoading}
+                        label="First Name"
+                        name="firstName"
+                    />
+                    <TextField
+                        disabled={isLoading}
+                        label="Last Name"
+                        name="lastName"
+                    />
+                    <TextField
+                        disabled={isLoading}
+                        label="Email"
+                        name="email"
+                    />
+                    <PasswordField
+                        disabled={isLoading}
+                        label="Password"
+                        name="password"
+                    />
+                    <Button
+                        data-testId="sign-up-button"
+                        isLoading={isLoading}
+                        type="submit"
+                        variant="primary"
+                        width="full"
+                    >
+                        sign up
+                    </Button>
+                    <SwitchSignUpSignIn
+                        redirectLink={AUTH_ROUTES.BASE}
+                        redirectToText="Sign in"
+                        text="Already sign up?"
+                    />
+                </StyledAuthWrapper>
+            </StyledAuthContainer>
+        </FormProvider>
     );
 };
 

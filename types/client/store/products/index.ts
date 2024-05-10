@@ -28,9 +28,9 @@ export type GET_BRANDS_TYPE = typeof GET_BRANDS;
 // ACTIONS
 
 export type GetProductsActionPayload = {
-    filters?: Filters;
-    skip: number;
     limit: number;
+    sortBy?: string;
+    order?: string;
 };
 
 export type GetPaginatedProductsActionPayload = {
@@ -84,8 +84,6 @@ export type DeleteImageActionTypes = {
 };
 
 export type DeleteImagePayloadTypes = {
-    id: string;
-    productId: string;
     publicId: string;
 };
 

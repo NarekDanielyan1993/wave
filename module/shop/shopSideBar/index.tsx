@@ -1,8 +1,9 @@
+import { useDebounce } from '@hooks/useDebounce';
 import useForm from '@hooks/useForm';
 import { useAppSelector } from '@store/create-store';
 import { fretsSelector } from '@store/frets/selectors';
 import { brandsSelector } from '@store/products/selectors';
-import { useFieldArray } from 'react-hook-form';
+import { FormProvider, useFieldArray } from 'react-hook-form';
 import type { GetPaginatedProductsActionPayload } from 'types';
 import Brands from './brands';
 import Frets from './frets';
@@ -20,22 +21,28 @@ const ShopSideBar = ({
 }) => {
     const brands = useAppSelector(brandsSelector);
     const { frets } = useAppSelector(fretsSelector);
-    const { control, handleSubmit, register, formState } =
-        useForm<FilterProductSchemaType>({
-            defaultValues: {
-                brands: brands.map(brand => ({
-                    name: brand.name,
-                    checked: false,
-                })),
-                frets: frets.map(fret => ({
-                    name: fret.frets,
-                    checked: false,
-                })),
-                from: null,
-                to: null,
-            },
-            validationSchema: filterProductSchema,
-        });
+
+    const brandOptions = brands.map(brand => ({
+        name: brand.name,
+        checked: false,
+    }));
+
+    const fretOptions = frets.map(fret => ({
+        name: fret.frets,
+        checked: false,
+    }));
+
+    const methods = useForm<FilterProductSchemaType>({
+        validationSchema: filterProductSchema,
+        defaultValues: {
+            brands: brandOptions,
+            frets: fretOptions,
+            from: null,
+            to: null,
+        },
+    });
+
+    const { control, handleSubmit } = methods;
 
     const { fields: brandsData, update } = useFieldArray({
         control,
@@ -94,13 +101,17 @@ const ShopSideBar = ({
         filterProducts(formData);
     };
 
+    const debouncedSubmit = useDebounce(handleSubmit(onSubmit), 1000);
+
     return (
         <StyledSideBar>
-            <form onChange={handleSubmit(onSubmit)}>
-                <Brands brands={brandsData} update={update} />
-                <Frets frets={fretsData} update={updateFrets} />
-                <PriceRange errors={formState.errors} register={register} />
-            </form>
+            <FormProvider {...methods}>
+                <form onChange={() => debouncedSubmit()}>
+                    <Brands brands={brandsData} update={update} />
+                    <Frets frets={fretsData} update={updateFrets} />
+                    <PriceRange />
+                </form>
+            </FormProvider>
         </StyledSideBar>
     );
 };
