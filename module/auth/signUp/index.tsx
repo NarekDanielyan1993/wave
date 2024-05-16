@@ -5,6 +5,7 @@ import {
 } from '@common/validation/auth';
 import { AUTH_ROUTES } from '@constant/route';
 import useForm from '@hooks/useForm';
+import SocialSignInButtons from '@module/auth/socialSignInButtons';
 import { FormProvider } from 'react-hook-form';
 import {
     StyledAuthContainer,
@@ -65,7 +66,6 @@ const SignUpModule = ({
                         name="password"
                     />
                     <Button
-                        data-testId="sign-up-button"
                         isLoading={isLoading}
                         type="submit"
                         variant="primary"
@@ -78,6 +78,7 @@ const SignUpModule = ({
                         redirectToText="Sign in"
                         text="Already sign up?"
                     />
+                    <SocialSignInButtons />
                 </StyledAuthWrapper>
             </StyledAuthContainer>
         </FormProvider>

@@ -7,22 +7,29 @@ import { screen, waitFor } from '@testing-library/react';
 import user from '@testing-library/user-event';
 import { render } from '@utils/test';
 import mockRouter from 'next-router-mock';
+import { MemoryRouterProvider } from 'next-router-mock/MemoryRouterProvider';
+
+const renderComponent = (children: React.ReactNode) => {
+    render(<MemoryRouterProvider>{children}</MemoryRouterProvider>);
+};
 
 describe('Render Sign in module', () => {
     it('Should have two inputs and submit button', () => {
         const onSubmit = jest.fn();
-        render(<SignInModule isLoading={false} onSubmit={onSubmit} />);
+        renderComponent(<SignInModule isLoading={false} onSubmit={onSubmit} />);
         const textInput = screen.getByLabelText('Email');
         const passwordInput = screen.getByLabelText('Password');
         expect(textInput).toBeInTheDocument();
         expect(passwordInput).toBeInTheDocument();
-        const submitButton = screen.getByTestId('sign-in-button');
+        const submitButton = screen.getByRole('button', {
+            name: 'Sign In',
+        });
         expect(submitButton).toBeInTheDocument();
     });
 
     it('Should display error messages for invalid inputs', async () => {
         const onSubmit = jest.fn();
-        render(<SignInModule isLoading={false} onSubmit={onSubmit} />);
+        renderComponent(<SignInModule isLoading={false} onSubmit={onSubmit} />);
 
         const emailInput = screen.getByLabelText('Email');
         const passwordInput = screen.getByLabelText('Password');
@@ -30,23 +37,33 @@ describe('Render Sign in module', () => {
         const invalidEmail = DEFAULT_VALIDATION_ERRORS.email;
         const invalidPassword = DEFAULT_VALIDATION_ERRORS.pattern_password;
 
-        await user.click(emailInput);
-        await user.keyboard('email');
-        await user.click(passwordInput);
-        await user.keyboard('password');
+        await waitFor(async () => {
+            await user.type(emailInput, 'email');
+            await user.type(passwordInput, 'password');
+        });
 
-        const submitButton = screen.getByTestId('sign-in-button');
-        await user.click(submitButton);
+        const submitButton = screen.getByRole('button', {
+            name: 'Sign In',
+        });
+
+        await waitFor(async () => {
+            await user.click(submitButton);
+        });
+
         expect(await screen.findByText(invalidEmail)).toBeInTheDocument();
         expect(await screen.findByText(invalidPassword)).toBeInTheDocument();
     });
 
     it('Should display required error message when inputs are empty', async () => {
         const onSubmit = jest.fn();
-        render(<SignInModule isLoading={false} onSubmit={onSubmit} />);
+        renderComponent(<SignInModule isLoading={false} onSubmit={onSubmit} />);
 
-        const submitButton = screen.getByTestId('sign-in-button');
-        await user.click(submitButton);
+        const submitButton = screen.getByRole('button', {
+            name: 'Sign In',
+        });
+        await waitFor(async () => {
+            await user.click(submitButton);
+        });
 
         await waitFor(() => {
             const errorMessageText = screen.getAllByText(
@@ -56,11 +73,11 @@ describe('Render Sign in module', () => {
         });
     });
 
-    it('Should render navigation link', () => {
+    it('Should render navigation link', async () => {
         const text = 'Not registered yet';
         const redirectLink = AUTH_ROUTES.SIGN_UP;
         const redirectToText = 'Sign up';
-        render(
+        renderComponent(
             <SwitchSignUpSignIn
                 redirectLink={redirectLink}
                 redirectToText={redirectToText}
@@ -70,8 +87,12 @@ describe('Render Sign in module', () => {
 
         const switchText = screen.getByText(text);
         expect(switchText).toBeInTheDocument();
-
-        const linkElement = screen.getByRole('link', { name: redirectToText });
+        let linkElement;
+        await waitFor(async () => {
+            linkElement = screen.getByRole('link', {
+                name: redirectToText,
+            });
+        });
         expect(linkElement).toBeInTheDocument();
         expect(linkElement).toHaveAttribute('href', redirectLink);
     });
@@ -80,7 +101,7 @@ describe('Render Sign in module', () => {
         const text = 'Not registered yet';
         const redirectLink = AUTH_ROUTES.BASE;
         const redirectToText = 'Sign up';
-        render(
+        renderComponent(
             <SwitchSignUpSignIn
                 redirectLink={redirectLink}
                 redirectToText={redirectToText}
@@ -89,12 +110,15 @@ describe('Render Sign in module', () => {
         );
 
         const linkElement = screen.getByRole('link', { name: redirectToText });
-        await user.click(linkElement);
+
+        await waitFor(async () => {
+            await user.click(linkElement);
+        });
         expect(mockRouter.asPath).toEqual(redirectLink);
     });
 
     it('Should render sign in google button', () => {
-        render(<SocialSignInButtons />);
+        renderComponent(<SocialSignInButtons />);
         const googleButton = screen.getByText('sign in with google');
         expect(googleButton).toBeInTheDocument();
     });

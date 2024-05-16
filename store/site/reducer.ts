@@ -3,7 +3,7 @@ import type {
     ISiteImageResponse,
     ISiteResponse,
 } from 'types/client/store/site';
-import { siteReducerName } from './action';
+import { siteReducerName } from './siteAction';
 
 interface ISiteState {
     site: ISiteResponse;

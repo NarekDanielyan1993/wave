@@ -34,7 +34,7 @@ import {
     GET_PRODUCTS_BY_SOLD,
     GET_PRODUCTS_CREATED_DATE,
     getPaginatedProducts,
-} from './action';
+} from './productAction';
 import {
     deleteImageSuccess,
     deleteProductSuccess,
@@ -151,6 +151,7 @@ const getProductsSortBy = (key: ProductCardSectionUnion) =>
                         },
                     }
                 );
+            console.log(data);
             yield put(getProductsSortBySuccess({ key, data }));
         } catch (error: any) {
             yield put(

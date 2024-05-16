@@ -16,12 +16,11 @@ export interface SagaStore extends Store {
     sagaTask?: Task;
 }
 
-export const createStore = preloadedState => {
+export const createStore = () => {
     const sagaMiddleware = createSagaMiddleware();
     const store = configureStore({
         reducer: rootReducer,
         devTools: config.isDev,
-        preloadedState,
         middleware: [promiseMiddleware, sagaMiddleware],
     });
     (store as SagaStore).sagaTask = sagaMiddleware.run(rootSaga);

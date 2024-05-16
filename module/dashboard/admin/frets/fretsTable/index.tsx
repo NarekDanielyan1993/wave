@@ -4,7 +4,7 @@ import { FRETS_TABLE_COLUMNS } from '@constant/table';
 import { useAppDispatch, useAppSelector } from '@store/create-store';
 import { deleteFrets } from '@store/frets/action';
 import { paginatedFretsSelector } from '@store/frets/selectors';
-import { getPaginatedProducts } from '@store/products/action';
+import { getPaginatedProducts } from '@store/products/productAction';
 import { useState } from 'react';
 import { GetFretsResponse } from 'types/client/store/frets';
 import AddEditFretsDialog from '../addEditFretsDialog';
@@ -16,6 +16,7 @@ const FretsTable = () => {
         isFretsLoading: isLoading,
     } = useAppSelector(paginatedFretsSelector);
     const dispatch = useAppDispatch();
+    console.log(frets);
 
     const [dialogAddOpen, setDialogAddOpen] = useState<
         GetFretsResponse | boolean

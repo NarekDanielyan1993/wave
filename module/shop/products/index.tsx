@@ -2,7 +2,7 @@ import { Box, Button } from '@chakra-ui/react';
 import IconButton from '@components/button/icon-button';
 import CardList from '@components/card/cardList';
 import { useAppDispatch, useAppSelector } from '@store/create-store';
-import { getProducts } from '@store/products/action';
+import { getProducts } from '@store/products/productAction';
 import { paginatedProductsSelector } from '@store/products/selectors';
 import { addToCart } from '@store/user/action';
 import { useCallback, useState } from 'react';

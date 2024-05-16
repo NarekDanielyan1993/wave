@@ -1,8 +1,8 @@
 import { getAuth } from '@api/auth/[...nextauth]';
 import { useAppDispatch, wrapper, type SagaStore } from '@store/create-store';
 import { getFrets } from '@store/frets/action';
-import { getBrands, getPaginatedProducts } from '@store/products/action';
-import { getSite } from '@store/site/action';
+import { getBrands, getPaginatedProducts } from '@store/products/productAction';
+import { getSite } from '@store/site/siteAction';
 import { getCarts, getUser } from '@store/user/action';
 import Products from 'module/shop/products';
 import ShopLayout from 'module/shop/shopLayout';

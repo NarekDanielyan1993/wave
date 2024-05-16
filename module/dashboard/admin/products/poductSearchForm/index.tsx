@@ -2,7 +2,7 @@ import { Box, Button } from '@chakra-ui/react';
 import Input from '@components/field/input';
 import { useDebounce } from '@hooks/useDebounce';
 import { useAppDispatch } from '@store/create-store';
-import { getPaginatedProducts } from '@store/products/action';
+import { getPaginatedProducts } from '@store/products/productAction';
 import React, { useState } from 'react';
 import { SearchFilter } from 'types';
 

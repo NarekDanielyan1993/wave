@@ -9,14 +9,12 @@ const Carousel = ({
     ...props
 }: {
     children: React.ReactNode[];
-} & SwiperProps) => {
-    return (
-        <Swiper modules={[Autoplay]} {...props}>
-            {Children.map(children, (child, i) => {
-                return <SwiperSlide key={i}>{child}</SwiperSlide>;
-            })}
-        </Swiper>
-    );
-};
+} & SwiperProps) => (
+    <Swiper modules={[Autoplay]} {...props}>
+        {Children.map(children, (child, i) => (
+            <SwiperSlide key={i}>{child}</SwiperSlide>
+        ))}
+    </Swiper>
+);
 
 export default Carousel;

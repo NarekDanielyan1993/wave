@@ -12,6 +12,7 @@ import { StyledPromotionContainer } from './style';
 const SliderComponent = () => {
     const sliderPromotions: SliderPromotionTypes[] = useGeneratePromotion();
     const { siteImages } = useAppSelector(siteSelector);
+    console.log(siteImages);
     return (
         <Box sx={{ w: '100%', h: '80vh', overflow: 'hidden' }}>
             <Carousel
@@ -30,7 +31,7 @@ const SliderComponent = () => {
                         }}
                     >
                         <Image
-                            alt=""
+                            alt={siteImages[index]?.name}
                             layout="fill"
                             objectFit="cover"
                             priority

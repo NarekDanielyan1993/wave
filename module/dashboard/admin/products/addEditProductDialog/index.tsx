@@ -12,7 +12,7 @@ import FileSelectInput from '@components/field/fileSelectInput';
 import useForm from '@hooks/useForm';
 import { useAppDispatch, useAppSelector } from '@store/create-store';
 import { fretsSelector } from '@store/frets/selectors';
-import { addProduct, editProduct } from '@store/products/action';
+import { addProduct, editProduct } from '@store/products/productAction';
 import {
     brandsSelector,
     paginatedProductsSelector,

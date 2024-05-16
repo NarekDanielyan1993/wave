@@ -39,8 +39,17 @@ const jestConfig = async () => {
             '^@components/(.*)$': '<rootDir>/components/$1',
             '\\.svg$': '<rootDir>/__mocks__/svg.js',
             '^@mocks/(.*)$': ['<rootDir>/__mocks__/$1'],
+            '.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$':
+                '<rootDir>/__mocks__/fileMock.js',
+            '\\.(css|less|sass|scss)$': 'identity-obj-proxy',
+            'swiper/css': 'identity-obj-proxy',
+            'swiper/css/*': 'identity-obj-proxy',
+            '^@prisma/client$': '<rootDir>/node_modules/prisma/prisma-client',
             ...nextJestConfig.moduleNameMapper,
         },
+        transformIgnorePatterns: [
+            '/node_modules/(?!swiper|swiper/react|ssr-window|dom7)',
+        ],
     };
 };
 

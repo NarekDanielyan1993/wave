@@ -1,8 +1,8 @@
 import { AUTH_ROUTES } from '@constant/route';
 import { wrapper, type SagaStore } from '@store/create-store';
 import { getFrets } from '@store/frets/action';
-import { getBrands, getPaginatedProducts } from '@store/products/action';
-import { getSite } from '@store/site/action';
+import { getBrands, getPaginatedProducts } from '@store/products/productAction';
+import { getSite } from '@store/site/siteAction';
 import { getCarts, getUser } from '@store/user/action';
 import { getUserPermissions } from '@store/userPermission/action';
 import AdminProducts from 'module/dashboard/admin/products';

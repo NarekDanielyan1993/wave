@@ -1,7 +1,7 @@
 import { getAuth } from '@api/auth/[...nextauth]';
 import { AUTH_ROUTES } from '@constant/route';
 import { SagaStore, wrapper } from '@store/create-store';
-import { getSite } from '@store/site/action';
+import { getSite } from '@store/site/siteAction';
 import { getCarts, getUser } from '@store/user/action';
 import { getUserPermissions } from '@store/userPermission/action';
 import DashboardLayout from 'module/dashboard/dashboardLayout';

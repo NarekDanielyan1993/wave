@@ -1,7 +1,10 @@
 import { AUTH_ROUTES } from '@constant/route';
 import { wrapper, type SagaStore } from '@store/create-store';
-import { getPaginatedProducts, getProduct } from '@store/products/action';
-import { getSite } from '@store/site/action';
+import {
+    getPaginatedProducts,
+    getProduct,
+} from '@store/products/productAction';
+import { getSite } from '@store/site/siteAction';
 import { addToCart, getCarts } from '@store/user/action';
 import ProductDetail from 'module/productDetail';
 import type { GetServerSidePropsContext } from 'next';

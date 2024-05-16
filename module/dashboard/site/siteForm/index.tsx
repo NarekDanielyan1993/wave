@@ -1,8 +1,8 @@
 import { Button } from '@chakra-ui/react';
 import useForm from '@hooks/useForm';
 import { useAppDispatch, useAppSelector } from '@store/create-store';
-import { createSite, editSite } from '@store/site/action';
 import { siteSelector } from '@store/site/selectors';
+import { createSite, editSite } from '@store/site/siteAction';
 import {
     siteCreateValidationSchema,
     siteCreateValidationSchemaTypes,

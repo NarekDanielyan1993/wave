@@ -1,7 +1,7 @@
 import { Box, Button, Text } from '@chakra-ui/react';
 import { ALLOWED_FILE_TYPES, FILE_UPLOAD_BASE_URL } from '@constant/file';
 import { useAppDispatch } from '@store/create-store';
-import { deleteImage } from '@store/products/action';
+import { deleteImage } from '@store/products/productAction';
 import {
     isFileExceedsSizeLimit,
     isFileFormatAllowed,

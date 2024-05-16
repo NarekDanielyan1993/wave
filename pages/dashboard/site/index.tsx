@@ -1,6 +1,6 @@
 import { AUTH_ROUTES } from '@constant/route';
 import { wrapper, type SagaStore } from '@store/create-store';
-import { getSite, getSiteImages } from '@store/site/action';
+import { getSite, getSiteImages } from '@store/site/siteAction';
 import { getCarts } from '@store/user/action';
 import { getUserPermissions } from '@store/userPermission/action';
 import DashboardLayout from 'module/dashboard/dashboardLayout';

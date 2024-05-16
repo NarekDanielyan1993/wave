@@ -49,7 +49,6 @@ const SignInModule = ({
                         name="password"
                     />
                     <Button
-                        data-testId="sign-in-button"
                         isLoading={isLoading}
                         type="submit"
                         variant="primary"

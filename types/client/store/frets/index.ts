@@ -4,7 +4,7 @@ import {
     EDIT_FRETS,
     GET_FRETS,
 } from '@store/frets/action';
-import { GET_BRANDS } from '@store/products/action';
+import { GET_BRANDS } from '@store/products/productAction';
 import type { Filters } from 'types/database';
 
 export type GET_FRETS_TYPE = typeof GET_FRETS;

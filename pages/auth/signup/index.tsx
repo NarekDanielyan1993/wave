@@ -6,7 +6,7 @@ import {
     useAppSelector,
     wrapper,
 } from '@store/create-store';
-import { getSite } from '@store/site/action';
+import { getSite } from '@store/site/siteAction';
 import { AuthSignUpTypes } from 'common/validation/auth';
 import SignUpModule from 'module/auth/signUp';
 import { GetServerSidePropsContext } from 'next';

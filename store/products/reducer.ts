@@ -13,7 +13,7 @@ import {
     type IProductModelFields,
     type IProductResponse,
 } from 'types/product';
-import { ProductsReducerName } from './action';
+import { ProductsReducerName } from './productAction';
 
 interface IProductsState {
     isProductsLoading: boolean;

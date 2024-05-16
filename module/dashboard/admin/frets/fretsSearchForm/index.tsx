@@ -3,7 +3,6 @@ import Input from '@components/field/input';
 import { useDebounce } from '@hooks/useDebounce';
 import { useAppDispatch } from '@store/create-store';
 import { getFrets } from '@store/frets/action';
-import { getPaginatedProducts } from '@store/products/action';
 import { ChangeEvent, useState } from 'react';
 import { SearchFilter } from 'types';
 
@@ -32,7 +31,7 @@ const FretsSearchForm = () => {
     const debounceSubmit = useDebounce(formSubmitHandler, 1000);
 
     const formResetHandler = () => {
-        dispatch(getPaginatedProducts({ limit: 10, page: 0 }));
+        dispatch(getFrets({ limit: 10, page: 0 }));
         setSearch('');
     };
 

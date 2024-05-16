@@ -26,4 +26,4 @@ export const PRODUCT_CARDS_QUERY_DEFAULT_PARAMS = {
     limit: 3,
     order: 'desc',
     sortBy: 'createdAt',
-};
+} as const;

@@ -7,8 +7,8 @@ import { SagaStore, useAppDispatch, wrapper } from '@store/create-store';
 import {
     getProductsByCreatedDate,
     getProductsBySold,
-} from '@store/products/action';
-import { getSite, getSiteImages } from '@store/site/action';
+} from '@store/products/productAction';
+import { getSite, getSiteImages } from '@store/site/siteAction';
 import { addToCart, getCarts, getUser } from '@store/user/action';
 import { GetServerSidePropsContext } from 'next';
 import { useCallback } from 'react';

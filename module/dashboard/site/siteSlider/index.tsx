@@ -2,8 +2,8 @@
 import { Button, Flex } from '@chakra-ui/react';
 import { ALLOWED_FILE_TYPES } from '@constant/file';
 import { useAppDispatch, useAppSelector } from '@store/create-store';
-import { deleteSiteImage, uploadSiteImage } from '@store/site/action';
 import { siteSelector } from '@store/site/selectors';
+import { deleteSiteImage, uploadSiteImage } from '@store/site/siteAction';
 import {
     isFileExceedsSizeLimit,
     isFileFormatAllowed,

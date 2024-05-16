@@ -8,7 +8,6 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const Notification = () => {
     const { message, type } = useAppSelector(notificationSelector);
-    console.log(message);
     const { toast } = useNotification();
     const dispatch = useAppDispatch();
 

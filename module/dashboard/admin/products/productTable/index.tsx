@@ -2,7 +2,10 @@ import { Box, Button } from '@chakra-ui/react';
 import { Table, TableColumn } from '@components/table';
 import { PRODUCTS_TABLE_COLUMNS } from '@constant/table';
 import { useAppDispatch, useAppSelector } from '@store/create-store';
-import { deleteProduct, getPaginatedProducts } from '@store/products/action';
+import {
+    deleteProduct,
+    getPaginatedProducts,
+} from '@store/products/productAction';
 import { paginatedProductsSelector } from '@store/products/selectors';
 import { useState } from 'react';
 import { IProductResponse } from 'types/product';
@@ -15,7 +18,6 @@ const ProductTable = () => {
         isProductsLoading: isLoading,
     } = useAppSelector(paginatedProductsSelector);
     const dispatch = useAppDispatch();
-
     const [dialogAddOpen, setDialogAddOpen] = useState<boolean>(false);
 
     const [dialogEditOpen, setDialogEditOpen] = useState<

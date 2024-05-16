@@ -1,7 +1,7 @@
 import { AUTH_ROUTES } from '@constant/route';
 import { wrapper, type SagaStore } from '@store/create-store';
-import { getPaginatedProducts } from '@store/products/action';
-import { getSite } from '@store/site/action';
+import { getPaginatedProducts } from '@store/products/productAction';
+import { getSite } from '@store/site/siteAction';
 import { getCarts } from '@store/user/action';
 import { getUserPermissions } from '@store/userPermission/action';
 import Cart from 'module/dashboard/cart';

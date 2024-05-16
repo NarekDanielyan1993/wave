@@ -13,7 +13,7 @@ function render(
         ...renderOptions
     }: RenderOptions & { initialState?: any } = {}
 ) {
-    store = createStore({ preloadedState: initialState });
+    store = createStore();
 
     function Wrapper({ children }: { children: React.ReactNode }) {
         return <Provider store={store}>{children}</Provider>;

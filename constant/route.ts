@@ -1,5 +1,6 @@
 export const AUTH_ROUTES = {
     BASE: '/auth/signIn',
+    SIGN_IN: '/auth/signIn',
     SIGN_UP: '/auth/signup',
     SIGN_UP_COMPLETION: '/auth/signup/completion',
     AUTH_SUCCESS: '',

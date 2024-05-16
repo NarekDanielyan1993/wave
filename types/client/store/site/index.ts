@@ -5,7 +5,7 @@ import type {
     GET_SITE_IMAGE,
     UPDATE_SITE,
     UPLOAD_SITE_IMAGE,
-} from '@store/site/action';
+} from '@store/site/siteAction';
 
 export type GET_SITE_TYPE = typeof GET_SITE;
 export type UPDATE_SITE_TYPE = typeof UPDATE_SITE;
@@ -85,4 +85,6 @@ export type ISiteImageResponse = {
     name: string;
     url: string;
     publicId: string;
+    createdAt: string;
+    updatedAt: string;
 };

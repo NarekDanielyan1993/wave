@@ -9,14 +9,6 @@ import type {
     UpdateSitePayloadType,
 } from 'types/client/store/site';
 import {
-    CREATE_SITE,
-    DELETE_SITE_IMAGE,
-    GET_SITE,
-    GET_SITE_IMAGE,
-    UPDATE_SITE,
-    UPLOAD_SITE_IMAGE,
-} from './action';
-import {
     deleteSiteImageSuccess,
     getSiteImageSuccess,
     getSiteSuccess,
@@ -25,6 +17,14 @@ import {
     updateSiteSuccess,
     uploadSiteImageSuccess,
 } from './reducer';
+import {
+    CREATE_SITE,
+    DELETE_SITE_IMAGE,
+    GET_SITE,
+    GET_SITE_IMAGE,
+    UPDATE_SITE,
+    UPLOAD_SITE_IMAGE,
+} from './siteAction';
 
 function* getSiteGenerator() {
     try {

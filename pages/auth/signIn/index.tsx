@@ -8,7 +8,7 @@ import {
     useAppSelector,
     wrapper,
 } from '@store/create-store';
-import { getSite } from '@store/site/action';
+import { getSite } from '@store/site/siteAction';
 import { AuthSignInTypes } from 'common/validation/auth';
 import SignInModule from 'module/auth/signIn';
 import type { GetServerSidePropsContext } from 'next';
@@ -37,7 +37,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
         if (session) {
             return {
                 redirect: {
-                    destination: '/shop',
+                    destination: SHOP_ROUTE,
                     permanent: false,
                 },
             };

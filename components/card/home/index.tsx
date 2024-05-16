@@ -39,7 +39,11 @@ const HomeCard = ({ product, addToCartHandler }: IProductCard) => {
         <StyledHomeCardContainer onClick={navigateToProductDetailHandler}>
             <StyledHomeCardContent>
                 <StyledHomeCardImage>
-                    <ImageComponent layout="fill" src={image?.url} />
+                    <ImageComponent
+                        alt={image?.name}
+                        layout="fill"
+                        src={image?.url}
+                    />
                 </StyledHomeCardImage>
                 <StyledHomeCardTitle>{product.brand.name}</StyledHomeCardTitle>
                 <StyledHomeCardText as="p" isTruncated>

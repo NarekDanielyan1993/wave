@@ -9,7 +9,7 @@ import {
     GET_PRODUCTS,
     GET_PRODUCTS_BY_SOLD,
     GET_PRODUCTS_CREATED_DATE,
-} from '@store/products/action';
+} from '@store/products/productAction';
 import type { Filters } from 'types/database';
 import { type IProductResponse } from 'types/product';
 import { AddToCartPayloadType } from '../user';
